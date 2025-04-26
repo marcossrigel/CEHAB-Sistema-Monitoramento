@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>home</title>
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="home-card">
+      <h1>Bem-vindo ao Sistema</h1>
+      <p>Organize e cadastre seus contratos com eficiência e facilidade.</p>
+
+      <div class="button-group">
+        <a href="#" onclick="window.location.href='iniciativa.html'" class="btn btn-enter">Criar Iniciativa</a>
+        <a href="#" onclick="window.location.href='formulario.html'" class="btn btn-enter">Fazer Novo Contrato</a>
+        <a href="#" class="btn btn-secondary">Ver Contratos</a>
+      </div>
+
+      <!-- Accordion de Cidade -->
+      <div class="accordion" onclick="toggleAccordion()">
+        <div class="accordion-header">
+          <h2>Cidade</h2>
+          <span id="accordion-icon">⌄</span>
+        </div>
+        <div id="accordion-content" class="accordion-content hidden">
+          <p>Aqui você pode colocar informações sobre as cidades, ou até links para diferentes contratos por cidade.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="home.js"></script>
+</body>
+</html>

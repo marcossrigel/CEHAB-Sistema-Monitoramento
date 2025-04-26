@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CEHAB - Monitoramento Creches</title>
+  
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  
+  <div class="content">
+    <h1 class="main-title">Sistema Monitoramento Creches</h1>
+    <form class="login-box">
+      <h2>Entrar no sistema</h2>
+  
+      <div class="input-wrapper">
+        <span class="material-icons">mail</span>
+        <input type="text" class="inputs" placeholder="login" id="login">
+      </div>
+  
+      <div class="input-wrapper">
+        <span class="material-icons">lock</span>
+        <input type="password" class="inputs" placeholder="senha" id="senha">
+      </div>
+  
+      <button type="submit" onclick="logar(); return false" class="btn btn-enter">Entrar</button>
+  
+      <a href="#" class="forgot-password">Esqueceu a conta?</a>
+  
+      <div class="divider"></div>
+  
+      <button type="button" onclick="window.location.href=''" class="btn btn-create-account">
+        Criar nova conta
+      </button>
+  
+    </form>
+  </div>
+
+  <script>
+    function logar(){
+      var login = document.getElementById('login').value;
+      var senha = document.getElementById('senha').value;
+
+      if(login == "admin" && senha == "senha1234") {
+          location.href = "home.html";
+      }
+      else {
+        alert('Erro: Usuário ou Senha inválidos');
+      }
+    }
+  </script>
+
+</body>
+</html>
+v

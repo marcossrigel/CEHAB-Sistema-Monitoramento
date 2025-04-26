@@ -1,0 +1,121 @@
+:root {
+  --color-white: #ffffff;
+  --color-gray: #babdc0;
+  --color-dark: #1d2129;
+  --color-blue: #1877f2;
+  --color-green: #42b72a;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-gray);
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centralização */
+.content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Caixa de Login */
+.login-box {
+  background-color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 25px;
+  width: 360px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-box h1 {
+  font-size: 28px;
+  color: var(--color-dark);
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: white;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.input-wrapper .material-icons {
+  margin-right: 8px;
+  color: #bbb;
+}
+
+.inputs {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+  background: transparent;
+}
+
+/* Botões */
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  font-size: 17px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-enter {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.btn-enter:hover {
+  background-color: #165fca;
+}
+
+.btn-create-account {
+  background-color: var(--color-green);
+  color: var(--color-white);
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.btn-create-account:hover {
+  background-color: #36a420;
+}
+
+/* Link esqueceu a senha */
+.forgot-password {
+  color: var(--color-blue);
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Divisor */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: #dddfe2;
+  margin: 20px 0;
+}

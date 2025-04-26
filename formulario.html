@@ -1,0 +1,407 @@
+<!-- https://docs.google.com/spreadsheets/d/1Nc9SJu-2lJvJkUCoa0wtyecH8HrrXt5s17NhOmkjlow/edit?gid=0#gid=0 -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="formulario.css">
+
+  <title>Formulario</title>
+</head>
+
+<body>
+  <form class="formulario" action="https://api.sheetmonkey.io/form/5PHpYPTeEaT9TnUN7RxHUz" method="post">
+    <h1>Formulário</h1>
+    <hr>
+    <br>
+    <div class="linha">
+      <div class="campo-pequeno">
+        <label class="label">Tema de Custo</label>
+        <select name="tema_custo" class="campo">
+            <option>Selecione...</option>
+            <option>01 - Apoio Administrativo - Estagiários</option>
+            <option>02 - Combustível/Manutenção de Veículos</option>
+            <option>03 - Demandas Judiciais</option>
+            <option>04 - Diárias Civil</option>
+            <option>05 - Limpeza e Conservação</option>
+            <option>06 - Locação de Veículos</option>
+            <option>07 - Manutenção Predial</option>
+            <option>08 - Material de Expediente/Copa/Limpeza/Gráfico</option>
+            <option>09 - Motoristas</option>
+            <option>10 - Salário de Apenados</option>
+            <option>11 - Rede Digital Corporativa do Estado</option>
+            <option>12 - Serviços de Portaria</option>
+            <option>13 - Serviços de Informática</option>
+            <option>14 - Suprimento Individual</option>
+            <option>15 - Vigilância Ostensiva</option>
+            <option>16 - Auxílio Moradia</option>
+            <option>17 - Cota Global</option>
+            <option>18 - Passagens Aéreas</option>
+            <option>19 - Energia Elétrica</option>
+            <option>20 - Água e Esgoto</option>
+            <option>21 - Outros</option>
+            <option>22 - Folha de Pessoal</option>
+            <option>23 - FGTS</option>
+            <option>24 - INSS</option>
+            <option>25 - Ressarcimento Pessoal à Disposição</option>
+            <option>26 - Obras</option>
+            <option>27 - Gerenciamento de Obras</option>
+            <option>28 - Projetos de Obras</option>
+            <option>29 - Regularização Fundiária</option>
+            <option>30 - Ouvidoria</option>
+        </select>
+      </div>
+
+        <div class="campo-pequeno">
+        <label class="label">Setor Responsavel</label>
+        <select name="setor_responsavel" class="campo">
+            <option>Selecione...</option>
+            <option>DAF (GAD)</option>
+            <option>DOB</option>
+            <option>DOE</option>
+            <option>SPO</option>
+            <option>DP (PESSOAL)</option>
+            <option>DPH</option>
+            <option>SAJ</option>
+        </select>
+      </div>
+
+      <div class="campo-pequeno">
+      <label class="label">Gestor Responsavel</label>
+      <input type="text" name="gestor_responsavel" placeholder="Digite o nome do Gestor" class="campo">
+      </div>
+    </div>
+    
+    <div class="linha">
+      <div class="campo-pequeno">
+        <label class="label">Status</label>
+        <select name="status_contrato" class="campo">
+            <option>Selecione...</option>
+            <option>Continuidade</option>
+            <option>Novo</option>
+        </select>
+      </div>
+
+      <div class="campo-pequeno">
+        <label class="label">Nº do Contrato</label>
+        <input type="text" name="numero_contrato" placeholder="Digite o número do contrato" class="campo">
+      </div>
+    
+      <div class="campo-pequeno">
+        <label class="label">Nome do Credor</label>
+        <input type="text" name="nome_credor" placeholder="Digite o nome do credor" class="campo">
+      </div>
+    
+      <div class="campo-pequeno">
+        <label class="label">Vigência</label>
+        <input type="text" name="vigencia" placeholder="Digite a vigência do contrato" class="campo">
+      </div>
+    </div>
+
+    <div class="linha">
+      <div class="campo-pequeno">
+        <label class="label">DEA</label>
+        <select name="dea" id="" class="campo">
+            <option>Selecione...</option>
+            <option>Sim</option>
+            <option>Não</option>
+        </select>
+      </div>
+
+      <div class="campo-pequeno">
+        <label class="label">Reajuste</label>
+        <select name="reajuste" id="" class="campo">
+            <option>Selecione...</option>
+            <option>Sim</option>
+            <option>Não</option>
+        </select>
+      </div>
+
+      <div class="campo-pequeno">
+        <label class="label">Fonte</label>
+        <select name="fonte" id="" class="campo">
+            <option>Selecione...</option>
+            <option>0500 - (Tesouro do Estado)</option>
+            <option>0700 - (Repasse de Convênio)</option>
+            <option>0754 - (Operação de Crédito)</option>
+        </select>
+      </div>
+
+      <div class="campo-pequeno">
+        <label class="label">Grupo</label>
+        <select name="grupo" id="" class="campo">
+            <option>Selecione...</option>
+            <option>3 - Despesa Corrente</option>
+            <option>4 - Investimentos</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="linha-atividade">
+        <div class="coluna-textarea">
+          <label class="label">Objeto / Atividade</label>
+          <textarea id="" name="objeto_atividade" placeholder="Digite o objeto ou atividade"></textarea>
+        </div>
+      
+        <div class="coluna-campos">
+
+          <div class="campo-pequeno">
+            <label class="label">Ação</label>
+            <select id="acao" name="acao">
+                <option>Selecione...</option>
+                <option>2904 - Formulação e Promoção Da Política de Regularização Fundiária</option>
+                <option>2928 - Conservação do Patrimônio Público na Companhia Estadual de Habilitação e Obras - CEHAB</option>
+                <option value="">2998 - Encargos Gerais da Companhia Estadual de Habitação e Obras - CEHAB</option>
+                <option>3902 - Fomento e Apoio ao Conselho Estadual de Habilitação de Interesse Social - CEHIS</option>
+                <option>3927 - Manutenção da Ouvidoria da Companhia Estadual de Habilitação e Obras - CEHAB</option>
+                <option>4058 - Ampliação da Oferta e Requalificação de Habitação de Interesse Social</option>
+                <option>4300 - Execução de Obras de Infraestrutura e de Urbanização</option>
+                <option>4301 - Pesquisa e Assessoria Técnica para Habitação de Interesse Social</option>
+                <option>4354 - Gestão das Atividades da Companhia Estadual de Habitação e Obras - CEHAB</option>
+                <option>4587 - Contribuições Patronais da CEHAB</option>
+                <option>4613 - Encargos com o PIS e o COFINS da Companhia Estadual de Habitação e Obras - CHEAB</option>
+              </select>
+          </div>
+      
+          <div class="campo-pequeno">
+            <label class="label">Sub-Ação</label>
+            <select id="dea" name="sub_acao">
+              <option>Selecione...</option>
+              <option>0000 - OUTRAS MEDIDAS</option>
+              <option>0050 - Programa Minha Casa (Operações Coletivas, CAIC, FNHIS e PSH) - Conclusão de moradias</option>
+              <option>0865 - Operacionalização do Programa Minha Casa Minha Vida</option>
+              <option>1163 - Acompanhamento do cadastro de famílias beneficiadas pelo auxílio moradia</option>
+              <option>1399 - Execução de obras de infraestrutura e construção de unidades habitacionais na comunidade de Escorregou Tá Dentro (Afogados - Recife)</option>
+              <option>1400 - Execução de obras de infraestrutura e construção de unidades habitacionais na comunidade de Mulheres de Tejucupapo (Iputinga - Recife)</option>
+              <option>2067 - Obras e Projetos da Vila Claudete</option>
+              <option>2217 - Execução das obras de implantação de adutora de recalque do Loteamento Santa Clara - Barreiros/PE</option>
+              <option>2409 - Entrada Garantida - Programa Morar Bem</option>
+              <option>2787 - Contribuições Patronais da CEHAB ao FUNAFIN</option>
+              <option>2790 - Manutenção da Tecnologia de Informação e Comunidade da CEHAB</option>
+              <option>2791 - Fornecimento de vale transporte para servidores da CEHAB</option>
+              <option>2792 - Fornecimento de vale alimentação para servidores da CEHAB</option>
+              <option>2793 - Regularização Fundiária e Oferta de Lotes Urbanos com Interesse Social</option>
+              <option>2794 - Auxílio Moradia - CEHAB</option>
+              <option>2885 - Reforma no Lar - PROGRAMA MORAR BEM PE</option>
+              <option>3242 - Execução das obras de pavimentação, drenagem e sinalização da estrada Lygia Gomes da Silva - Ouro Preto</option>
+              <option>3225 - Obras não incidentes - FAR e FDS</option>
+              <option>3352 - Programa Morar Bem - Construção de Unidades Habitacionais</option>
+              <option>A386 - Execução das obras de infraestrutura e construção de unidades habitacionais na Bacia do Fragoso II</option>
+              <option>A389 - Execução das obras de infraestrutura e construção de unidades habitacionais no Canal do Jordão</option>
+              <option>A401 - Execução das obras de infraestrutura e construção de unidades habitacionais em Azeitona (UE11) e Peixinhos (UE12)</option>
+              <option>B156 - Construção da Via Metropolitana Norte (Fragoso - viaduto da PE-15/revestimento do canal/viário até Janga)</option>
+              <option>B661 - Despesas com taxa de água e esgoto da CEHAB</option>
+              <option>B662 - Despesas com combustível da CEHAB</option>
+              <option>B664 - Despesas com locação de veículos da CEHAB</option>
+              <option>B665 - Prestação de serviços de limpeza e conservação da CEHAB</option>
+              <option>B666 - Despesas com locação de veículos da CEHAB</option>
+              <option>B667 - Pestação de serviços de motorista na CEHAB</option>
+              <option>B668 - Despesas com publicações oficiais da CEHAB em diário oficial</option>
+              <option>B669 - Pagamento de apenados em processo de ressocialização na CEHAB</option>
+              <option>B670 - Prestação de serviços de segurança pessoal e patrimonial na CEHAB</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+  <br>
+
+  <div class="linha">
+    <div class="campo-pequeno">
+      <label class="label">Ficha Financeira</label>
+        <select name="ficha_financeira" class="campo">
+        <option>Selecione...</option>
+        <option>G3 - Água e Esgoto</option>
+        <option>G3 - Apoio Administrativo - Estagiários</option>
+        <option>G3 - Auxílio Funeral</option>
+        <option>G3 - Auxílio Moradia</option>
+        <option>G3 - Auxílio Moradia - Operação Prontidão</option>
+        <option>G3 - Combustível/Manutenção Veículos</option>
+        <option>G3 - Cota Global</option>
+        <option>G3 - Demandas Judiciais</option>
+        <option>G4 - Devolução - Recursos do Concedente</option>
+        <option>G3 - Diárias Civil</option>
+        <option>G3 - Energia Elétrica</option>
+        <option>G1 - FGTS</option>
+        <option>G3 - Fornecimento de Passagens</option>
+        <option>G1 - INSS</option>
+        <option>G3 - Limpeza e Conservação</option>
+        <option>G3 - Locomoção de Veículos</option>
+        <option>G3 - Manutenção Predial</option>
+        <option>G3 - Material de Expediente/Copa/Limpeza/Gráfico</option>
+        <option>G3 - Motoristas</option>
+        <option>G4 - Obra</option>
+        <option>G4 - Operação de Crédito</option>
+        <option>G4 - Outros</option>
+        <option>G3 - Outros</option>
+        <option>G1 - Pessoal e Encargos Sociais</option>
+        <option>G3 - Publicações Oficiais</option>
+        <option>G4 - Recursos do Concedente</option>
+        <option>G3 - Rede Digital Corporativa do Estado</option>
+        <option>G1 - Ressarcimento Pessoal à Disposição</option>
+        <option>G3 - Salário de Apenados</option>
+        <option>G3 - Serviços de Informática</option>
+        <option>G3 - Serviços de Portaria</option>
+        <option>G3 - Suprimento Individual</option>
+        <option>G3 - Vigilância Ostensiva</option>
+        <option>G4 - Supervisão de Obras</option>
+    </select>
+    </div>
+
+    <div class="campo-pequeno">
+      <label class="label">Macro Tema</label>
+    <select name="macro_tema" class="campo">
+        <option>Selecione...</option>
+        <option>SUPORTE A GESTÃO</option>
+        <option>MÃO DE OBRA TERCEIRIZADA</option>
+        <option>OUTROS</option>
+        <option>AUXÍLIO</option>
+        <option>FROTA</option>
+        <option>CONVÊNIO</option>
+        <option>PESSOAL E ENCARGOS SOCIAIS</option>
+        <option>OBRAS</option>
+        <option>OPERAÇÕES DE CRÉDITO</option>
+    </select>
+    </div>
+
+    <div class="campo-pequeno">
+      <label class="label">Grau de Priorização</label>
+      <select name="grau_priorizacao" class="campo">
+        <option>Selecione...</option>
+        <option>Grau Alto</option>
+        <option>Grau Médio/Alto</option>
+        <option>Grau Médio</option>
+        <option>Grau Médio/Baixo</option>
+        <option>Grau Baixo</option>
+    </select>
+    </div>
+  </div>
+
+    <button type="submit" id="submit" class="btn btn-create-account">Fazer Contrato</button>
+    <p class="texto-login">Cancelar</p>
+
+  </form>
+
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const temaCusto = document.querySelector('select[name="tema_custo"]');
+    const fonte = document.querySelector('select[name="fonte"]');
+    const grupo = document.querySelector('select[name="grupo"]');
+    const acao = document.querySelector('select[name="acao"]');
+    const subAcao = document.querySelector('select[name="sub_acao"]');
+    const fichaFinanceira = document.querySelector('select[name="ficha_financeira"]');
+
+    temaCusto.addEventListener('change', function () {
+      if (this.value === "Selecione...") {
+        fonte.value = "Selecione...";
+        grupo.value = "Selecione...";
+        acao.value = "Selecione...";
+        subAcao.value = "Selecione...";
+        fichaFinanceira.value = "Selecione...";
+      }
+      
+      if (this.value === "29 - Regularização Fundiária") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesa Corrente";
+        acao.value = "2904 - Formulação e Promoção Da Política de Regularização Fundiária";
+        subAcao.value = "0000 - OUTRAS MEDIDAS";
+        fichaFinanceira.value = "G3 - Outros";
+      }
+
+      if (this.value === "15 - Vigilância Ostensiva") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesa Corrente";
+        acao.value = "2928 - Conservação do Patrimônio Público na Companhia Estadual de Habilitação e Obras - CEHAB";
+        subAcao.value = "B670 - Prestação de serviços de segurança pessoal e patrimonial na CEHAB";
+        fichaFinanceira.value = "G3 - Vigilância Ostensiva";
+      }
+
+      if (this.value === "05 - Limpeza e Conservação") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesa Corrente";
+        acao.value = "2928 - Conservação do Patrimônio Público na Companhia Estadual de Habilitação e Obras - CEHAB";
+        subAcao.value = "B665 - Prestação de serviços de limpeza e conservação da CEHAB";
+        fichaFinanceira.value = "G3 - Limpeza e Conservação";
+      }
+
+      if (this.value === "21 - Outros") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesa Corrente";
+        acao.value = "2998 - Encargos Gerais da Companhia Estadual de Habitação e Obras - CEHAB";
+        subAcao.value = "0000 - OUTRAS MEDIDAS";
+        fichaFinanceira.value = "G3 - Outros";
+      }
+
+      if (this.value === "30 - Ouvidoria") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesa Corrente";
+        acao.value = "3927 - Manutenção da Ouvidoria da Companhia Estadual de Habitação e Obras - CEHAB";
+        subAcao.value = "0000 - OUTRAS MEDIDAS";
+        fichaFinanceira.value = "G3 - Outros";
+      }
+
+      if (this.value === "31 - FINHIS") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "4 - Investimentos";
+        acao.value = "4058 - Ampliação da Oferta e Requalificação de Habitação de Interesse Social";
+        subAcao.value = "0055 - Programa Minha Casa (Operações Coletivas, CAIC,FNHIS e PSH)- Conclusão da construção de moradias";
+        fichaFinanceira.value = "G4 - Devolução - Recursos do Concedente";
+      }
+
+      if (this.value === "32 - Minha Casa Minha Vida") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "4 - Investimentos";
+        acao.value = "4058 - Ampliação da Oferta e Requalificação de Habitação de Interesse Social";
+        subAcao.value = "0865 - Operacionalização do Programa Minha Casa Minha Vida";
+        fichaFinanceira.value = "G4 - Minha Casa Minha Vida";
+      }
+
+      if (this.value === "26 - Obras") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "4 - Investimentos";
+        acao.value = "4300 - Execução de Obras de Infraestrutura e de Urbanização";
+        subAcao.value = "0000 - OUTRAS MEDIDAS";
+        fichaFinanceira.value = "G4 - Obra";
+      }
+
+      if (this.value === "16 - Auxílio Moradia") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesas Correntes";
+        acao.value = "4300 - Execução de Obras de Infraestrutura e de Urbanização";
+        subAcao.value = "2794 - Auxílio Moradia - CEHAB";
+        fichaFinanceira.value = "G3 - Auxílio Moradia";
+      }
+
+      if (this.value === "28 - Projeto de Obras") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "3 - Despesas Correntes";
+        acao.value = "4300 - Execução de Obras de Infraestrutura e de Urbanização";
+        subAcao.value = "2794 - Auxílio Moradia - CEHAB";
+        fichaFinanceira.value = "G3 - Auxílio Moradia";
+      }
+
+      if (this.value === "27 - Gerenciamento de Obras") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "4 - Investimentos";
+        acao.value = "4300 - Execução de Obras de Infraestrutura e de Urbanização";
+        subAcao.value = "A389 - Execução das obras de infraestrutura e construção de unidades habitacionais no Canal do Jordão";
+        fichaFinanceira.value = "G4 - Supervisão de Obra";
+      }
+
+      if (this.value === "28 - Projetos de Obras") {
+        fonte.value = "0500 - (Tesouro do Estado)";
+        grupo.value = "4 - Investimentos";
+        acao.value = "4300 - Execução de Obras de Infraestrutura e de Urbanização";
+        subAcao.value = "0000 - OUTRAS MEDIDAS";
+        fichaFinanceira.value = "G4 - Projeto de Obra";
+      }
+
+
+    });
+  });
+</script>
+
+</html>
