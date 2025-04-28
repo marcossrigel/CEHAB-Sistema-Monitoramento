@@ -1,9 +1,9 @@
 :root {
---color-white: rgb(255, 255, 255);
---color-gray: #e3e8ec;;
---color-dark: #1d2129;
---color-blue: #0a6be2;
---color-green: #42b72a;
+  --color-white: rgb(255, 255, 255);
+  --color-gray: #e3e8ec;
+  --color-dark: #1d2129;
+  --color-blue: #0a6be2;
+  --color-green: #42b72a;
 }
 
 body {
@@ -16,13 +16,28 @@ body {
   box-sizing: border-box;
 }
 
+.formulario {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 1000px;
+}
+
+.main-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
 .label {
-display: block;
-font-size: 14px;
-color: #333;
-margin-bottom: 4px;
-margin-left: 2px;
-font-weight: bold;
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  margin-left: 2px;
+  font-weight: bold;
 }
 
 .linha {
@@ -33,158 +48,78 @@ font-weight: bold;
   margin-bottom: 16px;
 }
 
-.linha-genero{
-display: flex;
-gap: 10px;
-margin-bottom: 16px;
-width: 100%;
-}
-
-.genero-opcao {
-flex: 1;
-border: 1px solid #ccc;
-border-radius: 6px;
-padding: 10px;
-font-size: 15px;
-display: flex;
-align-items: center;
-gap: 8px;
-cursor: pointer;
-box-sizing: border-box;
-background-color: white;
-}
-
-.genero-opcao input[type="radio"] {
-margin: 0;
-}
-
-.formulario {
-background-color: white;
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-width: 1000px;
-}
-
-.formulario h1{
-text-align: center;
-}
-
-.btn {
-padding: 15px;
-border: none;
-color: var(--color-white);
-border-radius: 5px;
-width: 100%;
-font-size: 1.1rem;
-cursor: pointer;
-transition: background 0.2s;
-}
-
-.btn-create-account {
-background-color: var(--color-green);
-}
-
-.btn-create-account:hover {
-background-color: #36a420;
-}
-
-.btn-create-account:active {
-background-color: #2d8e1b;
+.campo-pequeno {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .campo {
-flex: 1;
-padding: 10px;
-min-width: 0;
-font-size: 15px;
-border: 1px solid #ccc;
-border-radius: 6px;
-box-sizing: border-box;
-}
-
-.formulario h1 {
-font-size: 24px;
-font-weight: bold;
-margin-bottom: 20px;
-}
-
-.texto-login {
-text-align: center;
-color: var(--color-blue);
-font-size: 14px;
-margin-top: 12px;
-}
-
-.texto-login a {
-color: var(--color-blue);
-text-decoration: none;
-}
-
-.texto-login a:visited {
-color: var(--color-blue);
-text-decoration: none;
-}
-
-.texto-login a:hover {
-text-decoration: underline;
+  flex: 1;
+  padding: 10px;
+  min-width: 0;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
 .linha-atividade {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
 
 .coluna-textarea {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-  }
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
 
 .coluna-textarea textarea {
-    width: 98%;
-    height: 100px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    resize: vertical;
-    font-size: 14px;
-    font-family: inherit;
-  }
-
-.coluna-campos {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-.campo-pequeno {
-flex: 1;
-min-width: 200px;
-display: flex;
-flex-direction: column;
-}
-
-.campo-pequeno label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.campo-pequeno input,
-.campo-pequeno select {
+  width: 98%;
+  height: 100px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  resize: vertical;
   font-size: 14px;
+  font-family: inherit;
 }
 
-.subtitulo {
-  font-size: 16px;
-  margin: 20px 0 10px;
-  font-weight: bold;
-  color: #444;
+.btn {
+  padding: 15px;
+  border: none;
+  color: var(--color-white);
+  border-radius: 5px;
+  width: 100%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-create-account {
+  background-color: var(--color-green);
+}
+
+.btn-create-account:hover {
+  background-color: #36a420;
+}
+
+.btn-create-account:active {
+  background-color: #2d8e1b;
+}
+
+.texto-login {
+  text-align: center;
+  color: var(--color-blue);
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.texto-login a {
+  color: var(--color-blue);
+  text-decoration: none;
 }
