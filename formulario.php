@@ -107,9 +107,7 @@
     <br>
 
     <button type="submit" name="submit" id="submit" class="btn btn-create-account">Criar</button>
-    <a href="home.html">
-      <p class="texto-login">Cancelar</p>
-    </a>
+    <a href="home.php"><p class="texto-login">Cancelar</p></a>
   </form>
 </body>
 </html>
