@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualizar Iniciativas</title>
+  <link rel="stylesheet" href="visualizar.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Iniciativas Cadastradas</h1>
+    <div class="grid" id="gridIniciativas">
+      <!-- Cards serão carregados aqui -->
+    </div>
+  </div>
+
+  <script>
+    async function carregarIniciativas() {
+      const resposta = await fetch('https://api.sheetmonkey.io/api/v1/sheets/SEU-ID-AQUI'); // Depende se SheetMonkey disponibiliza API de leitura (alguns planos gratuitos não permitem)
+      
+      const dados = await resposta.json();
+      
+      const grid = document.getElementById('gridIniciativas');
+
+      dados.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerText = item.iniciativa;
+        grid.appendChild(card);
+      });
+    }
+
+    carregarIniciativas();
+  </script>
+
+</body>
+</html>

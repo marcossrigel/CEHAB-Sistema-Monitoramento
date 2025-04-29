@@ -84,6 +84,10 @@ body {
   text-align: center;
   transition: background 0.3s;
   width: 200px;
+  display: inline-block; 
+  border: none;          
+  outline: none;
+  cursor: pointer; 
 }
 
 .btn:hover {
@@ -128,56 +132,8 @@ body {
   display: none;
 }
 
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
 .hidden {
   display: none;
-}
-
-.input-modal {
-  width: 100%;
-  padding: 10px;
-  margin: 15px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.btn-modal {
-  background-color: #4da6ff;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.close-modal {
-  background-color: #ccc;
-  color: #333;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 </style>
@@ -193,8 +149,8 @@ body {
     </div>
 
     <div class="button-group">
-      <a href="formulario.html" class="btn">Criar Iniciativa</a>
-      <a href="visualizar.html" class="btn btn-secondary">Ver Contratos</a>
+      <button href="#" type="submit" onclick="window.location.href='formulario.php';" class="btn">Criar Iniciativa</button>
+      <button href="#" type="submit" onclick="window.location.href='visualizar.php';" class="btn btn-secondary">Ver Contratos</button>
     </div>
   </div>
 
