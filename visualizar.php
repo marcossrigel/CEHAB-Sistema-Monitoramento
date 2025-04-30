@@ -210,7 +210,6 @@ h1 {
 
 <script>
   const accordions = document.querySelectorAll(".accordion");
-
   accordions.forEach((acc) => {
     acc.addEventListener("click", function () {
       this.classList.toggle("active");
@@ -247,10 +246,6 @@ h1 {
     if (table.rows.length > 1) {
       table.deleteRow(-1);
     }
-  }
-
-  function saveData() {
-    alert("Função de salvar ainda não implementada.");
   }
 
 </script>
