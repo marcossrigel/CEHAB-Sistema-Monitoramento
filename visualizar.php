@@ -149,30 +149,43 @@ h1 {
       <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?></p>
       
       <p><strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | 
-         <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | 
-         <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> |
-      <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?></p>
+        <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | 
+        <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> |
+        <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?>
+      </p>
       
       <p><strong>Secretaria:</strong> <?php echo $row['ib_secretaria']; ?> |
-         <strong>Órgão:</strong> <?php echo $row['ib_orgao']; ?> |
-      <strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?></p>
-      <p><strong>Fiscal:</strong> <?php echo $row['ib_fiscal']; ?></p>
-      <p><strong>Processo SEI:</strong> <?php echo $row['ib_numero_processo_sei']; ?></p>
+        <strong>Órgão:</strong> <?php echo $row['ib_orgao']; ?> |
+        <strong>Processo SEI:</strong> <?php echo $row['ib_numero_processo_sei']; ?>
+      </p>
+      
+      <p><strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?>
+        <strong>Fiscal:</strong> <?php echo $row['ib_fiscal']; ?>
+      </p>
+      
       <br>
-      <p><strong>Objeto:</strong> <?php echo $row['objeto']; ?></p>
-      <p><strong>Informações Gerais:</strong> <?php echo $row['informacoes_gerais']; ?></p>
-      <p><strong>Observações:</strong> <?php echo $row['observacoes']; ?></p>
+        <p><strong>Objeto:</strong> <?php echo $row['objeto']; ?></p>
+        <p><strong>Informações Gerais:</strong> <?php echo $row['informacoes_gerais']; ?></p>
+        <p><strong>Observações:</strong> <?php echo $row['observacoes']; ?></p>
       <br>
+
       <hr>
       <br>
 
       <button onclick="abrirModal()" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
         Acompanhar Pendências
       </button>
+      <br>
+
+      <button onclick="window.location.href='acompanhamento.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+        Informações Contratuais
+      </button>
 
     </div>
   <?php endwhile; ?>
 </div>
+
+  <!-- MODAL ACOMPANHAMENTO DE PENDENCIAS -->
 
 <div id="modalPendencias" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
   <div class="table-container" style="position:relative;">
@@ -203,6 +216,40 @@ h1 {
     </div>
   </div>
 </div>
+
+
+  <!-- MODAL Informações Contratuais -->
+
+<div id="modalPendencias" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+  <div class="table-container" style="position:relative;">
+    <span onclick="fecharModal()" style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;">&times;</span>
+    <div class="main-title">Informações Contratuais</div>
+    <table id="spreadsheet">
+      <thead>
+        <tr>
+          <th>Problema</th>
+          <th>Contramedida</th>
+          <th>Prazo</th>
+          <th>Responsável</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" placeholder=""></td>
+          <td><input type="text" placeholder=""></td>
+          <td><input type="text" placeholder=""></td>
+          <td><input type="text" placeholder=""></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="button-group">
+      <button onclick="addRow()">Adicionar Linha</button>
+      <button onclick="deleteRow()">Excluir Linha</button>
+      <button onclick="saveData()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 
 </div>
 </body>
