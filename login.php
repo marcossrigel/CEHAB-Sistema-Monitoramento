@@ -134,8 +134,9 @@ body {
           <div class="divider"></div>
           <button type="submit" class="btn">Entrar</button>
           <a href="#" class="forgot-password">Esqueceu a conta?</a>
-          </form>
+        </form>
       </div>
+      <img src="logo.png" alt="" width="200px">
     </div>
     
     <script>
