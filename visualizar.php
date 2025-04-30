@@ -187,35 +187,35 @@ h1 {
 
   <!-- MODAL ACOMPANHAMENTO DE PENDENCIAS -->
 
-<div id="modalPendencias" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-  <div class="table-container" style="position:relative;">
-    <span onclick="fecharModal()" style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;">&times;</span>
-    <div class="main-title">Acompanhamento de Pendências</div>
-    <table id="spreadsheet">
-      <thead>
-        <tr>
-          <th>Problema</th>
-          <th>Contramedida</th>
-          <th>Prazo</th>
-          <th>Responsável</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="text" placeholder=""></td>
-          <td><input type="text" placeholder=""></td>
-          <td><input type="text" placeholder=""></td>
-          <td><input type="text" placeholder=""></td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="button-group">
-      <button onclick="addRow()">Adicionar Linha</button>
-      <button onclick="deleteRow()">Excluir Linha</button>
-      <button onclick="saveData()">Salvar</button>
+  <div id="modalPendencias" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div class="table-container" style="position:relative;">
+      <span onclick="fecharModal()" style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;">&times;</span>
+      <div class="main-title">Acompanhamento de Pendências</div>
+      <table id="spreadsheet">
+        <thead>
+          <tr>
+            <th>Problema</th>
+            <th>Contramedida</th>
+            <th>Prazo</th>
+            <th>Responsável</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" placeholder=""></td>
+            <td><input type="text" placeholder=""></td>
+            <td><input type="text" placeholder=""></td>
+            <td><input type="text" placeholder=""></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="button-group">
+        <button onclick="addRow()">Adicionar Linha</button>
+        <button onclick="deleteRow()">Excluir Linha</button>
+        <button onclick="saveData()">Salvar</button>
+      </div>
     </div>
   </div>
-</div>
 
 </div>
 </body>
