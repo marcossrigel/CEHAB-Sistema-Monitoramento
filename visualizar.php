@@ -17,9 +17,69 @@ body {
   padding: 40px;
 }
 
+.table-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  min-width: 600px;
+}
+
+.main-title {
+  font-size: 32px;
+  color: #000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .container {
   max-width: 800px;
   margin: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 15px;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px;
+}
+
+td {
+  padding-right: 15px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.button-group {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.button-group button:hover {
+  background-color: #3399ff;
 }
 
 h1 {
@@ -115,37 +175,36 @@ h1 {
 </div>
 
 <div id="modalPendencias" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-  <div style="background:white; padding:20px; border-radius:10px; min-width:600px; position:relative;">
+  <div class="table-container" style="position:relative;">
     <span onclick="fecharModal()" style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;">&times;</span>
-    <div class="table-container">
-      <div class="main-title">Acompanhamento de Pendências</div>
-      <table id="spreadsheet">
-        <thead>
-          <tr>
-            <th>Problema</th>
-            <th>Contramedida</th>
-            <th>Prazo</th>
-            <th>Responsável</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><input type="text"></td>
-            <td><input type="text"></td>
-            <td><input type="text"></td>
-            <td><input type="text"></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="button-group">
-        <button onclick="addRow()">Adicionar Linha</button>
-        <button onclick="deleteRow()">Excluir Linha</button>
-        <button onclick="saveData()">Salvar</button>
-      </div>
+    <div class="main-title">Acompanhamento de Pendências</div>
+    <table id="spreadsheet">
+      <thead>
+        <tr>
+          <th>Problema</th>
+          <th>Contramedida</th>
+          <th>Prazo</th>
+          <th>Responsável</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" placeholder=""></td>
+          <td><input type="text" placeholder=""></td>
+          <td><input type="text" placeholder=""></td>
+          <td><input type="text" placeholder=""></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="button-group">
+      <button onclick="addRow()">Adicionar Linha</button>
+      <button onclick="deleteRow()">Excluir Linha</button>
+      <button onclick="saveData()">Salvar</button>
     </div>
   </div>
 </div>
 
+</div>
 </body>
 </html>
 
