@@ -96,6 +96,7 @@
     <button onclick="addRow()">Adicionar Linha</button>
     <button onclick="deleteRow()">Excluir Linha</button>
     <button onclick="saveData()">Salvar</button>
+    <button onclick="window.location.href='visualizar.php';">< Voltar</button>
   </div>
 </div>
 

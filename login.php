@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Monitoramento Creches</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
 :root {
   --color-white: #ffffff;
@@ -119,24 +120,32 @@ body {
 .btn-create:hover {
   background-color: #36a420;
 }
+
+.linha {
+  display: flex;
+  margin-bottom: 20px;
+  flex-wrap: nowrap; 
+}
 </style>
 </head>
 
 <body>
+  
+  <div class="container">
+    <div class="main-title">Monitoramento Creches</div>
+    <div class="login-container">
+      <div class="main-title">Entrar</div>
+      <form class="login-form" onsubmit="logar(); return false;">
+        <input type="text" id="login" placeholder="Login" required>
+        <input type="password" id="senha" placeholder="Senha" required>
+        <div class="divider"></div>
+        <button type="submit" class="btn">Entrar</button>
+        <a href="#" class="forgot-password">Esqueceu a conta?</a>
+      </form>
+    </div>
+    
+    <img src="logo.png" alt="" width="190px">
 
-    <div class="container">
-      <div class="main-title">Monitoramento Creches</div>
-      <div class="login-container">
-        <div class="main-title">Entrar</div>
-        <form class="login-form" onsubmit="logar(); return false;">
-          <input type="text" id="login" placeholder="Login" required>
-          <input type="password" id="senha" placeholder="Senha" required>
-          <div class="divider"></div>
-          <button type="submit" class="btn">Entrar</button>
-          <a href="#" class="forgot-password">Esqueceu a conta?</a>
-        </form>
-      </div>
-      <img src="logo.png" alt="" width="200px">
     </div>
     
     <script>
