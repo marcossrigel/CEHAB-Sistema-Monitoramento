@@ -1,3 +1,38 @@
+<?php
+
+  if(isset($_POST['submit']))
+  {
+    //print_r($_POST['iniciativa']);
+    //print_r('<br>');
+    //print_r($_POST['data_vistoria']);
+    //print_r('<br>');
+    //print_r($_POST['ib_status']);
+
+    include_once('config.php');
+
+    $iniciativa = $_POST['iniciativa'];
+    $data_vistoria = $_POST['data_vistoria'];
+    $ib_status = $_POST['ib_status'];
+    $ib_execucao = $_POST['ib_execucao'];
+    $ib_previsto = $_POST['ib_previsto'];
+    $ib_variacao = $_POST['ib_variacao'];
+    $ib_valor_medio = $_POST['ib_valor_medio'];
+    $ib_secretaria = $_POST['ib_secretaria'];
+    $ib_orgao = $_POST['ib_orgao'];
+    $ib_gestor_responsavel = $_POST['ib_gestor_responsavel'];
+    $ib_fiscal = $_POST['ib_fiscal'];
+    $ib_numero_processo_sei = $_POST['ib_numero_processo_sei'];
+    $objeto = $_POST['objeto'];
+    $informacoes_gerais = $_POST['informacoes_gerais'];
+    $observacoes = $_POST['observacoes'];
+
+    $result = mysqli_query($conexao, "INSERT INTO iniciativas(iniciativa,data_vistoria,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
+    VALUES ('$iniciativa','$data_vistoria','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
+    
+  }
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -8,7 +43,7 @@
 </head>
 
 <body>
-  <form class="formulario" action="https://api.sheetmonkey.io/form/rwVomc1Em28Zsyda6S28xx" method="post">
+  <form class="formulario" action="formulario.php" method="post">
     <h1 class="main-title">Criar uma nova iniciativa</h1>
 
     <div class="linha">
@@ -66,17 +101,20 @@
         <label class="label">Órgão</label>
         <input type="text" name="ib_orgao">
       </div>
+      
       <div class="campo">
-        <label class="label">Nº Processo SEI</label>
-        <input type="text" name="ib_numero_processo_sei">
+        <label class="label">Gestor Responsável</label>
+        <input type="text" name="ib_gestor_responsavel">
       </div>
+
       <div class="campo">
         <label class="label">Fiscal</label>
         <input type="text" name="ib_fiscal">
       </div>
+    
       <div class="campo-longo">
-        <label class="label">Gestor Responsável</label>
-        <input type="text" name="ib_gestor_responsavel">
+        <label class="label">Nº Processo SEI</label>
+        <input type="text" name="ib_numero_processo_sei">
       </div>
     </div>  
 
