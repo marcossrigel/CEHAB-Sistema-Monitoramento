@@ -7,71 +7,71 @@ $resultado = $conexao->query($sql);
 
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
+  <head>
   <meta charset="UTF-8">
   <title>Visualizar Iniciativas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e9eef1;
-      padding: 40px;
-    }
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #e9eef1;
+  padding: 40px;
+}
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
+.container {
+  max-width: 800px;
+  margin: auto;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
-    .accordion {
-      background-color: #fff;
-      color: #333;
-      cursor: pointer;
-      padding: 18px;
-      width: 100%;
-      border: none;
-      text-align: left;
-      outline: none;
-      font-size: 18px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.accordion {
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .accordion:hover {
-      background-color: #f9f9f9;
-    }
+.accordion:hover {
+  background-color: #f9f9f9;
+}
 
-    .panel {
-      padding: 0 18px;
-      display: none;
-      background-color: white;
-      overflow: hidden;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 15px;
-    }
+.panel {
+  padding: 0 18px;
+  display: none;
+  background-color: white;
+  overflow: hidden;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
 
-    .panel p {
-      margin: 10px 0;
-    }
+.panel p {
+  margin: 10px 0;
+}
 
-    .seta {
-      font-size: 22px;
-      transform: rotate(0deg);
-      transition: transform 0.3s ease;
-    }
+.seta {
+  font-size: 22px;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
 
-    .accordion.active .seta {
-      transform: rotate(180deg);
-    }
+.accordion.active .seta {
+  transform: rotate(180deg);
+}
   </style>
 </head>
 <body>
