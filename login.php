@@ -24,11 +24,14 @@
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--color-gray);
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
+  padding: 30px 0;
 }
+
 .container {
   display: flex;
   flex-direction: column;
@@ -126,21 +129,24 @@ body {
   margin-bottom: 20px;
   flex-wrap: nowrap; 
 }
+
 </style>
+
 </head>
 
 <body>
-  
   <div class="container">
     <div class="main-title">Monitoramento Creches</div>
     <div class="login-container">
       <div class="main-title">Entrar</div>
       <form class="login-form" onsubmit="logar(); return false;">
+
         <input type="text" id="login" placeholder="Login" required>
         <input type="password" id="senha" placeholder="Senha" required>
         <div class="divider"></div>
         <button type="submit" class="btn">Entrar</button>
         <a href="#" class="forgot-password">Esqueceu a conta?</a>
+
       </form>
     </div>
     
@@ -162,4 +168,5 @@ body {
     </script>
     
     </body>
+
 </html>

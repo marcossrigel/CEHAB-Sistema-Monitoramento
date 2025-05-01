@@ -158,8 +158,18 @@
     <br>
 
     <button type="submit" name="submit" id="submit" class="btn btn-create-account">Criar</button>
-    <a href="home.php" class="texto-login">Cancelar</a>
+    <a href="#" class="texto-login" onclick="confirmarCancelamento(event)">Cancelar</a>
   </form>
+
+<div id="modal-cancelar" class="modal hidden">
+  <div class="modal-content">
+    <p>Você deseja cancelar? Os dados preenchidos podem ser perdidos.</p>
+    <button id="btn-sim" style="background-color: #dc3545;">Sim</button>
+    <button id="btn-nao" style="background-color: #6c757d; margin-left: 10px;">Não</button>
+  </div>
+</div>
+
+</body>
 
 <script>
   function showModal(message) {
@@ -170,11 +180,30 @@
   function closeModal() {
     document.getElementById('modal').classList.add('hidden');
   }
+
+  function temCamposPreenchidos() {
+    const inputs = document.querySelectorAll('.formulario input, .formulario textarea, .formulario select');
+    return Array.from(inputs).some(input => input.value.trim() !== '');
+  }
+
+  function confirmarCancelamento(event) {
+    event.preventDefault();
+
+    if (temCamposPreenchidos()) {
+      document.getElementById('modal-cancelar').classList.remove('hidden');
+    } else {
+      window.location.href = 'home.php';
+    }
+  }
+
+document.getElementById('btn-sim').addEventListener('click', function() {
+  window.location.href = 'home.php';
+});
+
+document.getElementById('btn-nao').addEventListener('click', function() {
+  document.getElementById('modal-cancelar').classList.add('hidden');
+});
+
 </script>
-
-</body>
-
-
-
 
 </html>

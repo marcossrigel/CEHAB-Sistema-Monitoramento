@@ -102,6 +102,16 @@ body {
   background-color: var(--color-gray-hover);
 }
 
+.btn-sair {
+  text-align: center;
+  display: inline-block;
+  color: var(--color-blue);
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 20px auto;
+  display: block;
+}
+
 .accordion {
   border-top: 1px solid #ccc;
   padding-top: 20px;
@@ -136,6 +146,31 @@ body {
   display: none;
 }
 
+.button-group a.texto-login {
+  align-self: center;
+  margin-top: 10px;
+}
+
+.texto-login {
+  text-align: center;
+  display: inline-block;
+  color: var(--color-blue);
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 20px auto;
+  display: block;
+}
+
+a.texto-login{
+  color: red;               
+  text-decoration: none;  
+  font-weight: bold;
+}
+
+a.texto-login:hover {
+  text-decoration: none;
+}
+
 </style>
 
 </head>
@@ -151,6 +186,7 @@ body {
     <div class="button-group">
       <button href="#" type="submit" onclick="window.location.href='formulario.php';" class="btn">Criar Iniciativa</button>
       <button href="#" type="submit" onclick="window.location.href='visualizar.php';" class="btn btn-secondary">Ver Contratos</button>
+      <a href="login.php" class="texto-login">Sair</a>
     </div>
   </div>
 
