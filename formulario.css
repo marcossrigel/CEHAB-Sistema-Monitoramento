@@ -44,7 +44,7 @@ body {
   display: flex;
   gap: 15px;
   margin-bottom: 20px;
-  flex-wrap: nowrap; /* impede quebra de linha */
+  flex-wrap: nowrap;
 }
 
 .campo-pequeno {
@@ -60,7 +60,7 @@ body {
 }
 
 .campo-longo {
-  flex: 2; /* ocupa o dobro do espaço */
+  flex: 2; 
   min-width: 200px;
 }
 
@@ -88,38 +88,44 @@ body {
   font-family: inherit;
 }
 
-.btn {
-  padding: 15px;
-  border: none;
-  color: var(--color-white);
-  border-radius: 5px;
-  width: 100%;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-create-account {
+button.btn {
   background-color: var(--color-green);
+  color: var(--color-white);
+  text-decoration: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.3s;
+  width: 200px;
+  display: inline-block;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 20px auto;   
+  display: block;
 }
 
-.btn-create-account:hover {
+button.btn:hover {
   background-color: #36a420;
-}
-
-.btn-create-account:active {
-  background-color: #2d8e1b;
 }
 
 .texto-login {
   text-align: center;
   color: var(--color-blue);
   font-size: 14px;
-  margin-top: 12px;
+  margin-top: 20px auto;
+  display: block;
 }
 
-.texto-login a {
-  color: var(--color-blue);
+a.texto-login{
+  color: red;               
+  text-decoration: none;  
+  font-weight: bold;
+}
+
+a.texto-login:hover {
   text-decoration: none;
 }
 
@@ -137,4 +143,44 @@ select[type="text"] {
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #c82333;
 }

@@ -2,15 +2,21 @@
 
   if(isset($_POST['submit']))
   {
-    //print_r($_POST['iniciativa']);
-    //print_r('<br>');
-    //print_r($_POST['data_vistoria']);
-    //print_r('<br>');
-    //print_r($_POST['ib_status']);
-
     include_once('config.php');
+    $iniciativa = trim($_POST['iniciativa']);
+    if (empty($iniciativa)) {
+        echo "<script>alert('Erro: O campo Iniciativa é obrigatório.'); window.history.back();</script>";
+        exit;
+    }
 
-    $iniciativa = $_POST['iniciativa'];
+    $check_query = "SELECT * FROM iniciativas WHERE iniciativa = '$iniciativa'";
+    $check_result = mysqli_query($conexao, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo "<script>alert('Erro: Já existe uma iniciativa com esse nome.'); window.history.back();</script>";
+        exit;
+    }
+
     $data_vistoria = $_POST['data_vistoria'];
     $ib_status = $_POST['ib_status'];
     $ib_execucao = $_POST['ib_execucao'];
@@ -28,7 +34,6 @@
 
     $result = mysqli_query($conexao, "INSERT INTO iniciativas(iniciativa,data_vistoria,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
     VALUES ('$iniciativa','$data_vistoria','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
-    
   }
 
 ?>
@@ -43,13 +48,21 @@
 </head>
 
 <body>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <p id="modal-message"></p>
+      <button onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+  
   <form class="formulario" action="formulario.php" method="post">
     <h1 class="main-title">Criar uma nova iniciativa</h1>
 
     <div class="linha">
       <div class="campo-pequeno">
         <label class="label">Nome da Iniciativa</label>
-        <input type="text" name="iniciativa" class="campo">
+        <input type="text" name="iniciativa" class="campo" required>
       </div>
       <div class="campo-pequeno">
         <label class="label">Data da Vistoria</label>
@@ -145,7 +158,23 @@
     <br>
 
     <button type="submit" name="submit" id="submit" class="btn btn-create-account">Criar</button>
-    <a href="home.php"><p class="texto-login">Cancelar</p></a>
+    <a href="home.php" class="texto-login">Cancelar</a>
   </form>
+
+<script>
+  function showModal(message) {
+    document.getElementById('modal-message').innerText = message;
+    document.getElementById('modal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.add('hidden');
+  }
+</script>
+
 </body>
+
+
+
+
 </html>

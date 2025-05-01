@@ -136,7 +136,7 @@ h1 {
 .button {
   margin-top: 20px;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   gap: 10px;
 }
 .button button {
@@ -153,7 +153,28 @@ h1 {
   background-color: #3399ff;
 }
 
-  </style>
+.botao-voltar {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.btn-azul {
+  padding: 10px 20px;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-azul:hover {
+  background-color: #3399ff;
+}
+
+</style>
 </head>
 <body>
 
@@ -223,12 +244,11 @@ h1 {
 
     </div>
 
-    <?php endwhile; ?>
+  <?php endwhile; ?>
     
-    <div class="button">
-      <button onclick="window.location.href='home.php';">
-        < Voltar
-      </button></div>
+  <div class="botao-voltar">
+    <button class="btn-azul" onclick="window.location.href='home.php';">&lt; Voltar</button>
+  </div>
 
 </div>
 </body>
