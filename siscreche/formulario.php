@@ -4,11 +4,6 @@
   {
     include_once('config.php');
     $iniciativa = trim($_POST['iniciativa']);
-    if (empty($iniciativa)) {
-        echo "<script>alert('Erro: O campo Iniciativa é obrigatório.'); window.history.back();</script>";
-        exit;
-    }
-
     $check_query = "SELECT * FROM iniciativas WHERE iniciativa = '$iniciativa'";
     $check_result = mysqli_query($conexao, $check_query);
 
@@ -34,6 +29,9 @@
 
     $result = mysqli_query($conexao, "INSERT INTO iniciativas(iniciativa,data_vistoria,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
     VALUES ('$iniciativa','$data_vistoria','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
+    header("Location: formulario.php?sucesso=1&nome=" . urlencode($iniciativa));
+    exit;
+    
   }
 
 ?>
@@ -48,14 +46,7 @@
 </head>
 
 <body>
-
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <p id="modal-message"></p>
-      <button onclick="closeModal()">Fechar</button>
-    </div>
-  </div>
-  
+    
   <form class="formulario" action="formulario.php" method="post">
     <h1 class="main-title">Criar uma nova iniciativa</h1>
 
@@ -161,13 +152,27 @@
     <a href="#" class="texto-login" onclick="confirmarCancelamento(event)">Cancelar</a>
   </form>
 
-<div id="modal-cancelar" class="modal hidden">
-  <div class="modal-content">
-    <p>Você deseja cancelar? Os dados preenchidos podem ser perdidos.</p>
-    <button id="btn-sim" style="background-color: #dc3545;">Sim</button>
-    <button id="btn-nao" style="background-color: #6c757d; margin-left: 10px;">Não</button>
+  <?php
+    $mensagem = '';
+    if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1 && isset($_GET['nome'])) {
+        $mensagem = 'Iniciativa "' . htmlspecialchars($_GET['nome']) . '" criada com sucesso!';
+    }
+  ?>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <p id="modal-message"></p>
+      <button onclick="voltarParaHome()">Voltar</button>
+    </div>
   </div>
-</div>
+
+  <div id="modal-cancelar" class="modal hidden">
+    <div class="modal-content">
+      <p>Você deseja cancelar? Os dados preenchidos podem ser perdidos.</p>
+      <button id="btn-sim" style="background-color: #dc3545;">Sim</button>
+      <button id="btn-nao" style="background-color: #6c757d; margin-left: 10px;">Não</button>
+    </div>
+  </div>
 
 </body>
 
@@ -196,12 +201,22 @@
     }
   }
 
+  function voltarParaHome() {
+    window.location.href = 'home.php';
+  }
+
 document.getElementById('btn-sim').addEventListener('click', function() {
   window.location.href = 'home.php';
 });
 
 document.getElementById('btn-nao').addEventListener('click', function() {
   document.getElementById('modal-cancelar').classList.add('hidden');
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (!empty($mensagem)) { ?>
+      showModal(`<?php echo addslashes($mensagem); ?>`);
+    <?php } ?>
 });
 
 </script>
