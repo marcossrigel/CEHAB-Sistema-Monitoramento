@@ -112,7 +112,7 @@
       </div>
 
       <div class="campo">
-        <label class="label">Fiscal</label>
+        <label class="label">Fiscal Responsável</label>
         <input type="text" name="ib_fiscal">
       </div>
     
@@ -162,7 +162,7 @@
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <p id="modal-message"></p>
-      <button onclick="voltarParaHome()">Voltar</button>
+      <button style="background-color: #42b72a;" onclick="voltarParaHome()">Voltar</button>
     </div>
   </div>
 

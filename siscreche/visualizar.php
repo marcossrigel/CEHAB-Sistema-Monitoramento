@@ -215,7 +215,7 @@ h1 {
       <br>
 
       <div class="button">
-      <button onclick="window.location.href='home.php';">editar</button>
+        <button onclick="window.location.href='home.php';">editar</button>
       </div>
 
       <hr>
@@ -225,7 +225,7 @@ h1 {
         Acompanhar Pendências
       </button>
 
-      <button style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+      <button onclick="window.location.href='infocontratuais.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
         Informações Contratuais
       </button>
 

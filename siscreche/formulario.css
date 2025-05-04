@@ -175,12 +175,12 @@ select[type="text"] {
   margin-top: 20px;
   padding: 10px 20px;
   border: none;
-  background-color: #dc3545;
+  background-color:#42b72a;
   color: white;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .modal-content button:hover {
-  background-color: #c82333;
+  background-color: #42b72a;
 }
