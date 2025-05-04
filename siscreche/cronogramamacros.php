@@ -62,7 +62,6 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
-    .subtitle-row textarea,
     .subtitle-row input {
       font-weight: 600;
       background-color: #f8f9fa;
@@ -102,9 +101,7 @@
           <th>% Evolutivo</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Linhas dinâmicas aparecerão aqui -->
-      </tbody>
+      <tbody></tbody>
     </table>
     <div class="button-group">
       <button onclick="adicionarLinha()">Adicionar Linha</button>
@@ -122,11 +119,15 @@
 
       const etapaCell = newRow.insertCell(0);
       etapaCell.className = 'etapa';
-      etapaCell.innerHTML = `<textarea class="no-border" placeholder="Etapa..."></textarea>`;
+      if (classeExtra === 'subtitle-row') {
+        etapaCell.innerHTML = `<input type="text">`;
+      } else {
+        etapaCell.innerHTML = `<textarea class="no-border"></textarea>`;
+      }
 
       for (let i = 1; i < 6; i++) {
         const cell = newRow.insertCell(i);
-        cell.innerHTML = `<input type="text" placeholder="Preencher...">`;
+        cell.innerHTML = `<input type="text">`;
       }
     }
 
