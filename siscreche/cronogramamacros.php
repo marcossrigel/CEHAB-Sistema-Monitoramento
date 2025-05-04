@@ -62,6 +62,12 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
+    .subtitle-row textarea,
+    .subtitle-row input {
+      font-weight: 600;
+      background-color: #f8f9fa;
+      color: #495057;
+    }
     .button-group {
       display: flex;
       justify-content: center;
@@ -102,24 +108,30 @@
     </table>
     <div class="button-group">
       <button onclick="adicionarLinha()">Adicionar Linha</button>
+      <button onclick="adicionarSubtitulo()">Adicionar Subtítulo</button>
       <button onclick="excluirLinha()">Excluir Linha</button>
       <button>&lt; Voltar</button>
     </div>
   </div>
 
   <script>
-    function adicionarLinha() {
+    function adicionarLinha(classeExtra = '') {
       const table = document.getElementById('cronogramaTable').getElementsByTagName('tbody')[0];
       const newRow = table.insertRow();
-      
+      if (classeExtra) newRow.classList.add(classeExtra);
+
       const etapaCell = newRow.insertCell(0);
       etapaCell.className = 'etapa';
-      etapaCell.innerHTML = '<textarea class="no-border" placeholder="Etapa..."></textarea>';
+      etapaCell.innerHTML = `<textarea class="no-border" placeholder="Etapa..."></textarea>`;
 
       for (let i = 1; i < 6; i++) {
         const cell = newRow.insertCell(i);
-        cell.innerHTML = '<input type="text" placeholder="Preencher...">';
+        cell.innerHTML = `<input type="text" placeholder="Preencher...">`;
       }
+    }
+
+    function adicionarSubtitulo() {
+      adicionarLinha('subtitle-row');
     }
 
     function excluirLinha() {
