@@ -102,11 +102,11 @@ button:hover {
       </tr>
       <tr>
         <td>Processo Licitatório</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Empresa</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Data Assinatura do Contrato</td>
@@ -118,35 +118,35 @@ button:hover {
       </tr>
       <tr>
         <td>Prazo de Execução Original</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Prazo de Execução Atual</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Valor Inicial da Obra</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Valor Total da Obra</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Valor Inicial do Contrato</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Valor do Aditivo</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Valor Total do Contrato</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
       <tr>
         <td>Secretaria Demandante</td>
-        <td><input type="text" placeholder="Digite aqui"></td>
+        <td><input type="text"></td>
       </tr>
     </table>
     <div class="button-group">

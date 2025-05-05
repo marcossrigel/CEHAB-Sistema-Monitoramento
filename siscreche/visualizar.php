@@ -214,8 +214,17 @@ h1 {
         <p><strong>Observações:</strong> <?php echo $row['observacoes']; ?></p>
       <br>
 
+      <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="button">
         <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">editar</button>
+      </div>
+      
+      <div>
+        <button onclick="if(confirm('Tem certeza que deseja excluir?')) { window.location.href='excluir_iniciativa.php?id=<?php echo $row['id']; ?>'; }" 
+          style="background-color: transparent; border: none; cursor: pointer; font-size: 24px; color: red;">
+          🗑️
+        </button>
+        </div>
       </div>
 
       <hr>
