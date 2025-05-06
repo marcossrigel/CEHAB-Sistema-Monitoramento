@@ -1,8 +1,16 @@
 <?php
+  session_start();
+  if (!isset($_SESSION['id_usuario'])) {
+      header('Location: login.php');
+      exit;
+  }
   include("config.php");
 
-  $sql = "SELECT * FROM iniciativas";
+  $id_usuario = $_SESSION['id_usuario'];
+  $sql = "SELECT * FROM iniciativas WHERE id_usuario = $id_usuario";
+  
   $resultado = $conexao->query($sql);
+  
 ?>
 
 <!DOCTYPE html>

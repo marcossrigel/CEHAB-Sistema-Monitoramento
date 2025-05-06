@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: login.php');
+    exit;
+}
+
 include("config.php");
 
 if (!isset($_GET['id'])) {

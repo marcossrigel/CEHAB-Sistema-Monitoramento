@@ -1,4 +1,9 @@
 <?php
+  session_start();
+  if (!isset($_SESSION['id_usuario'])) {
+      header('Location: login.php');
+      exit;
+  }
 
   if(isset($_POST['submit']))
   {
@@ -11,7 +16,7 @@
         echo "<script>alert('Erro: Já existe uma iniciativa com esse nome.'); window.history.back();</script>";
         exit;
     }
-
+    
     $data_vistoria = $_POST['data_vistoria'];
     $ib_status = $_POST['ib_status'];
     $ib_execucao = $_POST['ib_execucao'];
@@ -26,9 +31,12 @@
     $objeto = $_POST['objeto'];
     $informacoes_gerais = $_POST['informacoes_gerais'];
     $observacoes = $_POST['observacoes'];
-
-    $result = mysqli_query($conexao, "INSERT INTO iniciativas(iniciativa,data_vistoria,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
-    VALUES ('$iniciativa','$data_vistoria','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
+    
+    $id_usuario = $_SESSION['id_usuario'];
+    
+    $result = mysqli_query($conexao, "INSERT INTO iniciativas(id_usuario,iniciativa,data_vistoria,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
+    
+    VALUES ('$id_usuario', '$iniciativa','$data_vistoria','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
     header("Location: formulario.php?sucesso=1&nome=" . urlencode($iniciativa));
     exit;
     
@@ -242,11 +250,19 @@ select[type="text"] {
     <div class="linha">
       <div class="campo-pequeno">
         <label class="label">Nome da Iniciativa</label>
-        <input type="text" name="iniciativa" class="campo" required>
+        
+        <select type="text" name="iniciativa" class="campo" required>
+          <option>Selecione...</option>
+          <option>Cabrobó</option>
+          <option>Granito</option>
+          <option>Lagoa Grande</option>
+          <option>Ouricuri</option>
+          <option>Mirandiba</option>
+        </select>
       </div>
       <div class="campo-pequeno">
         <label class="label">Data da Vistoria</label>
-        <input type="date" name="data_vistoria" class="campo">
+        <input type="date" name="data_vistoria" class="campo" required>
       </div>
     </div>
 
