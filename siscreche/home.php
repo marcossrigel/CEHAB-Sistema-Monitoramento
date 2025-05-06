@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: index.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -185,7 +193,7 @@ a.texto-login:hover {
 
     <div class="button-group">
       <button href="#" type="submit" onclick="window.location.href='formulario.php';" class="btn">Criar Iniciativa</button>
-      <button href="#" type="submit" onclick="window.location.href='visualizar.php';" class="btn btn-secondary">Ver Contratos</button>
+      <button href="#" type="submit" onclick="window.location.href='visualizar.php';" class="btn btn-secondary">Minhas Vistorias</button>
       <a href="login.php" class="texto-login">Sair</a>
     </div>
   </div>

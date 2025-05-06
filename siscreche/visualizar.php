@@ -1,8 +1,16 @@
 <?php
+  session_start();
+  if (!isset($_SESSION['id_usuario'])) {
+      header('Location: login.php');
+      exit;
+  }
   include("config.php");
 
-  $sql = "SELECT * FROM iniciativas";
+  $id_usuario = $_SESSION['id_usuario'];
+  $sql = "SELECT * FROM iniciativas WHERE id_usuario = $id_usuario";
+  
   $resultado = $conexao->query($sql);
+  
 ?>
 
 <!DOCTYPE html>
@@ -205,7 +213,7 @@ h1 {
       </p>
       
       <p><strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?> | 
-        <strong>Fiscal:</strong> <?php echo $row['ib_fiscal']; ?>
+        <strong>Fiscal Responsável:</strong> <?php echo $row['ib_fiscal']; ?>
       </p>
       
       <br>
@@ -216,19 +224,19 @@ h1 {
 
       <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="button">
-        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">editar</button>
+        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">atualizar</button>
       </div>
       
       <div>
         <button onclick="if(confirm('Tem certeza que deseja excluir?')) { window.location.href='excluir_iniciativa.php?id=<?php echo $row['id']; ?>'; }" 
-          style="background-color: transparent; border: none; cursor: pointer; font-size: 24px; color: red;">
-          🗑️
+          style="background-color: transparent; border: none; cursor: pointer; font-size: 20px; color: red;">
+          delete
         </button>
         </div>
       </div>
 
       <hr>
-      <br>
+
 
       <button onclick="window.location.href='acompanhamento.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
         Acompanhar Pendências

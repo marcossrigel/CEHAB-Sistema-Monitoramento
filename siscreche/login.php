@@ -139,10 +139,10 @@ body {
     <div class="main-title">Monitoramento Creches</div>
     <div class="login-container">
       <div class="main-title">Entrar</div>
-      <form class="login-form" onsubmit="logar(); return false;">
+      <form class="login-form" action="logar.php" method="post">
 
-        <input type="text" id="login" placeholder="Login" required>
-        <input type="password" id="senha" placeholder="Senha" required>
+        <input type="text" id="login" name="login" placeholder="Login" required>
+        <input type="password" id="senha" name="senha" placeholder="Senha" required>
         <div class="divider"></div>
         <button type="submit" class="btn">Entrar</button>
         <a href="#" class="forgot-password">Esqueceu a conta?</a>
@@ -151,22 +151,7 @@ body {
     </div>
     
     <img src="logo.png" alt="" width="190px">
-
-    </div>
-    
-    <script>
-      function logar() {
-        var login = document.getElementById('login').value;
-        var senha = document.getElementById('senha').value;
-    
-        if (login === "admin" && senha === "senha1234") {
-          window.location.href = 'home.php';
-        } else {
-          alert('Erro: Usuário ou Senha inválidos');
-        }
-      }
-    </script>
-    
-    </body>
+  </div>
+  </body>
 
 </html>
