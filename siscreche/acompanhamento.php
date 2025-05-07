@@ -1,8 +1,8 @@
 <?php
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: login.php');
-    exit;
+  header('Location: login.php');
+  exit;
 }
 
 include_once('config.php');
@@ -28,10 +28,12 @@ if (isset($_POST['salvar'])) {
 
     echo "<script>alert('Pendências salvas com sucesso!'); window.location.href='visualizar.php';</script>";
 }
+$dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_usuario = ".$_SESSION['id_usuario']);
 
 ?>
 
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
@@ -69,6 +71,9 @@ if (isset($_POST['salvar'])) {
     }
     td {
       padding-right: 15px;
+    }
+    td:focus {
+      outline: none;
     }
     input[type="text"] {
       width: 100%;
@@ -125,20 +130,24 @@ if (isset($_POST['salvar'])) {
           <th>Responsável</th>
         </tr>
       </thead>
+      
       <tbody>
-        <tr>
-          <td><input type="text" name="problema[]" placeholder=""></td>
-          <td><input type="text" name="contramedida[]" placeholder=""></td>
-          <td><input type="date" name="prazo[]" placeholder=""></td>
-          <td><input type="text" name="responsavel[]" placeholder=""></td>
+      <?php while ($linha = mysqli_fetch_assoc($dados_pendencias)) { ?>
+        <tr data-id="<?php echo $linha['id']; ?>">
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['problema']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['contramedida']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['prazo']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['responsavel']); ?></td>
         </tr>
-      </tbody>
+      <?php } ?>
+    </tbody>
+
     </table>
     <div class="button-group">
       <button type="button" onclick="addRow()">Adicionar Linha</button>
       <button type="button" onclick="deleteRow()">Excluir Linha</button>
       <button type="submit" name="salvar" id="submit">Salvar</button>
-      <button onclick="window.location.href='visualizar.php';">< Voltar</button>
+      <button type="button" onclick="window.location.href='visualizar.php';">< Voltar</button>
     </div>
 
   </form>
@@ -146,28 +155,76 @@ if (isset($_POST['salvar'])) {
 </div>
 
 <script>
-  function addRow() {
+
+document.querySelector('form').addEventListener('submit', function(event) {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const linhas = table.rows;
+
+  for (let i = 0; i < linhas.length; i++) {
+  const linha = linhas[i];
+  const id = linha.getAttribute('data-id');
+
+  if (!id) {
+    const cells = linha.cells;
+
+    const problema = document.createElement('input');
+    problema.type = 'hidden';
+    problema.name = 'problema[]';
+    problema.value = cells[0].innerText.trim();
+    this.appendChild(problema);
+
+    const contramedida = document.createElement('input');
+    contramedida.type = 'hidden';
+    contramedida.name = 'contramedida[]';
+    contramedida.value = cells[1].innerText.trim();
+    this.appendChild(contramedida);
+
+    const prazo = document.createElement('input');
+    prazo.type = 'hidden';
+    prazo.name = 'prazo[]';
+    prazo.value = cells[2].innerText.trim();
+    this.appendChild(prazo);
+
+    const responsavel = document.createElement('input');
+    responsavel.type = 'hidden';
+    responsavel.name = 'responsavel[]';
+    responsavel.value = cells[3].innerText.trim();
+    this.appendChild(responsavel);
+  }
+}
+  localStorage.removeItem('tabelaPendencias');
+});
+
+function addRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const newRow = table.insertRow();
 
-  const campos = ['problema[]', 'contramedida[]', 'prazo[]', 'responsavel[]'];
-  const tipos = ['text', 'text', 'date', 'text'];
-
-  for (let i = 0; i < campos.length; i++) {
+  for (let i = 0; i < 4; i++) {
     const newCell = newRow.insertCell();
-    const input = document.createElement('input');
-    input.type = tipos[i];
-    input.name = campos[i];
-    newCell.appendChild(input);
+    newCell.contentEditable = "true";
   }
 }
 
-  function deleteRow() {
-    const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-    if (table.rows.length > 1) {
+function deleteRow() {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  if (table.rows.length > 0) {
+    const lastRow = table.rows[table.rows.length - 1];
+    const id = lastRow.getAttribute('data-id');
+
+    if (id) {
+      fetch('excluir_pendencia.php?id=' + id, { method: 'GET' })
+        .then(response => response.text())
+        .then(data => {
+          console.log(data);
+          table.deleteRow(-1);
+        });
+    } 
+    else {
       table.deleteRow(-1);
     }
   }
+}
+
 </script>
 
 </body>
