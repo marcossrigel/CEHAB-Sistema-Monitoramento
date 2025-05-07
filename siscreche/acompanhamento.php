@@ -9,10 +9,12 @@ include_once('config.php');
 
 if (isset($_POST['salvar'])) {
     $id_usuario = $_SESSION['id_usuario'];
+    $id_iniciativa = intval($_GET['id_iniciativa']);
     $problemas = $_POST['problema'];
     $contramedidas = $_POST['contramedida'];
     $prazos = $_POST['prazo'];
     $responsaveis = $_POST['responsavel'];
+
 
     for ($i = 0; $i < count($problemas); $i++) {
         $problema = mysqli_real_escape_string($conexao, $problemas[$i]);
@@ -20,15 +22,15 @@ if (isset($_POST['salvar'])) {
         $prazo = mysqli_real_escape_string($conexao, $prazos[$i]);
         $responsavel = mysqli_real_escape_string($conexao, $responsaveis[$i]);
 
-        $query = "INSERT INTO pendencias (id_usuario, problema, contramedida, prazo, responsavel) 
-                  VALUES ('$id_usuario', '$problema', '$contramedida', '$prazo', '$responsavel')";
+        $query = "INSERT INTO pendencias (id_usuario, id_iniciativa, problema, contramedida, prazo, responsavel) 
+                  VALUES ('$id_usuario', '$id_iniciativa', '$problema', '$contramedida', '$prazo', '$responsavel')";
 
         mysqli_query($conexao, $query);
     }
 
     echo "<script>alert('Pendências salvas com sucesso!'); window.location.href='visualizar.php';</script>";
 }
-$dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_usuario = ".$_SESSION['id_usuario']);
+$dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_iniciativa = $id_iniciativa");
 
 ?>
 
