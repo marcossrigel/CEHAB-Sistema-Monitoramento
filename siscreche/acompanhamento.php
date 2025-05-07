@@ -60,7 +60,7 @@ $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_us
     table {
       width: 100%;
       border-collapse: separate;
-      border-spacing: 0 15px;
+      border-spacing: 8px 15px;
     }
     th, td {
       text-align: left;
@@ -72,8 +72,20 @@ $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_us
     td {
       padding-right: 15px;
     }
-    td:focus {
+    td[contenteditable]:focus {
       outline: none;
+    }
+    td[contenteditable] {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      min-width: 120px;
+    }
+
+    td[contenteditable]:focus {
+      outline: none;
+      border: 1px solid #4da6ff;
+      background-color: #f0f8ff;
     }
     input[type="text"] {
       width: 100%;
