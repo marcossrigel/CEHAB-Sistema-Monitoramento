@@ -141,7 +141,7 @@ body {
       <div class="main-title">Entrar</div>
       <form class="login-form" action="logar.php" method="post">
 
-        <input type="text" id="login" name="login" placeholder="Login" required>
+        <input type="text" id="login" name="nome" placeholder="Login" required>
         <input type="password" id="senha" name="senha" placeholder="Senha" required>
         <div class="divider"></div>
         <button type="submit" class="btn">Entrar</button>

@@ -51,13 +51,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="formulario.css">
   <title>Formulário</title>
-  <style>
-    :root {
-  --color-white: rgb(255, 255, 255);
-  --color-gray: #e3e8ec;
-  --color-dark: #1d2129;
-  --color-blue: #0a6be2;
-  --color-green: #42b72a;
+  
+<style>
+:root {
+--color-white: rgb(255, 255, 255);
+--color-gray: #e3e8ec;
+--color-dark: #1d2129;
+--color-blue: #0a6be2;
+--color-green: #42b72a;
 }
 
 body {
@@ -285,11 +286,11 @@ select[type="text"] {
       <div class="campo">
         <label class="label">Status</label>
         
-        <select type="text" name="ib_status" class="campo" require>
-          <option>Selecione...</option>
-          <option>Em Execução</option>
-          <option>Em Andamento</option>
-          <option>Liberado</option>
+        <select type="text" name="ib_status" class="campo" required>
+          <option value="">Selecione...</option>
+          <option value="Em Execução">Em Execução</option>
+          <option value="Em Andamento">Em Andamento</option>
+          <option value="Liberado">Liberado</option>
         </select>
       </div>
       <div class="campo">

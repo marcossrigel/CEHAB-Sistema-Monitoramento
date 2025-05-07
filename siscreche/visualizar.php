@@ -224,7 +224,7 @@ h1 {
 
       <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="button">
-        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">atualizar</button>
+        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">andamento</button>
       </div>
       
       <div>
