@@ -191,6 +191,14 @@ input[type="text"] {
   box-sizing: border-box;
 }
 
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
 select[type="text"] {
   width: 100%;
   padding: 10px;
@@ -252,13 +260,14 @@ select[type="text"] {
         <label class="label">Nome da Iniciativa</label>
         
         <select type="text" name="iniciativa" class="campo" required>
-          <option>Selecione...</option>
-          <option>Cabrobó</option>
-          <option>Granito</option>
-          <option>Lagoa Grande</option>
-          <option>Ouricuri</option>
-          <option>Mirandiba</option>
+          <option value="">Selecione...</option>
+          <option value="Cabrobó">Cabrobó</option>
+          <option value="Granito">Granito</option>
+          <option value="Lagoa Grande">Lagoa Grande</option>
+          <option value="Ouricuri">Ouricuri</option>
+          <option value="Mirandiba">Mirandiba</option>
         </select>
+
       </div>
       <div class="campo-pequeno">
         <label class="label">Data da Vistoria</label>
@@ -276,7 +285,7 @@ select[type="text"] {
       <div class="campo">
         <label class="label">Status</label>
         
-        <select type="text" name="ib_status" class="campo">
+        <select type="text" name="ib_status" class="campo" require>
           <option>Selecione...</option>
           <option>Em Execução</option>
           <option>Em Andamento</option>
