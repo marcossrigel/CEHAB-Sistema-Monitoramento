@@ -251,7 +251,7 @@ h1 {
       </button>
       <br>
 
-      <button onclick="window.location.href='cronogramamacros.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+      <button onclick="window.location.href='cronogramamarcos.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
         Cronograma de Marcos
       </button>
 
