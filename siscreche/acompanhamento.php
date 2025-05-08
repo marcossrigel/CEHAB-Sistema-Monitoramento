@@ -175,45 +175,6 @@ $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_us
 document.querySelector('form').addEventListener('submit', function(event) {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const linhas = table.rows;
-
-  for (let i = 0; i < linhas.length; i++) {
-  const linha = linhas[i];
-  const id = linha.getAttribute('data-id');
-
-  if (!id) {
-    const cells = linha.cells;
-
-    const problema = document.createElement('input');
-    problema.type = 'hidden';
-    problema.name = 'problema[]';
-    problema.value = cells[0].innerText.trim();
-    this.appendChild(problema);
-
-    const contramedida = document.createElement('input');
-    contramedida.type = 'hidden';
-    contramedida.name = 'contramedida[]';
-    contramedida.value = cells[1].innerText.trim();
-    this.appendChild(contramedida);
-
-    const prazo = document.createElement('input');
-    prazo.type = 'hidden';
-    prazo.name = 'prazo[]';
-    prazo.value = cells[2].innerText.trim();
-    this.appendChild(prazo);
-
-    const responsavel = document.createElement('input');
-    responsavel.type = 'hidden';
-    responsavel.name = 'responsavel[]';
-    responsavel.value = cells[3].innerText.trim();
-    this.appendChild(responsavel);
-  }
-}
-  localStorage.removeItem('tabelaPendencias');
-});
-
-document.querySelector('form').addEventListener('submit', function(event) {
-  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-  const linhas = table.rows;
   let temNovaLinha = false;
 
   for (let i = 0; i < linhas.length; i++) {
