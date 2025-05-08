@@ -162,7 +162,7 @@ $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_us
     <div class="button-group">
       <button type="button" onclick="addRow()">Adicionar Linha</button>
       <button type="button" onclick="deleteRow()">Excluir Linha</button>
-      <button type="submit" name="salvar" id="submit">Salvar</button>
+      <button type="submit" name="salvar" id="submit" style="background-color:rgb(42, 179, 0);" >Salvar</button>
       <button type="button" onclick="window.location.href='visualizar.php';">< Voltar</button>
     </div>
 
