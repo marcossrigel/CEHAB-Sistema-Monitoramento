@@ -7,6 +7,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
 include_once('config.php');
 
+$id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+
 if (isset($_POST['salvar'])) {
     $id_usuario = $_SESSION['id_usuario'];
     $id_iniciativa = intval($_GET['id_iniciativa']);
@@ -28,7 +30,6 @@ if (isset($_POST['salvar'])) {
         mysqli_query($conexao, $query);
     }
 
-    echo "<script>alert('Pendências salvas com sucesso!'); window.location.href='visualizar.php';</script>";
 }
 $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_iniciativa = $id_iniciativa");
 
@@ -134,7 +135,8 @@ $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_us
 
 <div class="table-container">
   <div class="main-title">Acompanhamento de Pendências</div>
-  <form method="post" action="acompanhamento.php">
+  <form method="post" action="acompanhamento.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
+
   <table id="spreadsheet">
       <thead>
         <tr>

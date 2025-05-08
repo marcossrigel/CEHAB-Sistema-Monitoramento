@@ -1,16 +1,15 @@
 <?php
-  session_start();
-  if (!isset($_SESSION['id_usuario'])) {
-      header('Location: login.php');
-      exit;
-  }
-  include("config.php");
+session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: login.php');
+    exit;
+}
 
-  $id_usuario = $_SESSION['id_usuario'];
-  $sql = "SELECT * FROM iniciativas WHERE id_usuario = $id_usuario";
-  
-  $resultado = $conexao->query($sql);
-  
+include("config.php");
+
+$id_usuario = $_SESSION['id_usuario'];
+$sql = "SELECT * FROM iniciativas WHERE id_usuario = $id_usuario";
+$resultado = $conexao->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -238,7 +237,8 @@ h1 {
       <hr>
 
 
-      <button onclick="window.location.href='acompanhamento.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+      <button onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';"
+        style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
         Acompanhar Pendências
       </button>
 
