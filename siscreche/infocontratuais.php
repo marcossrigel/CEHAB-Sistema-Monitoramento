@@ -158,7 +158,7 @@ button:hover {
       </tr>
     </table>
     <div class="button-group">
-      <button>Salvar</button>
+      <button style="background-color:rgb(42, 179, 0);">Salvar</button>
       <button>Cancelar</button>
     </div>
   </div>
