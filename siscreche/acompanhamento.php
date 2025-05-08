@@ -211,6 +211,44 @@ document.querySelector('form').addEventListener('submit', function(event) {
   localStorage.removeItem('tabelaPendencias');
 });
 
+document.querySelector('form').addEventListener('submit', function(event) {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const linhas = table.rows;
+  let temNovaLinha = false;
+
+  for (let i = 0; i < linhas.length; i++) {
+    const linha = linhas[i];
+    const id = linha.getAttribute('data-id');
+    const cells = linha.cells;
+
+    if (!id) {
+      const problema = cells[0].innerText.trim();
+      const contramedida = cells[1].innerText.trim();
+      const prazo = cells[2].innerText.trim();
+      const responsavel = cells[3].innerText.trim();
+
+      if (problema || contramedida || prazo || responsavel) {
+        temNovaLinha = true;
+        ['problema', 'contramedida', 'prazo', 'responsavel'].forEach((campo, idx) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = campo + '[]';
+          input.value = cells[idx].innerText.trim();
+          this.appendChild(input);
+        });
+      }
+    }
+  }
+
+  if (!temNovaLinha) {
+    event.preventDefault(); // impede o envio
+    alert('Nenhuma nova pendência para salvar!');
+  } else {
+    localStorage.removeItem('tabelaPendencias');
+  }
+});
+
+
 function addRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const newRow = table.insertRow();
