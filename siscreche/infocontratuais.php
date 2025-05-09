@@ -43,16 +43,22 @@ if (isset($_POST['salvar'])) {
             prazo_execucao_original='$prazo_execucao_original',
             prazo_execucao_atual='$prazo_execucao_atual',
             valor_inicial_obra='$valor_inicial_obra',
+
+            valor_aditivo_obra='$valor_aditivo_obra',
+
             valor_total_obra='$valor_total_obra',
             valor_inicial_contrato='$valor_inicial_contrato',
             valor_aditivo='$valor_aditivo',
             valor_contrato='$valor_contrato',
+
+            cod_subtracao='$cod_subtracao',
+
             secretaria_demandante='$secretaria_demandante'
             WHERE id_usuario={$_SESSION['id_usuario']} AND id_iniciativa=$id_iniciativa";
         mysqli_query($conexao, $query_update);
     } else {
-        $query_insert = "INSERT INTO contratuais (id_usuario, id_iniciativa, processo_licitatorio, empresa, data_assinatura_contrato, dara_os, prazo_execucao_original, prazo_execucao_atual, valor_inicial_obra, valor_total_obra, valor_inicial_contrato, valor_aditivo, valor_contrato, secretaria_demandante) VALUES 
-        ({$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$dara_os', '$prazo_execucao_original', '$prazo_execucao_atual', '$valor_inicial_obra', '$valor_total_obra', '$valor_inicial_contrato', '$valor_aditivo', '$valor_contrato', '$secretaria_demandante')";
+        $query_insert = "INSERT INTO contratuais (id_usuario, id_iniciativa, processo_licitatorio, empresa, data_assinatura_contrato, dara_os, prazo_execucao_original, prazo_execucao_atual, valor_inicial_obra, valor_aditivo_obra, valor_total_obra, valor_inicial_contrato, valor_aditivo, valor_contrato, cod_subtracao, secretaria_demandante) VALUES 
+        ({$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$dara_os', '$prazo_execucao_original', '$prazo_execucao_atual', '$valor_inicial_obra', '$valor_aditivo_obra', '$valor_total_obra', '$valor_inicial_contrato', '$valor_aditivo', '$valor_contrato', '$cod_subtracao', '$secretaria_demandante')";
         mysqli_query($conexao, $query_insert);
     }
 
@@ -157,7 +163,7 @@ if (isset($_POST['salvar'])) {
   <div class="container">
     
     <form method="post" action="infocontratuais.php">
-      <input type="hidden" name="id_iniciativa" value="<?php echo htmlspecialchars($nome_iniciativa); ?>">
+      <input type="hidden" name="id_iniciativa" value="<?php echo $id_iniciativa; ?>">
 
       <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Informações Contratuais</div>
 
@@ -170,10 +176,16 @@ if (isset($_POST['salvar'])) {
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial da Obra</td><td><input type="text" name="valor_inicial_obra" value="<?php echo $dados['valor_inicial_obra'] ?? ''; ?>"></td></tr>
+        
+        <tr><td>Valor de Aditivo da Obra</td><td><input type="text" name="valor_aditivo_obra" value="<?php echo $dados['valor_aditivo_obra'] ?? ''; ?>"></td></tr>
+
         <tr><td>Valor Total da Obra</td><td><input type="text" name="valor_total_obra" value="<?php echo $dados['valor_total_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial do Contrato</td><td><input type="text" name="valor_inicial_contrato" value="<?php echo $dados['valor_inicial_contrato'] ?? ''; ?>"></td></tr>
         <tr><td>Valor do Aditivo</td><td><input type="text" name="valor_aditivo" value="<?php echo $dados['valor_aditivo'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Total do Contrato</td><td><input type="text" name="valor_contrato" value="<?php echo $dados['valor_contrato'] ?? ''; ?>"></td></tr>
+        
+        <tr><td>CÓD. DA SUBTRAÇÃO (LOA)</td><td><input type="text" name="cod_subtracao" value="<?php echo $dados['cod_subtracao'] ?? ''; ?>"></td></tr>
+        
         <tr><td>Secretaria Demandante</td><td><input type="text" name="secretaria_demandante" value="<?php echo $dados['secretaria_demandante'] ?? ''; ?>"></td></tr>
       </table>
 
