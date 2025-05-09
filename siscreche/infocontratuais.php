@@ -27,11 +27,13 @@ if (isset($_POST['salvar'])) {
     $prazo_execucao_atual = $_POST['prazo_execucao_atual'];
 
     $valor_inicial_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_inicial_obra']);
+    $valor_aditivo_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo_obra']);  // <== AQUI
     $valor_total_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_total_obra']);
     $valor_inicial_contrato = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_inicial_contrato']);
     $valor_aditivo = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo']);
     $valor_contrato = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_contrato']);
 
+    $cod_subtracao = mysqli_real_escape_string($conexao, $_POST['cod_subtracao']); // <== AQUI
     $secretaria_demandante = mysqli_real_escape_string($conexao, $_POST['secretaria_demandante']);
 
     if ($dados) {
@@ -43,16 +45,12 @@ if (isset($_POST['salvar'])) {
             prazo_execucao_original='$prazo_execucao_original',
             prazo_execucao_atual='$prazo_execucao_atual',
             valor_inicial_obra='$valor_inicial_obra',
-
             valor_aditivo_obra='$valor_aditivo_obra',
-
             valor_total_obra='$valor_total_obra',
             valor_inicial_contrato='$valor_inicial_contrato',
             valor_aditivo='$valor_aditivo',
             valor_contrato='$valor_contrato',
-
             cod_subtracao='$cod_subtracao',
-
             secretaria_demandante='$secretaria_demandante'
             WHERE id_usuario={$_SESSION['id_usuario']} AND id_iniciativa=$id_iniciativa";
         mysqli_query($conexao, $query_update);
@@ -62,7 +60,7 @@ if (isset($_POST['salvar'])) {
         mysqli_query($conexao, $query_insert);
     }
 
-    echo "<script>alert('Informações contratuais salvas com sucesso!'); window.location.href='visualizar.php';</script>";
+    header("Location: infocontratuais.php?id_iniciativa=$id_iniciativa");
     exit;
 }
 ?>
@@ -172,26 +170,22 @@ if (isset($_POST['salvar'])) {
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>
         <tr><td>Empresa</td><td><input type="text" name="empresa" value="<?php echo $dados['empresa'] ?? ''; ?>"></td></tr>
         <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>"></td></tr>
-        <tr><td>Data da O.S.</td><td><input type="date" name="dara_os" value="<?php echo $dados['dara_os'] ?? ''; ?>"></td></tr>
+        <tr><td>Data da O.S.</td><td><input type="date"  name="dara_os" value="<?php echo $dados['dara_os'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial da Obra</td><td><input type="text" name="valor_inicial_obra" value="<?php echo $dados['valor_inicial_obra'] ?? ''; ?>"></td></tr>
-        
         <tr><td>Valor de Aditivo da Obra</td><td><input type="text" name="valor_aditivo_obra" value="<?php echo $dados['valor_aditivo_obra'] ?? ''; ?>"></td></tr>
-
         <tr><td>Valor Total da Obra</td><td><input type="text" name="valor_total_obra" value="<?php echo $dados['valor_total_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial do Contrato</td><td><input type="text" name="valor_inicial_contrato" value="<?php echo $dados['valor_inicial_contrato'] ?? ''; ?>"></td></tr>
         <tr><td>Valor do Aditivo</td><td><input type="text" name="valor_aditivo" value="<?php echo $dados['valor_aditivo'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Total do Contrato</td><td><input type="text" name="valor_contrato" value="<?php echo $dados['valor_contrato'] ?? ''; ?>"></td></tr>
-        
         <tr><td>CÓD. DA SUBTRAÇÃO (LOA)</td><td><input type="text" name="cod_subtracao" value="<?php echo $dados['cod_subtracao'] ?? ''; ?>"></td></tr>
-        
         <tr><td>Secretaria Demandante</td><td><input type="text" name="secretaria_demandante" value="<?php echo $dados['secretaria_demandante'] ?? ''; ?>"></td></tr>
       </table>
 
       <div class="button-group">
         <button type="submit" name="salvar" style="background-color:rgb(42, 179, 0);">Salvar</button>
-        <button type="button" onclick="window.location.href='visualizar.php';">Cancelar</button>
+        <button type="button" onclick="window.location.href='visualizar.php';">< Voltar</button>
       </div>
 
     </form>
