@@ -155,12 +155,12 @@ if (isset($_POST['salvar'])) {
 
 <body>
   <div class="container">
-    <div class="main-title">Informações Contratuais</div>
     
     <form method="post" action="infocontratuais.php">
-      <input type="hidden" name="id_iniciativa" value="<?php echo $id_iniciativa; ?>">
-      
-      <h2>Informações Contratuais - <?php echo htmlspecialchars($nome_iniciativa); ?></h2>
+      <input type="hidden" name="id_iniciativa" value="<?php echo htmlspecialchars($nome_iniciativa); ?>">
+
+      <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Informações Contratuais</div>
+
       <table>
         <tr><th>Campo</th><th>Valor</th></tr>
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>

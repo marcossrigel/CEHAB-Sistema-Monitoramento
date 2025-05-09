@@ -33,6 +33,11 @@ if (isset($_POST['salvar'])) {
 }
 $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_iniciativa = $id_iniciativa");
 
+$query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
+$resultado_nome = mysqli_query($conexao, $query_nome);
+$linha_nome = mysqli_fetch_assoc($resultado_nome);
+$nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
+
 ?>
 
 <!DOCTYPE html>
@@ -134,7 +139,9 @@ $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_us
 <body>
 
 <div class="table-container">
-  <div class="main-title">Acompanhamento de Pendências</div>
+  
+  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Acompanhamento de Pendências</div>
+
   <form method="post" action="acompanhamento.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
 
   <table id="spreadsheet">
