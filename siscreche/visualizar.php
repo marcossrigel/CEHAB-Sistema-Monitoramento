@@ -242,8 +242,9 @@ h1 {
         Acompanhar Pendências
       </button>
 
-      <button onclick="window.location.href='infocontratuais.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
-        Informações Contratuais
+      <button onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';"
+        style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+          Informações Contratuais
       </button>
 
       <button style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
