@@ -101,12 +101,12 @@
     <table id="cronogramaTable">
       <thead>
         <tr>
-          <th>Etapa</th>
-          <th>Início Previsto</th>
-          <th>Término Previsto</th>
-          <th>Início Real</th>
-          <th>Término Real</th>
-          <th>% Evolutivo</th>
+          <th name="etapa">Etapa</th>
+          <th name="inicio_previsto">Início Previsto</th>
+          <th name="termino_previsto">Término Previsto</th>
+          <th name="inicio_real">Início Real</th>
+          <th name="termino_real">Término Real</th>
+          <th name="evolutivo">% Evolutivo</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -115,7 +115,7 @@
       <button onclick="adicionarLinha()">Adicionar Linha</button>
       <button onclick="adicionarSubtitulo()">Adicionar Subtítulo</button>
       <button onclick="excluirLinha()">Excluir Linha</button>
-      <button>&lt; Voltar</button>
+      <button onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
     </div>
   </div>
 

@@ -169,17 +169,21 @@ if (isset($_POST['salvar'])) {
         <tr><th>Campo</th><th>Valor</th></tr>
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>
         <tr><td>Empresa</td><td><input type="text" name="empresa" value="<?php echo $dados['empresa'] ?? ''; ?>"></td></tr>
+        
         <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>"></td></tr>
         <tr><td>Data da O.S.</td><td><input type="date"  name="dara_os" value="<?php echo $dados['dara_os'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
+        
         <tr><td>Valor Inicial da Obra</td><td><input type="text" name="valor_inicial_obra" value="<?php echo $dados['valor_inicial_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor de Aditivo da Obra</td><td><input type="text" name="valor_aditivo_obra" value="<?php echo $dados['valor_aditivo_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Total da Obra</td><td><input type="text" name="valor_total_obra" value="<?php echo $dados['valor_total_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial do Contrato</td><td><input type="text" name="valor_inicial_contrato" value="<?php echo $dados['valor_inicial_contrato'] ?? ''; ?>"></td></tr>
         <tr><td>Valor do Aditivo</td><td><input type="text" name="valor_aditivo" value="<?php echo $dados['valor_aditivo'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Total do Contrato</td><td><input type="text" name="valor_contrato" value="<?php echo $dados['valor_contrato'] ?? ''; ?>"></td></tr>
-        <tr><td>CÓD. DA SUBTRAÇÃO (LOA)</td><td><input type="text" name="cod_subtracao" value="<?php echo $dados['cod_subtracao'] ?? ''; ?>"></td></tr>
+        
+        <tr><td>CÓD. DA SUBTRAÇÃO (LOA)</td><td><input type="text" name="cod_subtracao" readonly value="<?php echo $dados['cod_subtracao'] ?? ''; ?>"></td></tr>
+        
         <tr><td>Secretaria Demandante</td><td><input type="text" name="secretaria_demandante" value="<?php echo $dados['secretaria_demandante'] ?? ''; ?>"></td></tr>
       </table>
 
@@ -190,5 +194,22 @@ if (isset($_POST['salvar'])) {
 
     </form>
   </div>
+
+<script>
+function calcularSubtracao() {
+    const valorTotalObra = parseFloat(document.querySelector('input[name="valor_total_obra"]').value.replace(',', '.')) || 0;
+    const valorInicialContrato = parseFloat(document.querySelector('input[name="valor_inicial_contrato"]').value.replace(',', '.')) || 0;
+
+    const resultado = valorTotalObra - valorInicialContrato;
+
+    document.querySelector('input[name="cod_subtracao"]').value = resultado.toFixed(2);
+}
+
+document.querySelector('input[name="valor_inicial_obra"]').addEventListener('input', calcularSubtracao);
+document.querySelector('input[name="valor_inicial_contrato"]').addEventListener('input', calcularSubtracao);
+
+window.addEventListener('load', calcularSubtracao);
+</script>
+
 </body>
 </html>
