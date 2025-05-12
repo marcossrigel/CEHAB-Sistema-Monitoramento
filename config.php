@@ -7,6 +7,8 @@ $dbName = getenv('MYSQLDATABASE');      // railway
 
 $conexao = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
 
+var_dump(getenv('MYSQLHOST'))
+
 // Opcional: debug de conexão
 /*
 if ($conexao->connect_errno) {
