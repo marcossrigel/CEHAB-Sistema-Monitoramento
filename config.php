@@ -1,11 +1,12 @@
 <?php
 
-  $dbHost = 'Localhost';
-  $dbUsername = 'root';
-  $dbPassword = '';
-  $dbName = 'siscreche';
+$dbHost = getenv('MYSQLHOST');
+$dbUsername = getenv('MYSQLUSER');
+$dbPassword = getenv('MYSQLPASSWORD');
+$dbName = getenv('MYSQLDATABASE');
 
-  $conexao = new mysqli($dbHost, $dbUsername,$dbPassword, $dbName);
+$conexao = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
+
 /*
   if($conexao->connect_errno)
   {
