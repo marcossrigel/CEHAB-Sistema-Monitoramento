@@ -24,8 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
     }
-
-    echo "<script>alert('Fotos enviadas com sucesso!'); window.location.href='fotografico.php?id_iniciativa=$id_iniciativa';</script>";
 }
 ?>
 
@@ -170,9 +168,8 @@ button:hover {
         </div>
 
     <div class="button-group">
-        <button type="button" class="btn azul" onclick="adicionarLinha()">Adicionar Linha</button>
-        <button type="button" class="btn azul" onclick="removerLinha()">Excluir Linha</button>
         <button type="submit" class="btn verde" style="background-color:rgb(42, 179, 0);" >Salvar</button>
+        <button type="button" onclick="window.location.href='galeria.php?id_iniciativa=<?php echo $id_iniciativa; ?>';">Ver Galeria</button>
         <button type="button" class="btn azul" onclick="window.location.href='visualizar.php?id_iniciativa=<?php echo $id_iniciativa; ?>';">&lt; Voltar</button>
     </div>
 
@@ -198,37 +195,5 @@ button:hover {
     }
 });
 
-    function adicionarLinha() {
-      const container = document.getElementById('linhas-container');
-
-      const novaLinha = document.createElement('div');
-      novaLinha.className = 'linha-fotos';
-
-      for (let i = 0; i < 4; i++) {
-        const box = document.createElement('div');
-        box.className = 'foto-box';
-
-        
-        box.innerHTML = `
-            <p><strong>Foto</strong></p>
-            <input type="file" name="foto[]" class="input-foto" accept="image/*">
-            <img src="" class="preview" style="display:none;">
-            <textarea name="descricao[]" placeholder="Descrição da foto"></textarea>
-        `;
-
-        novaLinha.appendChild(box);
-      }
-
-      container.appendChild(novaLinha);
-    }
-
-    function removerLinha() {
-        const container = document.getElementById('linhas-container');
-        const linhas = container.getElementsByClassName('linha-fotos');
-        if (linhas.length > 1) {
-            container.removeChild(linhas[linhas.length - 1]);
-        } 
-    }
-  </script>
 </body>
 </html>
