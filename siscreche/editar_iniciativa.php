@@ -1,14 +1,16 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['id_usuario'])) {
+if (!isset($_SESSION['id_usuario'])) 
+{
     header('Location: login.php');
     exit;
 }
 
 include("config.php");
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id'])) 
+{
     echo "ID não fornecido.";
     exit;
 }
@@ -18,47 +20,42 @@ $id = intval($_GET['id']);
 $sql = "SELECT * FROM iniciativas WHERE id = $id";
 $resultado = $conexao->query($sql);
 
-if ($resultado->num_rows == 0) {
+if ($resultado->num_rows == 0) 
+{
     echo "Iniciativa não encontrada.";
     exit;
 }
 
 $row = $resultado->fetch_assoc();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $iniciativa = $_POST['iniciativa'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
     $ib_status = $_POST['ib_status'];
     $data_vistoria = $_POST['data_vistoria'];
     $ib_execucao = $_POST['ib_execucao'];
     $ib_previsto = $_POST['ib_previsto'];
     $ib_variacao = $_POST['ib_variacao'];
     $ib_valor_medio = $_POST['ib_valor_medio'];
-    $ib_secretaria = $_POST['ib_secretaria'];
-    $ib_orgao = $_POST['ib_orgao'];
-    $ib_gestor_responsavel = $_POST['ib_gestor_responsavel'];
-    $ib_fiscal = $_POST['ib_fiscal'];
-    $ib_numero_processo_sei = $_POST['ib_numero_processo_sei'];
 
     $update = "UPDATE iniciativas SET 
-        iniciativa = '$iniciativa',
         ib_status = '$ib_status',
         data_vistoria = '$data_vistoria',
         ib_execucao = '$ib_execucao',
         ib_previsto = '$ib_previsto',
         ib_variacao = '$ib_variacao',
         ib_valor_medio = '$ib_valor_medio',
-        ib_secretaria = '$ib_secretaria',
-        ib_orgao = '$ib_orgao',
-        ib_gestor_responsavel = '$ib_gestor_responsavel',
-        ib_fiscal = '$ib_fiscal',
-        ib_numero_processo_sei = '$ib_numero_processo_sei'
+        
         WHERE id = $id";
 
-    if ($conexao->query($update)) {
+    if ($conexao->query($update)) 
+    {
         echo "<script>alert('Atualizado com sucesso!'); window.location.href='visualizar.php';</script>";
-    } else {
+    } 
+    else 
+    {
         echo "Erro ao atualizar: " . $conexao->error;
     }
+
 }
 ?>
 
@@ -169,7 +166,7 @@ form button:hover {
     <div class="linha">
       <div class="campo">
         <label>Iniciativa:</label>
-        <input type="text" name="iniciativa" value="<?php echo htmlspecialchars($row['iniciativa']); ?>">
+        <input type="text" name="iniciativa" value="<?php echo htmlspecialchars($row['iniciativa']); ?>" readonly>
     </div>
       <div class="campo">
         <label>Status:</label>
@@ -203,26 +200,26 @@ form button:hover {
       </div>
       <div class="campo">
         <label>Secretaria:</label>
-        <input type="text" name="ib_secretaria" value="<?php echo htmlspecialchars($row['ib_secretaria']); ?>">
+        <input type="text" name="ib_secretaria" value="<?php echo htmlspecialchars($row['ib_secretaria']); ?>" readonly>
       </div>
       <div class="campo">
         <label>Órgão:</label>
-        <input type="text" name="ib_orgao" value="<?php echo htmlspecialchars($row['ib_orgao']); ?>">
+        <input type="text" name="ib_orgao" value="<?php echo htmlspecialchars($row['ib_orgao']); ?>" readonly>
       </div>
     </div>
 
     <div class="linha">
       <div class="campo">
         <label>Processo SEI:</label>
-        <input type="text" name="ib_numero_processo_sei" value="<?php echo htmlspecialchars($row['ib_numero_processo_sei']); ?>">
+        <input type="text" name="ib_numero_processo_sei" value="<?php echo htmlspecialchars($row['ib_numero_processo_sei']); ?>" readonly>
       </div>
       <div class="campo">
         <label>Gestor Responsável:</label>
-        <input type="text" name="ib_gestor_responsavel" value="<?php echo htmlspecialchars($row['ib_gestor_responsavel']); ?>">
+        <input type="text" name="ib_gestor_responsavel" value="<?php echo htmlspecialchars($row['ib_gestor_responsavel']); ?>" readonly>
       </div>
       <div class="campo">
         <label>Fiscal Responsável:</label>
-        <input type="text" name="ib_fiscal" value="<?php echo htmlspecialchars($row['ib_fiscal']); ?>">
+        <input type="text" name="ib_fiscal" value="<?php echo htmlspecialchars($row['ib_fiscal']); ?>" readonly>
       </div>
     </div>
       

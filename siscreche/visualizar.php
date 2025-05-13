@@ -223,7 +223,7 @@ h1 {
 
       <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="button">
-        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">andamento</button>
+        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">status andamento</button>
       </div>
       
       <div>
