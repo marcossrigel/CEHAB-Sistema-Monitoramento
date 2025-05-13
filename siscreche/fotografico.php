@@ -4,6 +4,13 @@ include_once("config.php");
 
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
 
+$fotos_salvas = [];
+$query = "SELECT * FROM fotos WHERE id_iniciativa = $id_iniciativa";
+$result = mysqli_query($conexao, $query);
+while ($linha = mysqli_fetch_assoc($result)) {
+    $fotos_salvas[] = $linha;
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     foreach ($_FILES['foto']['tmp_name'] as $i => $tmp) {
         if (!empty($_FILES['foto']['name'][$i])) {
@@ -18,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    echo "<script>alert('Fotos enviadas com sucesso!'); window.location.href='acompanhamento_fotos.php?id_iniciativa=$id_iniciativa';</script>";
+    echo "<script>alert('Fotos enviadas com sucesso!'); window.location.href='fotografico.php?id_iniciativa=$id_iniciativa';</script>";
 }
 ?>
 
@@ -56,19 +63,23 @@ h2 {
     flex-wrap: nowrap;
 }
 
+.linha-fotos {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
 .foto-box {
-    flex: 1;
-    min-height: 220px;
+    flex: 0 0 23%;
+    max-width: 23%;
     background: #fafafa;
     border: 2px dashed #ccc;
     border-radius: 10px;
-    padding: 10px;
+    padding: 8px;
     text-align: center;
-}
-
-.foto-box input[type="file"] {
-    display: block;
-    margin: 10px auto;
+    min-width: 200px;
 }
 
 .foto-box textarea {
@@ -81,17 +92,18 @@ h2 {
 }
 
 button {
-    display: block;
-    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
     background-color: #4da6ff;
     color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 15px;
-    cursor: pointer;
+    max-width: 150px; 
 }
 .btn {
 padding: 8px 16px;
@@ -109,21 +121,33 @@ button:hover {
 .button-group {
     margin-top: 20px;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
+
 .button-group button {
-    padding: 10px 20px;
+    padding: 6px 14px;
+    width: 150px;
+    height: 30px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
     background-color: #4da6ff;
     color: white;
-    border: none;
-    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    white-space: nowrap;
 }
 .button-group button:hover {
     background-color: #3399ff;
+}
+.preview {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin-top: 5px;
+  object-fit: cover;
 }
   </style>
 </head>
@@ -133,17 +157,17 @@ button:hover {
     <form method="post" enctype="multipart/form-data" id="form-fotos">
 
       <div id="linhas-container">
-        <!-- 1ª linha inicial -->
         <div class="linha-fotos">
-          <?php for ($i = 0; $i < 4; $i++): ?>
+            <?php for ($i = 0; $i < 4; $i++): ?>
             <div class="foto-box">
-              <p><strong>Foto</strong></p>
-              <input type="file" name="foto[]">
-              <textarea name="descricao[]" placeholder="Descrição da foto"></textarea>
+                <p><strong>Foto</strong></p>
+                <input type="file" name="foto[]" class="input-foto" accept="image/*">
+                <img src="" class="preview" style="display:none;">
+                <textarea name="descricao[]" placeholder="Descrição da foto"></textarea>
             </div>
-          <?php endfor; ?>
+            <?php endfor; ?>
         </div>
-      </div>
+        </div>
 
     <div class="button-group">
         <button type="button" class="btn azul" onclick="adicionarLinha()">Adicionar Linha</button>
@@ -156,6 +180,24 @@ button:hover {
   </div>
 
   <script>
+
+    document.addEventListener("change", function(e) {
+    if (e.target && e.target.classList.contains("input-foto")) {
+    const fileInput = e.target;
+    const file = fileInput.files[0];
+    const previewImg = fileInput.parentElement.querySelector(".preview");
+
+        if (file && previewImg) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+            previewImg.src = event.target.result;
+            previewImg.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
+
     function adicionarLinha() {
       const container = document.getElementById('linhas-container');
 
@@ -166,10 +208,12 @@ button:hover {
         const box = document.createElement('div');
         box.className = 'foto-box';
 
+        
         box.innerHTML = `
-          <p><strong>Foto</strong></p>
-          <input type="file" name="foto[]">
-          <textarea name="descricao[]" placeholder="Descrição da foto"></textarea>
+            <p><strong>Foto</strong></p>
+            <input type="file" name="foto[]" class="input-foto" accept="image/*">
+            <img src="" class="preview" style="display:none;">
+            <textarea name="descricao[]" placeholder="Descrição da foto"></textarea>
         `;
 
         novaLinha.appendChild(box);
@@ -183,9 +227,7 @@ button:hover {
         const linhas = container.getElementsByClassName('linha-fotos');
         if (linhas.length > 1) {
             container.removeChild(linhas[linhas.length - 1]);
-        } else {
-            alert("Você precisa manter pelo menos uma linha.");
-        }
+        } 
     }
   </script>
 </body>
