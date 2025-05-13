@@ -27,13 +27,13 @@ if (isset($_POST['salvar'])) {
     $prazo_execucao_atual = $_POST['prazo_execucao_atual'];
 
     $valor_inicial_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_inicial_obra']);
-    $valor_aditivo_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo_obra']);  // <== AQUI
+    $valor_aditivo_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo_obra']);  
     $valor_total_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_total_obra']);
     $valor_inicial_contrato = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_inicial_contrato']);
     $valor_aditivo = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo']);
     $valor_contrato = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_contrato']);
 
-    $cod_subtracao = mysqli_real_escape_string($conexao, $_POST['cod_subtracao']); // <== AQUI
+    $cod_subtracao = mysqli_real_escape_string($conexao, $_POST['cod_subtracao']);
     $secretaria_demandante = mysqli_real_escape_string($conexao, $_POST['secretaria_demandante']);
 
     if ($dados) {
