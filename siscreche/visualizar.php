@@ -247,7 +247,7 @@ h1 {
           Informações Contratuais
       </button>
 
-      <button style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+      <button onclick="window.location.href='medicoes.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
         Acompanhamento de Medições
       </button>
       <br>

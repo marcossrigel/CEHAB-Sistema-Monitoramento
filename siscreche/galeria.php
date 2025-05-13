@@ -1,8 +1,8 @@
 <?php
-include_once("config.php");
-$id = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
-$query = "SELECT * FROM fotos WHERE id_iniciativa = $id ORDER BY id ASC";
-$result = mysqli_query($conexao, $query);
+    include_once("config.php");
+    $id = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+    $query = "SELECT * FROM fotos WHERE id_iniciativa = $id ORDER BY id ASC";
+    $result = mysqli_query($conexao, $query);
 ?>
 
 <!DOCTYPE html>
