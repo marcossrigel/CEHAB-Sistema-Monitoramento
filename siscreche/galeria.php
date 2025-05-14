@@ -1,8 +1,24 @@
 <?php
-    include_once("config.php");
-    $id = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
-    $query = "SELECT * FROM fotos WHERE id_iniciativa = $id ORDER BY id ASC";
-    $result = mysqli_query($conexao, $query);
+session_start();
+
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
+}
+
+include_once("config.php");
+
+$id_usuario = $_SESSION['id_usuario'];
+$id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+
+$query = "SELECT * FROM fotos WHERE id_iniciativa = $id_iniciativa AND id_usuario = $id_usuario ORDER BY id ASC";
+$result = mysqli_query($conexao, $query);
+
+$nome_iniciativa = "Desconhecida";
+$res = mysqli_query($conexao, "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa");
+if ($linha = mysqli_fetch_assoc($res)) {
+    $nome_iniciativa = $linha['iniciativa'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +94,7 @@ h2 {
 </head>
 
 <body>
-  <h2>Galeria - Iniciativa <?php echo $id; ?></h2>
+  <h2>Galeria - Iniciativa <?php echo htmlspecialchars($nome_iniciativa); ?></h2>
 
   <div class="galeria">
     <?php while ($foto = mysqli_fetch_assoc($result)): ?>
@@ -90,7 +106,7 @@ h2 {
   </div>
 
   <div class="voltar-container">
-    <button type="button" class="btn-voltar" onclick="window.location.href='fotografico.php';">&lt; Voltar</button>
+    <button type="button" class="btn-voltar" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
   </div>
 </body>
 </html>
