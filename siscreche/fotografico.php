@@ -1,12 +1,26 @@
 <?php
+
 session_start();
+
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+
 include_once("config.php");
 
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+if ($id_iniciativa === 0) {
+    echo "<script>alert('ID da iniciativa inválido!'); window.location.href='visualizar.php';</script>";
+    exit;
+}
 
 $fotos_salvas = [];
-$query = "SELECT * FROM fotos WHERE id_iniciativa = $id_iniciativa";
+$query = "SELECT * FROM fotos WHERE id_iniciativa = $id_iniciativa AND id_usuario = $id_usuario";
 $result = mysqli_query($conexao, $query);
+
 while ($linha = mysqli_fetch_assoc($result)) {
     $fotos_salvas[] = $linha;
 }
@@ -19,13 +33,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $caminho = "uploads/" . $nome_final;
 
             if (move_uploaded_file($tmp, $caminho)) {
-                $query = "INSERT INTO fotos (id_iniciativa, caminho, descricao) VALUES ($id_iniciativa, '$nome_final', '$descricao')";
+                $query = "INSERT INTO fotos (id_usuario, id_iniciativa, caminho, descricao) VALUES ('$id_usuario', '$id_iniciativa', '$nome_final', '$descricao')";
                 mysqli_query($conexao, $query);
             }
         }
     }
 
 }
+
+$nome_iniciativa = 'Desconhecida';
+
+$query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
+$result_nome = mysqli_query($conexao, $query_nome);
+if ($row = mysqli_fetch_assoc($result_nome)) {
+    $nome_iniciativa = $row['iniciativa'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -152,7 +175,7 @@ button:hover {
 </head>
 <body>
   <div class="container">
-    <h2>Enviar Fotos - Iniciativa <?php echo $id_iniciativa; ?></h2>
+    <h2>Enviar Fotos - Iniciativa <?php echo htmlspecialchars($nome_iniciativa); ?></h2>
     <form method="post" enctype="multipart/form-data" id="form-fotos">
 
       <div id="linhas-container">
@@ -171,8 +194,8 @@ button:hover {
     <div class="button-group">
 
         <button type="submit" class="btn verde" style="background-color:rgb(42, 179, 0);" >Salvar</button>
-        <button type="button" class="btn azul" onclick="window.location.href='visualizar.php?id_iniciativa=<?php echo $id_iniciativa; ?>';">&lt; Voltar</button>
         <button type="button" class="btn azul" onclick="window.location.href='galeria.php';">Galeria</button>
+        <button type="button" class="btn azul" onclick="window.location.href='visualizar.php?id_iniciativa=<?php echo $id_iniciativa; ?>';">&lt; Voltar</button>
     </div>
 
     </form>
