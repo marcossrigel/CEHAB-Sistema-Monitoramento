@@ -224,6 +224,14 @@ form button:hover {
     </div>
       
     <button type="submit">Salvar Alterações</button>
+
+    <div>
+        <button onclick="if(confirm('Tem certeza que deseja excluir?')) { window.location.href='excluir_iniciativa.php?id=<?php echo $row['id']; ?>'; }" 
+          style="background-color: transparent; border: none; cursor: pointer; font-size: 20px; color: red;">
+          delete
+        </button>
+        </div>
+      </div>
     </form>
 
     <div class="botao-voltar">

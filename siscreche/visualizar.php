@@ -67,6 +67,26 @@ input[type="text"] {
   box-sizing: border-box;
 }
 
+.button {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.button button {
+  padding: 10px 20px;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+.button button:hover {
+  background-color: #3399ff;
+}
+
 .button-group {
   margin-top: 20px;
   display: flex;
@@ -92,6 +112,13 @@ input[type="text"] {
 h1 {
   text-align: center;
   margin-bottom: 30px;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .accordion {
@@ -146,18 +173,36 @@ h1 {
   justify-content: flex-start;
   gap: 10px;
 }
-.button button {
+
+.acoes button {
   padding: 10px 20px;
-  background-color: #4da6ff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  font-size: 14px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
-.button button:hover {
-  background-color: #3399ff;
+
+.acoes .btn-pendencia,
+.acoes .btn-contrato,
+.acoes .btn-medicoes,
+.acoes .btn-marcos,
+.acoes .btn-fotos {
+  background-color: #4da6ff; /* ✅ igual ao botão azul padrão */
+  color: white;
+  border-radius: 10px;
+}
+
+.acoes button:hover {
+  filter: brightness(1.1);
+  transform: scale(1.03);
+}
+
+.button button:hover,
+.acoes button:hover {
+  transform: scale(1.03);
 }
 
 .botao-voltar {
@@ -226,40 +271,19 @@ h1 {
         <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">status andamento</button>
       </div>
       
-      <div>
-        <button onclick="if(confirm('Tem certeza que deseja excluir?')) { window.location.href='excluir_iniciativa.php?id=<?php echo $row['id']; ?>'; }" 
-          style="background-color: transparent; border: none; cursor: pointer; font-size: 20px; color: red;">
-          delete
-        </button>
-        </div>
+      
       </div>
 
       <hr>
 
-
-      <button onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';"
-        style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
-        Acompanhar Pendências
-      </button>
-
-      <button onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';"
-        style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
-          Informações Contratuais
-      </button>
-
-      <button onclick="window.location.href='medicoes.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
-        Acompanhamento de Medições
-      </button>
+      <div class="acoes">
+        <button class="btn-pendencia" onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';">🛠 Acompanhar Pendências</button>
+        <button class="btn-contrato" onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';">📄 Informações Contratuais</button>
+        <button class="btn-medicoes" onclick="window.location.href='medicoes.php';">📊 Medições</button>
+        <button class="btn-marcos" onclick="window.location.href='cronogramamarcos.php';">📆 Cronograma</button>
+        <button class="btn-fotos" onclick="window.location.href='fotografico.php?id_iniciativa=<?php echo $row['id']; ?>';">📷 Fotografias</button>
+      </div>
       <br>
-
-      <button onclick="window.location.href='cronogramamarcos.php';" style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
-        Cronograma de Marcos
-      </button>
-
-      <button onclick="window.location.href='fotografico.php?id_iniciativa=<?php echo $row['id']; ?>';"
-        style="background-color:#4da6ff; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; margin-bottom:15px;">
-        Acompanhamento Fotográfico
-      </button>
 
     </div>
 
@@ -268,8 +292,8 @@ h1 {
   <div class="botao-voltar">
     <button class="btn-azul" onclick="window.location.href='home.php';">&lt; Voltar</button>
   </div>
-
 </div>
+
 </body>
 </html>
 
