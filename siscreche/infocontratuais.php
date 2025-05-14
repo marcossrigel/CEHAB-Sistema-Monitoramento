@@ -71,7 +71,7 @@ if (isset($_POST['salvar'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Informações Contratuais</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
   <style>
     :root {
       --color-white: #ffffff;
@@ -108,8 +108,8 @@ if (isset($_POST['salvar'])) {
 
     .main-title {
       font-size: 28px;
-      font-weight: 600;
-      color: var(--color-dark);
+      font-weight: 400; /* ou normal */
+      color: #2c2c2c; /* cinza escuro suave */
       text-align: center;
       margin-bottom: 30px;
     }

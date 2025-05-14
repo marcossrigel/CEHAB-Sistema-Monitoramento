@@ -1,9 +1,55 @@
 <?php
-  session_start();
-  if (!isset($_SESSION['id_usuario'])) {
-      header('Location: login.php');
-      exit;
-  }
+session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: login.php');
+    exit;
+}
+
+include_once('config.php');
+
+$id_usuario = $_SESSION['id_usuario'];
+$id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+
+$titulo_iniciativa = '';
+
+
+
+if ($id_iniciativa > 0) {
+    $resultado = mysqli_query($conexao, "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa");
+    if ($linha = mysqli_fetch_assoc($resultado)) {
+        $titulo_iniciativa = $linha['iniciativa'];
+    }
+}
+
+// Inserção de dados
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['etapa'])) {
+        foreach ($_POST['etapa'] as $index => $etapa) {
+            $inicio_previsto   = mysqli_real_escape_string($conexao, $_POST['inicio_previsto'][$index]);
+            $termino_previsto  = mysqli_real_escape_string($conexao, $_POST['termino_previsto'][$index]);
+            $inicio_real       = mysqli_real_escape_string($conexao, $_POST['inicio_real'][$index]);
+            $termino_real      = mysqli_real_escape_string($conexao, $_POST['termino_real'][$index]);
+            $evolutivo         = mysqli_real_escape_string($conexao, $_POST['evolutivo'][$index]);
+
+            $etapa = mysqli_real_escape_string($conexao, $etapa);
+            $query = "INSERT INTO marcos (id_usuario, id_iniciativa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo)
+                      VALUES ('$id_usuario', '$id_iniciativa', '$etapa', '$inicio_previsto', '$termino_previsto', '$inicio_real', '$termino_real', '$evolutivo')";
+
+            echo "<pre>";
+            echo "ID Usuário: $id_usuario\n";
+            echo "ID Iniciativa: $id_iniciativa\n";
+            echo "Query:\n$query\n";
+            echo "POST:\n";
+            print_r($_POST);
+            echo "</pre>";
+            exit;
+
+            mysqli_query($conexao, $query);
+        }
+    }
+}
+
+$dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa");
 ?>
 
 <!DOCTYPE html>
@@ -11,10 +57,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cronograma de Marcos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background-color: #f8f9fa;
       margin: 0;
       padding: 20px;
@@ -35,6 +82,8 @@
       margin-bottom: 20px;
       font-size: 24px;
       text-align: center;
+      font-weight: 400;
+      color: #2c2c2c;
     }
     table {
       width: 100%;
@@ -85,38 +134,53 @@
       color: #fff;
       border: none;
       padding: 10px 20px;
-      border-radius: 6px;
+      border-radius: 10px;
       font-size: 14px;
+      font-weight: bold;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
     .button-group button:hover {
-      background-color: #1c7ed6;
+      background-color: #228be6;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>CRONOGRAMA DE MARCOS</h1>
+    <h1><?php echo htmlspecialchars($titulo_iniciativa); ?> - CRONOGRAMA DE MARCOS</h1>
+    <form method="post">
     <table id="cronogramaTable">
       <thead>
         <tr>
-          <th name="etapa">Etapa</th>
-          <th name="inicio_previsto">Início Previsto</th>
-          <th name="termino_previsto">Término Previsto</th>
-          <th name="inicio_real">Início Real</th>
-          <th name="termino_real">Término Real</th>
-          <th name="evolutivo">% Evolutivo</th>
+          <th>Etapa</th>
+          <th>Início Previsto</th>
+          <th>Término Previsto</th>
+          <th>Início Real</th>
+          <th>Término Real</th>
+          <th>% Evolutivo</th>
         </tr>
       </thead>
-      <tbody></tbody>
+      <tbody>
+        <?php while($row = mysqli_fetch_assoc($dados)): ?>
+        <tr data-id="<?php echo $row['id']; ?>">
+          <td><textarea class="no-border" readonly><?php echo htmlspecialchars($row['etapa']); ?></textarea></td>
+          <td><input type="text" value="<?php echo $row['inicio_previsto']; ?>" readonly></td>
+          <td><input type="text" value="<?php echo $row['termino_previsto']; ?>" readonly></td>
+          <td><input type="text" value="<?php echo $row['inicio_real']; ?>" readonly></td>
+          <td><input type="text" value="<?php echo $row['termino_real']; ?>" readonly></td>
+          <td><input type="text" value="<?php echo $row['evolutivo']; ?>" readonly></td>
+        </tr>
+        <?php endwhile; ?>
+      </tbody>
     </table>
     <div class="button-group">
-      <button onclick="adicionarLinha()">Adicionar Linha</button>
-      <button onclick="adicionarSubtitulo()">Adicionar Subtítulo</button>
-      <button onclick="excluirLinha()">Excluir Linha</button>
-      <button onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
+      <button type="button" onclick="adicionarLinha()">Adicionar Linha</button>
+      <button type="button" onclick="adicionarSubtitulo()">Adicionar Subtítulo</button>
+      <button type="button" onclick="excluirLinha()">Excluir Linha</button>
+      <button type="submit" name="salvar" style="background-color:rgb(42, 179, 0);">Salvar</button>
+      <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
     </div>
+    </form>
   </div>
 
   <script>
@@ -127,15 +191,14 @@
 
       const etapaCell = newRow.insertCell(0);
       etapaCell.className = 'etapa';
-      if (classeExtra === 'subtitle-row') {
-        etapaCell.innerHTML = `<input type="text">`;
-      } else {
-        etapaCell.innerHTML = `<textarea class="no-border"></textarea>`;
-      }
+      etapaCell.innerHTML = classeExtra === 'subtitle-row'
+        ? '<input type="text" name="etapa[]">'
+        : '<textarea class="no-border" name="etapa[]"></textarea>';
 
-      for (let i = 1; i < 6; i++) {
-        const cell = newRow.insertCell(i);
-        cell.innerHTML = `<input type="text">`;
+      const campos = ['inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+      for (let i = 0; i < campos.length; i++) {
+        const cell = newRow.insertCell(i + 1);
+        cell.innerHTML = `<input type="text" name="${campos[i]}[]">`;
       }
     }
 
@@ -146,7 +209,19 @@
     function excluirLinha() {
       const table = document.getElementById('cronogramaTable').getElementsByTagName('tbody')[0];
       if (table.rows.length > 0) {
-        table.deleteRow(-1);
+        const lastRow = table.rows[table.rows.length - 1];
+        const id = lastRow.getAttribute('data-id');
+
+        if (id) {
+          fetch('excluir_cronograma.php?id=' + id, { method: 'GET' })
+            .then(response => response.text())
+            .then(data => {
+              console.log(data);
+              table.deleteRow(-1);
+            });
+        } else {
+          table.deleteRow(-1);
+        }
       }
     }
   </script>

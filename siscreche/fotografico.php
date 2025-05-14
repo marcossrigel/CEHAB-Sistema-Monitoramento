@@ -56,11 +56,20 @@ if ($row = mysqli_fetch_assoc($result_nome)) {
 <head>
   <meta charset="UTF-8">
   <title>Upload de Fotos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
   <style>
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #f1f1f1;
     padding: 30px;
+}
+
+.main-title {
+      font-size: 28px;
+      font-weight: 400; /* ou normal */
+      color: #2c2c2c; /* cinza escuro suave */
+      text-align: center;
+      margin-bottom: 30px;
 }
 
 .container {
@@ -75,6 +84,9 @@ body {
 h2 {
     text-align: center;
     margin-bottom: 30px;
+    font-weight: 400;
+    color: #2c2c2c;
+    font-size: 24px;
 }
 
 .linha-fotos {
@@ -175,7 +187,7 @@ button:hover {
 </head>
 <body>
   <div class="container">
-    <h2>Enviar Fotos - Iniciativa <?php echo htmlspecialchars($nome_iniciativa); ?></h2>
+    <h2><?php echo htmlspecialchars($nome_iniciativa); ?> - Acompanhamento Fotográfico</h2>
     <form method="post" enctype="multipart/form-data" id="form-fotos">
 
       <div id="linhas-container">
