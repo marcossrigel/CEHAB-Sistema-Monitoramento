@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="button" class="btn-azul" onclick="adicionarLinha()">Adicionar Linha</button>
         <button type="button" class="btn-azul" onclick="excluirLinha()">Excluir Linha</button>
         <button type="submit" class="btn-verde">Salvar</button>
-        <button type="button" class="btn-azul" onclick="window.location.href='home.php'">&lt; Voltar</button>
+        <button type="button" class="btn-azul" onclick="window.location.href='visualizar.php'">&lt; Voltar</button>
       </div>
     </form>
 
