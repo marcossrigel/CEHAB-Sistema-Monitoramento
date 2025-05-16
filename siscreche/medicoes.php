@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_query($conexao, $sql);
     }
 
-    header("Location: sucesso.php");
+    header("Location: medicoes.php");
     exit;
 }
 ?>
