@@ -278,7 +278,7 @@ h1 {
       <div class="acoes">
         <button class="btn-pendencia" onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';">🛠 Acompanhar Pendências</button>
         <button class="btn-contrato" onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';">📄 Informações Contratuais</button>
-        <button class="btn-medicoes" onclick="window.location.href='medicoes.php';">📊 Medições</button>
+        <button class="btn-medicoes" onclick="window.location.href='medicoes.php?id_iniciativa=<?php echo $row['id']; ?>';">📊 Medições</button>
         <button class="btn-marcos" onclick="window.location.href='cronogramamarcos.php?id_iniciativa=<?php echo $row['id']; ?>';">📆 Cronograma</button>
         <button class="btn-fotos" onclick="window.location.href='fotografico.php?id_iniciativa=<?php echo $row['id']; ?>';">📷 Fotografias</button>
         <button class="btn-fotos" onclick="window.location.href='galeria.php?id_iniciativa=<?php echo $row['id']; ?>';">💾 Galeria</button>

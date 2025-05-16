@@ -1,3 +1,49 @@
+<?php
+session_start();
+include_once("config.php");
+
+$id_usuario = $_SESSION['id_usuario'];
+$id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+$nome_iniciativa = '';
+
+if ($id_iniciativa > 0) {
+    $query = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
+    $resultado = mysqli_query($conexao, $query);
+    if ($linha = mysqli_fetch_assoc($resultado)) {
+        $nome_iniciativa = $linha['iniciativa'];
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id_usuario = $_SESSION['id_usuario'];
+    $id_iniciativa = isset($_POST['id_iniciativa']) ? intval($_POST['id_iniciativa']) : 0;
+
+    foreach ($_POST['valor_orcamento'] as $index => $orcamento) {
+        $valor_orcamento = mysqli_real_escape_string($conexao, $_POST['valor_orcamento'][$index]);
+        $valor_bm = mysqli_real_escape_string($conexao, $_POST['valor_bm'][$index]);
+        $saldo_obra = mysqli_real_escape_string($conexao, $_POST['saldo_obra'][$index]);
+        $bm = intval($_POST['bm'][$index]);
+        $data_inicio = $_POST['data_inicio'][$index];
+        $data_fim = $_POST['data_fim'][$index];
+        $data_vistoria = $_POST['data_vistoria'][$index];
+        $data_registro = $_POST['data'][$index];
+
+        $sql = "INSERT INTO medicoes (
+                    id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra,
+                    bm, data_inicio, data_fim, data_vistoria, data_registro
+                ) VALUES (
+                    '$id_usuario', '$id_iniciativa', '$valor_orcamento', '$valor_bm', '$saldo_obra',
+                    '$bm', '$data_inicio', '$data_fim', '$data_vistoria', '$data_registro'
+                )";
+
+        mysqli_query($conexao, $sql);
+    }
+
+    header("Location: sucesso.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -101,8 +147,10 @@
 <body>
 
   <div class="formulario-box">
-    <h1>Acompanhamento de Medições</h1>
+    <h1><?php echo $nome_iniciativa ? $nome_iniciativa . ' - ' : ''; ?>Acompanhamento de Medições</h1>
     <form method="post">
+
+    <input type="hidden" name="id_iniciativa" value="<?php echo $id_iniciativa; ?>">
       <table id="tabelaBM">
         <thead>
           <tr>
@@ -124,9 +172,10 @@
             <td><input type="date" name="data_inicio[]"></td>
             <td><input type="date" name="data_fim[]"></td>
             <td><input type="date" name="data_vistoria[]"></td>
-            <input type="hidden" name="data[]" value="<?php echo date('Y-m-d'); ?>">
+            <input type="hidden" name="data[]" value="<?php echo date('d-m-Y'); ?>">
           </tr>
         </tbody>
+
       </table>
 
       <div class="button-group">
@@ -144,6 +193,7 @@
     function adicionarLinha() {
     const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
     const novaLinha = tabela.insertRow();
+    const dataAtual = new Date().toISOString().split('T')[0];
 
     novaLinha.innerHTML = `
       <td><input type="text" name="valor_orcamento[]"></td>
@@ -153,11 +203,11 @@
       <td><input type="date" name="data_inicio[]"></td>
       <td><input type="date" name="data_fim[]"></td>
       <td><input type="date" name="data_vistoria[]"></td>
-      <input type="hidden" name="data[]" value="<?php echo date('Y-m-d'); ?>">
+      <input type="hidden" name="data[]" value="${dataAtual}">
     `;
 
     aplicarEventosLinha(novaLinha);
-  }
+}
 
     function excluirLinha() {
       const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
@@ -215,11 +265,17 @@
 }
 
   window.onload = function () {
-    const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
-    if (tabela.rows.length > 0) {
-      aplicarEventosLinha(tabela.rows[0]);
+  const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
+  
+  if (tabela.rows.length > 0) {
+    aplicarEventosLinha(tabela.rows[0]);
+
+    const hiddenData = tabela.rows[0].querySelector('input[name="data[]"]');
+    if (hiddenData) {
+      hiddenData.value = new Date().toISOString().split('T')[0];
     }
   }
+}
 
     function aplicarMascaraMoeda(input) {
     input.addEventListener('input', function () {
