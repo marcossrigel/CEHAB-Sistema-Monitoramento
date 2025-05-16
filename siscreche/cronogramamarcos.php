@@ -12,8 +12,6 @@ $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) 
 
 $titulo_iniciativa = '';
 
-
-
 if ($id_iniciativa > 0) {
     $resultado = mysqli_query($conexao, "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa");
     if ($linha = mysqli_fetch_assoc($resultado)) {
@@ -21,29 +19,21 @@ if ($id_iniciativa > 0) {
     }
 }
 
-// Inserção de dados
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['etapa'])) {
         foreach ($_POST['etapa'] as $index => $etapa) {
-            $inicio_previsto   = mysqli_real_escape_string($conexao, $_POST['inicio_previsto'][$index]);
-            $termino_previsto  = mysqli_real_escape_string($conexao, $_POST['termino_previsto'][$index]);
-            $inicio_real       = mysqli_real_escape_string($conexao, $_POST['inicio_real'][$index]);
-            $termino_real      = mysqli_real_escape_string($conexao, $_POST['termino_real'][$index]);
+            $inicio_previsto = !empty($_POST['inicio_previsto'][$index]) ? "'".mysqli_real_escape_string($conexao, $_POST['inicio_previsto'][$index])."'" : "NULL";
+            $termino_previsto = !empty($_POST['termino_previsto'][$index]) ? "'".mysqli_real_escape_string($conexao, $_POST['termino_previsto'][$index])."'" : "NULL";
+            $inicio_real = !empty($_POST['inicio_real'][$index]) ? "'".mysqli_real_escape_string($conexao, $_POST['inicio_real'][$index])."'" : "NULL";
+            $termino_real = !empty($_POST['termino_real'][$index]) ? "'".mysqli_real_escape_string($conexao, $_POST['termino_real'][$index])."'" : "NULL";
             $evolutivo         = mysqli_real_escape_string($conexao, $_POST['evolutivo'][$index]);
 
             $etapa = mysqli_real_escape_string($conexao, $etapa);
-            $query = "INSERT INTO marcos (id_usuario, id_iniciativa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo)
-                      VALUES ('$id_usuario', '$id_iniciativa', '$etapa', '$inicio_previsto', '$termino_previsto', '$inicio_real', '$termino_real', '$evolutivo')";
+            $tipo_etapa = isset($_POST['tipo_etapa'][$index]) ? $_POST['tipo_etapa'][$index] : 'linha';
 
-            echo "<pre>";
-            echo "ID Usuário: $id_usuario\n";
-            echo "ID Iniciativa: $id_iniciativa\n";
-            echo "Query:\n$query\n";
-            echo "POST:\n";
-            print_r($_POST);
-            echo "</pre>";
-            exit;
-
+            $query = "INSERT INTO marcos (id_usuario, id_iniciativa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo, tipo_etapa) 
+              VALUES ('$id_usuario', '$id_iniciativa', '$etapa', $inicio_previsto, $termino_previsto, $inicio_real, $termino_real, '$evolutivo', '$tipo_etapa')";
+ 
             mysqli_query($conexao, $query);
         }
     }
@@ -124,6 +114,7 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       background-color: #f8f9fa;
       color: #495057;
     }
+
     .button-group {
       display: flex;
       justify-content: center;
@@ -162,15 +153,22 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       </thead>
       <tbody>
         <?php while($row = mysqli_fetch_assoc($dados)): ?>
-        <tr data-id="<?php echo $row['id']; ?>">
-          <td><textarea class="no-border" readonly><?php echo htmlspecialchars($row['etapa']); ?></textarea></td>
-          <td><input type="text" value="<?php echo $row['inicio_previsto']; ?>" readonly></td>
-          <td><input type="text" value="<?php echo $row['termino_previsto']; ?>" readonly></td>
-          <td><input type="text" value="<?php echo $row['inicio_real']; ?>" readonly></td>
-          <td><input type="text" value="<?php echo $row['termino_real']; ?>" readonly></td>
-          <td><input type="text" value="<?php echo $row['evolutivo']; ?>" readonly></td>
-        </tr>
-        <?php endwhile; ?>
+          <tr data-id="<?php echo $row['id']; ?>" class="<?php echo $row['tipo_etapa'] === 'subtitulo' ? 'subtitle-row' : ''; ?>">
+            <td>
+              <?php if ($row['tipo_etapa'] === 'subtitulo'): ?>
+                <input type="text" value="<?php echo htmlspecialchars($row['etapa']); ?>" readonly>
+              <?php else: ?>
+                <textarea class="no-border" readonly><?php echo htmlspecialchars($row['etapa']); ?></textarea>
+              <?php endif; ?>
+            </td>
+            <td><input type="date" value="<?php echo $row['inicio_previsto']; ?>" readonly></td>
+            <td><input type="date" value="<?php echo $row['termino_previsto']; ?>" readonly></td>
+            <td><input type="date" value="<?php echo $row['inicio_real']; ?>" readonly></td>
+            <td><input type="date" value="<?php echo $row['termino_real']; ?>" readonly></td>
+            <td><input type="text" value="<?php echo $row['evolutivo']; ?>" readonly></td>
+          </tr>
+          <?php endwhile; ?>
+
       </tbody>
     </table>
     <div class="button-group">
@@ -190,15 +188,18 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       if (classeExtra) newRow.classList.add(classeExtra);
 
       const etapaCell = newRow.insertCell(0);
-      etapaCell.className = 'etapa';
       etapaCell.innerHTML = classeExtra === 'subtitle-row'
-        ? '<input type="text" name="etapa[]">'
-        : '<textarea class="no-border" name="etapa[]"></textarea>';
+      ? '<input type="text" name="etapa[]">'
+      : '<textarea class="no-border" name="etapa[]"></textarea>';
+
+      const tipoEtapa = classeExtra === 'subtitle-row' ? 'subtitulo' : 'linha';
+      etapaCell.innerHTML += `<input type="hidden" name="tipo_etapa[]" value="${tipoEtapa}">`;
 
       const campos = ['inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
       for (let i = 0; i < campos.length; i++) {
+        const tipoCampo = campos[i] !== 'evolutivo' ? 'date' : 'text';
         const cell = newRow.insertCell(i + 1);
-        cell.innerHTML = `<input type="text" name="${campos[i]}[]">`;
+        cell.innerHTML = `<input type="${tipoCampo}" name="${campos[i]}[]">`;
       }
     }
 
