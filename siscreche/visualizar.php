@@ -271,7 +271,6 @@ h1 {
         <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">status andamento</button>
       </div>
       
-      
       </div>
 
       <hr>
@@ -282,6 +281,7 @@ h1 {
         <button class="btn-medicoes" onclick="window.location.href='medicoes.php';">📊 Medições</button>
         <button class="btn-marcos" onclick="window.location.href='cronogramamarcos.php?id_iniciativa=<?php echo $row['id']; ?>';">📆 Cronograma</button>
         <button class="btn-fotos" onclick="window.location.href='fotografico.php?id_iniciativa=<?php echo $row['id']; ?>';">📷 Fotografias</button>
+        <button class="btn-fotos" onclick="window.location.href='galeria.php?id_iniciativa=<?php echo $row['id']; ?>';">💾 Galeria</button>
       </div>
       <br>
 

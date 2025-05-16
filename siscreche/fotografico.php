@@ -206,8 +206,8 @@ button:hover {
     <div class="button-group">
 
         <button type="submit" class="btn verde" style="background-color:rgb(42, 179, 0);" >Salvar</button>
-        <button type="button" class="btn azul" onclick="window.location.href='visualizar.php';">< Voltar</button>
         <button type="button" class="btn azul" onclick="window.location.href='galeria.php?id_iniciativa=<?php echo $id_iniciativa; ?>';">Galeria</button>
+        <button type="button" class="btn azul" onclick="window.location.href='visualizar.php';">< Voltar</button>
 
     </div>
 
