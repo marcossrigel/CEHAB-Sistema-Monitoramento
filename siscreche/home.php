@@ -33,10 +33,10 @@ if (!isset($_SESSION['id_usuario'])) {
 body {
   background-color: var(--color-gray);
   font-family: 'Poppins', sans-serif;
-  height: 100vh;
+  padding: 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  min-height: 100vh;
 }
 
 .container {
@@ -46,6 +46,7 @@ body {
   padding: 40px;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin: auto;
 }
 
 .header {
@@ -177,6 +178,53 @@ a.texto-login{
 
 a.texto-login:hover {
   text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 20px;
+    align-items: flex-start;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .header-text h1 {
+    font-size: 22px;
+  }
+
+  .header-text p {
+    font-size: 14px;
+  }
+
+  .button-group {
+    width: 100%;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .accordion-header h2 {
+    font-size: 16px;
+  }
+
+  .accordion-content {
+    font-size: 13px;
+  }
+
+  .texto-login {
+    font-size: 13px;
+  }
 }
 
 </style>

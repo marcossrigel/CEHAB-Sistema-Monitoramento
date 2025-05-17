@@ -26,10 +26,11 @@ body {
   background-color: var(--color-gray);
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding: 30px 0;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
@@ -37,6 +38,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
 }
 
 .login-container {
@@ -44,7 +46,8 @@ body {
   padding: 40px 30px;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  width: 100%;
+  max-width: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,11 +55,11 @@ body {
 }
 
 .main-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   color: var(--color-dark);
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .login-container:hover {
@@ -130,6 +133,23 @@ body {
   flex-wrap: nowrap; 
 }
 
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+  }
+
+  .main-title {
+    font-size: 22px;
+  }
+
+  .btn {
+    font-size: 16px;
+  }
+
+  .login-form input {
+    font-size: 15px;
+  }
+}
 </style>
 
 </head>
@@ -138,20 +158,18 @@ body {
   <div class="container">
     <div class="main-title">Monitoramento Creches</div>
     <div class="login-container">
+    
       <div class="main-title">Entrar</div>
       <form class="login-form" action="logar.php" method="post">
-
         <input type="text" id="login" name="nome" placeholder="Login" required>
         <input type="password" id="senha" name="senha" placeholder="Senha" required>
         <div class="divider"></div>
         <button type="submit" class="btn">Entrar</button>
         <a href="#" class="forgot-password">Esqueceu a conta?</a>
-
       </form>
     </div>
-    
-    <img src="logo.png" alt="" width="190px">
-  </div>
-  </body>
 
+    <img src="logo.png" alt="Logo" width="160px" style="margin-top: 40px;">
+  </div>
+</body>
 </html>

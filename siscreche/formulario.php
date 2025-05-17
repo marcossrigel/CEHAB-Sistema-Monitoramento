@@ -133,7 +133,8 @@ body {
 }
 
 .coluna-textarea textarea {
-  width: 98%;
+  width: 100%;
+  box-sizing: border-box;
   height: 100px;
   padding: 10px;
   border-radius: 8px;
@@ -248,6 +249,43 @@ select[type="text"] {
   background-color: #42b72a;
 }
 
+@media (max-width: 768px) {
+  .formulario {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .linha {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .linha-atividade {
+    flex-direction: column;
+  }
+
+  .campo,
+  .campo-pequeno,
+  .campo-longo,
+  .coluna-textarea {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  textarea {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  button.btn {
+    width: 100%;
+  }
+
+  .main-title {
+    font-size: 20px;
+  }
+}
+
   </style>
 </head>
 
@@ -262,66 +300,65 @@ select[type="text"] {
         
         <select type="text" name="iniciativa" class="campo" required>
           <option value="">Selecione...</option>
-          <option value="Cabrobó">Creche - Lote 01 (Cabrobó)</option>
-          <option value="Granito">Creche - Lote 01 (Granito)</option>
-          <option value="Lagoa Grande">Creche - Lote 01 (Lagoa Grande)</option>
-          <option value="Ouricuri">Creche - Lote 01 (Ouricuri)</option>
+          <option value="Creche - Lote 01 (Cabrobó)">Creche - Lote 01 (Cabrobó)</option>
+          <option value="Creche - Lote 01 (Granito)">Creche - Lote 01 (Granito)</option>
+          <option value="Creche - Lote 01 (Lagoa Grande)">Creche - Lote 01 (Lagoa Grande)</option>
+          <option value="Creche - Lote 01 (Ouricuri)">Creche - Lote 01 (Ouricuri)</option>
 
-          <option value="Mirandiba">Creche - Lote 02 (Mirandiba)</option>
-          <option value="Serra T 1">Creche - Lote 02 (Serra T 01)</option>
-          <option value="Serra T 2">Creche - Lote 02 (Serra T 02)</option>
-          <option value="Serra T 2">Creche - Lote 02 (Triunfo)</option>
-          <option value="Serra T 2">Creche - Lote 02 (Tuparetama)</option>
+          <option value="Creche - Lote 02 (Mirandiba)">Creche - Lote 02 (Mirandiba)</option>
+          <option value="Creche - Lote 02 (Serra T 01)">Creche - Lote 02 (Serra T 01)</option>
+          <option value="Creche - Lote 02 (Serra T 02)">Creche - Lote 02 (Serra T 02)</option>
+          <option value="Creche - Lote 02 (Triunfo)">Creche - Lote 02 (Triunfo)</option>
+          <option value="Creche - Lote 02 (Tuparetama)">Creche - Lote 02 (Tuparetama)</option>
 
-          <option value="Arcoverde">Creche - Lote 03 (Arcoverde)</option>
-          <option value="Custódia">Creche - Lote 03 (Custódia)</option>
-          <option value="Ibimirim">Creche - Lote 03 (Ibimirim)</option>
-          <option value="Itíba">Creche - Lote 03 (Itíba)</option>
-          <option value="Pedra">Creche - Lote 03 (Pedra)</option>
+          <option value="Creche - Lote 03 (Arcoverde)">Creche - Lote 03 (Arcoverde)</option>
+          <option value="Creche - Lote 03 (Custódia)">Creche - Lote 03 (Custódia)</option>
+          <option value="Creche - Lote 03 (Ibimirim)">Creche - Lote 03 (Ibimirim)</option>
+          <option value="Creche - Lote 03 (Itíba)">Creche - Lote 03 (Itíba)</option>
+          <option value="Creche - Lote 03 (Pedra)">Creche - Lote 03 (Pedra)</option>
 
-          <option value="Garanhuns Terreno 01">Creche - Lote 04 (Garanhuns Terreno 01)</option>
-          <option value="Garanhuns Terreno 02">Creche - Lote 04 (Garanhuns Terreno 02)</option>
-          <option value="Paranatama">Creche - Lote 04 (Paranatama)</option>
-          <option value="São Bento do una">Creche - Lote 04 (São Bento do una)</option>
+          <option value="Creche - Lote 04 (Garanhuns Terreno 01)">Creche - Lote 04 (Garanhuns Terreno 01)</option>
+          <option value="Creche - Lote 04 (Garanhuns Terreno 02)">Creche - Lote 04 (Garanhuns Terreno 02)</option>
+          <option value="Creche - Lote 04 (Paranatama)">Creche - Lote 04 (Paranatama)</option>
+          <option value="Creche - Lote 04 (São Bento do una)">Creche - Lote 04 (São Bento do una)</option>
           
-          <option value="Belo Jardim">Creche - Lote 05 (Belo Jardim)</option>
-          <option value="Brejo da Madre de Deus">Creche - Lote 05 (Brejo da Madre de Deus)</option>
-          <option value="Jataúba">Creche - Lote 05 (Jataúba)</option>
-          <option value="Taquaritinga do Norte">Creche - Lote 05 (Taquaritinga do Norte)</option>
-          <option value="São Bento do una">Creche - Lote 05 (São Bento do una)</option>
-          <option value="Vertentes">Creche - Lote 05 (Vertentes)</option>
+          <option value="Creche - Lote 05 (Belo Jardim)">Creche - Lote 05 (Belo Jardim)</option>
+          <option value="Creche - Lote 05 (Brejo da Madre de Deus)">Creche - Lote 05 (Brejo da Madre de Deus)</option>
+          <option value="Creche - Lote 05 (Jataúba)">Creche - Lote 05 (Jataúba)</option>
+          <option value="Creche - Lote 05 (Taquaritinga do Norte)">Creche - Lote 05 (Taquaritinga do Norte)</option>
+          <option value="Creche - Lote 05 (São Bento do una)">Creche - Lote 05 (São Bento do una)</option>
+          <option value="Creche - Lote 05 (Vertentes)">Creche - Lote 05 (Vertentes)</option>
 
-          <option value="Belem de Maria">Creche - Lote 06 (Belém de Maria)</option>
-          <option value="Bezerros">Creche - Lote 06 (Bezerros)</option>
-          <option value="Salgado">Creche - Lote 06 (Caruaru 06 - Salgado)</option>
-          <option value="Vila Cipó">Creche - Lote 06 (Caruaru 02 - Vila Cipó)</option>
-          <option value="Rendeiras">Creche - Lote 06 (Caruaru 03 - Rendeiras)</option>
-          <option value="Xique Xique">Creche - Lote 06 (Caruaru 04 - Xique Xique)</option>
-          <option value="Catende">Creche - Lote 06 (Catende)</option>
-          <option value="São Joaquim do Monte">Creche - Lote 06 (São Joaquim do Monte)</option>
+          <option value="Creche - Lote 06 (Belém de Maria)">Creche - Lote 06 (Belém de Maria)</option>
+          <option value="Creche - Lote 06 (Bezerros)">Creche - Lote 06 (Bezerros)</option>
+          <option value="Creche - Lote 06 (Caruaru 06 - Salgado)">Creche - Lote 06 (Caruaru 06 - Salgado)</option>
+          <option value="Creche - Lote 06 (Caruaru 02 - Vila Cipó)">Creche - Lote 06 (Caruaru 02 - Vila Cipó)</option>
+          <option value="Creche - Lote 06 (Caruaru 03 - Rendeiras)">Creche - Lote 06 (Caruaru 03 - Rendeiras)</option>
+          <option value="Creche - Lote 06 (Caruaru 04 - Xique Xique)">Creche - Lote 06 (Caruaru 04 - Xique Xique)</option>
+          <option value="Creche - Lote 06 (Catende)">Creche - Lote 06 (Catende)</option>
+          <option value="Creche - Lote 06 (São Joaquim do Monte)">Creche - Lote 06 (São Joaquim do Monte)</option>
 
-          <option value="Vicência">Creche - Lote 07 (Vicência)</option>
-          <option value="Timbaúba">Creche - Lote 07 (Timbaúba)</option>
-          <option value="Camutanga">Creche - Lote 07 (Camutanga)</option>
-          <option value="Bom Jardim">Creche - Lote 07 (Bom Jardim)</option>
-          <option value="Araçoiaba">Creche - Lote 07 (Araçoiaba)</option>          
+          <option value="Creche - Lote 07 (Vicência)">Creche - Lote 07 (Vicência)</option>
+          <option value="Creche - Lote 07 (Timbaúba)">Creche - Lote 07 (Timbaúba)</option>
+          <option value="Creche - Lote 07 (Camutanga)">Creche - Lote 07 (Camutanga)</option>
+          <option value="Creche - Lote 07 (Bom Jardim)">Creche - Lote 07 (Bom Jardim)</option>
+          <option value="Creche - Lote 07 (Araçoiaba)">Creche - Lote 07 (Araçoiaba)</option>          
 
-          <option value="São José da Coroa Grande">Creche - Lote 08 (São José da Coroa Grande)</option>
-          <option value="Jaboatão Terreno 04 Muribeca">Creche - Lote 08 (Jaboatão Terreno 04 Muribeca)</option>
-          <option value="Cabo de Santo Agostinho">Creche - Lote 08 (Cabo de Santo Agostinho)</option>
-          <option value="Jaboatão Terreno 01 Rio Dourado">Creche - Lote 08 (Jaboatão Terreno 01 Rio Dourado)</option>
-          <option value="Moreno">Creche - Lote 08 (Moreno)</option>
-          <option value="jaboatão Terreno 02 Candeias">Creche - Lote 08 (Jaboatão Terreno 02 Candeias)</option>
-          <option value="Ipojuca">Creche - Lote 08 (Ipojuca)</option>
+          <option value="Creche - Lote 08 (São José da Coroa Grande)">Creche - Lote 08 (São José da Coroa Grande)</option>
+          <option value="Creche - Lote 08 (Jaboatão Terreno 04 Muribeca)">Creche - Lote 08 (Jaboatão Terreno 04 Muribeca)</option>
+          <option value="Creche - Lote 08 (Cabo de Santo Agostinho)">Creche - Lote 08 (Cabo de Santo Agostinho)</option>
+          <option value="Creche - Lote 08 (Jaboatão Terreno 01 Rio Dourado)">Creche - Lote 08 (Jaboatão Terreno 01 Rio Dourado)</option>
+          <option value="Creche - Lote 08 (Moreno)">Creche - Lote 08 (Moreno)</option>
+          <option value="Creche - Lote 08 (Jaboatão Terreno 02 Candeias)">Creche - Lote 08 (Jaboatão Terreno 02 Candeias)</option>
+          <option value="Creche - Lote 08 (Ipojuca)">Creche - Lote 08 (Ipojuca)</option>
 
-          <option value="Areias">Creche - Lote 09 (Areias)</option>
-          <option value="Itamaraca">Creche - Lote 09 (Itamaraca)</option>
-          <option value="Camaragibe 01">Creche - Lote 09 (Camaragibe 01)</option>
-          <option value="Igarassu 01">Creche - Lote 09 (Igarassu 01)</option>
-          <option value="Camaragibe 02">Creche - Lote 09 (Camaragibe 02)</option>
-          <option value="Igarassu 02">Creche - Lote 09 (Igarassu 02)</option>
-          <option value="Olinda">Creche - Lote 09 (Olinda)</option>
-
+          <option value="Creche - Lote 09 (Areias)">Creche - Lote 09 (Areias)</option>
+          <option value="Creche - Lote 09 (Itamaraca)">Creche - Lote 09 (Itamaraca)</option>
+          <option value="Creche - Lote 09 (Camaragibe 01)">Creche - Lote 09 (Camaragibe 01)</option>
+          <option value="Creche - Lote 09 (Igarassu 01)">Creche - Lote 09 (Igarassu 01)</option>
+          <option value="Creche - Lote 09 (Camaragibe 02)">Creche - Lote 09 (Camaragibe 02)</option>
+          <option value="Creche - Lote 09 (Igarassu 02)">Creche - Lote 09 (Igarassu 02)</option>
+          <option value="Creche - Lote 09 (Olinda)">Creche - Lote 09 (Olinda)</option>
           
         </select>
 

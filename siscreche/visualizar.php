@@ -190,7 +190,7 @@ h1 {
 .acoes .btn-medicoes,
 .acoes .btn-marcos,
 .acoes .btn-fotos {
-  background-color: #4da6ff; /* ✅ igual ao botão azul padrão */
+  background-color: #4da6ff;
   color: white;
   border-radius: 10px;
 }
@@ -224,6 +224,63 @@ h1 {
 
 .btn-azul:hover {
   background-color: #3399ff;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .table-container {
+    min-width: unset;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+  }
+
+  .main-title, h1 {
+    font-size: 22px;
+  }
+
+  .accordion {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  .panel p {
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+
+  .acoes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acoes button {
+    width: 100%;
+  }
+
+  .button {
+    justify-content: center;
+  }
+
+  .button button {
+    width: 100%;
+  }
+
+  .botao-voltar {
+    justify-content: center;
+  }
+
+  .btn-azul {
+    width: 100%;
+  }
 }
 
 </style>
