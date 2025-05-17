@@ -79,52 +79,48 @@ if (isset($_POST['salvar'])) {
       --color-dark: #1d2129;
       --color-blue: #4da6ff;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background-color: var(--color-gray);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
-      padding: 30px 0;
+      padding: 30px 10px;
     }
-
     .container {
       background: var(--color-white);
-      padding: 40px 30px;
+      padding: 30px 20px;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 90%;
+      width: 100%;
       max-width: 900px;
     }
-
     .main-title {
-      font-size: 28px;
-      font-weight: 400; /* ou normal */
-      color: #2c2c2c; /* cinza escuro suave */
+      font-size: 24px;
+      font-weight: 500;
+      color: #2c2c2c;
       text-align: center;
       margin-bottom: 30px;
+      padding: 0 10px;
     }
-
     table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0 10px;
     }
-
     th, td {
       text-align: left;
       padding: 8px;
     }
-
+    .hide-mobile {
+      display: table-cell;
+    }
     input {
       width: 100%;
       padding: 10px;
@@ -132,14 +128,13 @@ if (isset($_POST['salvar'])) {
       border-radius: 8px;
       font-size: 15px;
     }
-
     .button-group {
       margin-top: 30px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 15px;
     }
-
     button {
       padding: 12px 20px;
       background-color: var(--color-blue);
@@ -150,66 +145,72 @@ if (isset($_POST['salvar'])) {
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #3399ff;
+    }
+    @media (max-width: 600px) {
+      .main-title {
+        font-size: 20px;
+      }
+      input {
+        font-size: 14px;
+      }
+      table th.hide-mobile {
+        display: none;
+      }
+      table td {
+        display: block;
+        width: 100%;
+      }
+      table tr {
+        display: block;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    
     <form method="post" action="infocontratuais.php">
       <input type="hidden" name="id_iniciativa" value="<?php echo $id_iniciativa; ?>">
-
       <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Informações Contratuais</div>
-
       <table>
-        <tr><th>Campo</th><th>Valor</th></tr>
+        <tr><th class="hide-mobile">Campo</th><th class="hide-mobile">Valor</th></tr>
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>
         <tr><td>Empresa</td><td><input type="text" name="empresa" value="<?php echo $dados['empresa'] ?? ''; ?>"></td></tr>
-        
         <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>"></td></tr>
         <tr><td>Data da O.S.</td><td><input type="date"  name="dara_os" value="<?php echo $dados['dara_os'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
-        
         <tr><td>Valor Inicial da Obra</td><td><input type="text" name="valor_inicial_obra" value="<?php echo $dados['valor_inicial_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor de Aditivo da Obra</td><td><input type="text" name="valor_aditivo_obra" value="<?php echo $dados['valor_aditivo_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Total da Obra</td><td><input type="text" name="valor_total_obra" value="<?php echo $dados['valor_total_obra'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial do Contrato</td><td><input type="text" name="valor_inicial_contrato" value="<?php echo $dados['valor_inicial_contrato'] ?? ''; ?>"></td></tr>
         <tr><td>Valor do Aditivo</td><td><input type="text" name="valor_aditivo" value="<?php echo $dados['valor_aditivo'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Total do Contrato</td><td><input type="text" name="valor_contrato" value="<?php echo $dados['valor_contrato'] ?? ''; ?>"></td></tr>
-        
         <tr><td>CÓD. DA SUBTRAÇÃO (LOA)</td><td><input type="text" name="cod_subtracao" readonly value="<?php echo $dados['cod_subtracao'] ?? ''; ?>"></td></tr>
-        
         <tr><td>Secretaria Demandante</td><td><input type="text" name="secretaria_demandante" value="<?php echo $dados['secretaria_demandante'] ?? ''; ?>"></td></tr>
       </table>
-
       <div class="button-group">
         <button type="submit" name="salvar" style="background-color:rgb(42, 179, 0);">Salvar</button>
-        <button type="button" onclick="window.location.href='visualizar.php';">< Voltar</button>
+        <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
       </div>
-
     </form>
   </div>
-
 <script>
 function calcularSubtracao() {
     const valorTotalObra = parseFloat(document.querySelector('input[name="valor_total_obra"]').value.replace(',', '.')) || 0;
     const valorInicialContrato = parseFloat(document.querySelector('input[name="valor_inicial_contrato"]').value.replace(',', '.')) || 0;
-
     const resultado = valorTotalObra - valorInicialContrato;
-
     document.querySelector('input[name="cod_subtracao"]').value = resultado.toFixed(2);
 }
 
 document.querySelector('input[name="valor_inicial_obra"]').addEventListener('input', calcularSubtracao);
 document.querySelector('input[name="valor_inicial_contrato"]').addEventListener('input', calcularSubtracao);
-
 window.addEventListener('load', calcularSubtracao);
 </script>
-
 </body>
 </html>

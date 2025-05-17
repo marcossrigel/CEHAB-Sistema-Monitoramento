@@ -185,6 +185,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
     </div>
   </form>
 </div>
+
 <script>
 document.querySelector('form').addEventListener('submit', function(event) {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
@@ -249,6 +250,8 @@ function deleteRow() {
     }
   }
 }
+
 </script>
 </body>
+
 </html>
