@@ -16,27 +16,14 @@ $resultado = $conexao->query($sql);
 <html lang="pt-br">
   <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Visualizar Iniciativas</title>
 <style>
 body {
   font-family: Arial, sans-serif;
   background-color: #e9eef1;
-  padding: 40px;
-}
-
-.table-container {
-  background: #fff;
+  margin: 0;
   padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  min-width: 600px;
-}
-
-.main-title {
-  font-size: 32px;
-  color: #000;
-  text-align: center;
-  margin-bottom: 20px;
 }
 
 .container {
@@ -44,81 +31,11 @@ body {
   margin: auto;
 }
 
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 15px;
-}
-
-th, td {
-  text-align: left;
-  padding: 10px;
-}
-
-td {
-  padding-right: 15px;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-}
-
-.button {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-}
-.button button {
-  padding: 10px 20px;
-  background-color: #4da6ff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-.button button:hover {
-  background-color: #3399ff;
-}
-
-.button-group {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-around;
-  gap: 10px;
-}
-
-.button-group button {
-  padding: 10px 20px;
-  background-color: #4da6ff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.button-group button:hover {
-  background-color: #3399ff;
-}
-
 h1 {
+  font-size: 28px;
   text-align: center;
-  margin-bottom: 30px;
-}
-
-.acoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #000;
 }
 
 .accordion {
@@ -144,7 +61,7 @@ h1 {
 }
 
 .panel {
-  padding: 0 18px;
+  padding: 0 0 15px 0;
   display: none;
   background-color: white;
   overflow: hidden;
@@ -154,7 +71,9 @@ h1 {
 }
 
 .panel p {
-  margin: 10px 0;
+  margin: 10px 18px;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .seta {
@@ -167,42 +86,57 @@ h1 {
   transform: rotate(180deg);
 }
 
-.button {
-  margin-top: 20px;
+.button-left {
+  margin: 10px 18px 0;
   display: flex;
   justify-content: flex-start;
+}
+
+.button-left button {
+  padding: 8px 16px;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-left button:hover {
+  background-color: #3399ff;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 0 18px;
 }
 
 .acoes button {
-  padding: 10px 20px;
-  font-weight: bold;
-  font-size: 14px;
+  padding: 12px;
+  font-size: 15px;
   border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.acoes .btn-pendencia,
-.acoes .btn-contrato,
-.acoes .btn-medicoes,
-.acoes .btn-marcos,
-.acoes .btn-fotos {
-  background-color: #4da6ff;
-  color: white;
   border-radius: 10px;
+  background-color: #f1f5f9;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  flex: 1 1 45%;
+  min-width: 140px;
 }
 
 .acoes button:hover {
-  filter: brightness(1.1);
-  transform: scale(1.03);
-}
-
-.button button:hover,
-.acoes button:hover {
-  transform: scale(1.03);
+  background-color: #e0e7ff;
 }
 
 .botao-voltar {
@@ -211,7 +145,7 @@ h1 {
   margin-top: 40px;
 }
 
-.btn-azul {
+.botao-voltar button {
   padding: 10px 20px;
   background-color: #4da6ff;
   color: white;
@@ -222,71 +156,30 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
-.btn-azul:hover {
+.botao-voltar button:hover {
   background-color: #3399ff;
 }
 
 @media (max-width: 768px) {
-  body {
-    padding: 20px;
-  }
-
   .container {
-    width: 100%;
-    padding: 0 10px;
-  }
-
-  .table-container {
-    min-width: unset;
-    width: 100%;
-    box-sizing: border-box;
     padding: 15px;
   }
-
-  .main-title, h1 {
+  h1 {
     font-size: 22px;
   }
-
-  .accordion {
-    font-size: 16px;
-    padding: 14px;
-  }
-
   .panel p {
     font-size: 14px;
-    word-wrap: break-word;
   }
-
   .acoes {
     flex-direction: column;
-    align-items: stretch;
   }
-
   .acoes button {
-    width: 100%;
-  }
-
-  .button {
-    justify-content: center;
-  }
-
-  .button button {
-    width: 100%;
-  }
-
-  .botao-voltar {
-    justify-content: center;
-  }
-
-  .btn-azul {
-    width: 100%;
+    flex: 1 1 100%;
   }
 }
-
 </style>
 </head>
 <body>
-
 <div class="container">
   <h1>Iniciativas Cadastradas</h1>
 
@@ -296,63 +189,33 @@ h1 {
       <span class="seta">⌄</span>
     </button>
     <div class="panel">
-      <p>
-        <strong>Status:</strong> <?php echo $row['ib_status']; ?> |
-        <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?>
-      </p>
-      
-      <p>
-        <strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | 
-        <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | 
-        <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> |
-        <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?>
-      </p>
-      
-      <p><strong>Secretaria:</strong> <?php echo $row['ib_secretaria']; ?> |
-        <strong>Órgão:</strong> <?php echo $row['ib_orgao']; ?> |
-        <strong>Processo SEI:</strong> <?php echo $row['ib_numero_processo_sei']; ?>
-      </p>
-      
-      <p><strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?> | 
-        <strong>Fiscal Responsável:</strong> <?php echo $row['ib_fiscal']; ?>
-      </p>
-      
-      <br>
-        <p><strong>Objeto:</strong> <?php echo $row['objeto']; ?></p>
-        <p><strong>Informações Gerais:</strong> <?php echo $row['informacoes_gerais']; ?></p>
-        <p><strong>Observações:</strong> <?php echo $row['observacoes']; ?></p>
-      <br>
+      <p><strong>Status:</strong> <?php echo $row['ib_status']; ?> | <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?></p>
+      <p><strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> | <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?></p>
+      <p><strong>Secretaria:</strong> <?php echo $row['ib_secretaria']; ?> | <strong>Órgão:</strong> <?php echo $row['ib_orgao']; ?> | <strong>Processo SEI:</strong> <?php echo $row['ib_numero_processo_sei']; ?></p>
+      <p><strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?> | <strong>Fiscal Responsável:</strong> <?php echo $row['ib_fiscal']; ?></p>
+      <p><strong>Objeto:</strong> <?php echo $row['objeto']; ?></p>
+      <p><strong>Informações Gerais:</strong> <?php echo $row['informacoes_gerais']; ?></p>
+      <p><strong>Observações:</strong> <?php echo $row['observacoes']; ?></p>
 
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-      <div class="button">
-        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">status andamento</button>
+      <div class="button-left">
+        <button onclick="window.location.href='editar_iniciativa.php?id=<?php echo $row['id']; ?>';">Status andamento</button>
       </div>
-      
-      </div>
-
-      <hr>
 
       <div class="acoes">
-        <button class="btn-pendencia" onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';">🛠 Acompanhar Pendências</button>
-        <button class="btn-contrato" onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';">📄 Informações Contratuais</button>
-        <button class="btn-medicoes" onclick="window.location.href='medicoes.php?id_iniciativa=<?php echo $row['id']; ?>';">📊 Medições</button>
-        <button class="btn-marcos" onclick="window.location.href='cronogramamarcos.php?id_iniciativa=<?php echo $row['id']; ?>';">📆 Cronograma</button>
-        <button class="btn-fotos" onclick="window.location.href='fotografico.php?id_iniciativa=<?php echo $row['id']; ?>';">📷 Fotografias</button>
-        <button class="btn-fotos" onclick="window.location.href='galeria.php?id_iniciativa=<?php echo $row['id']; ?>';">💾 Galeria</button>
+        <button onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';">🛠 Acompanhar Pendências</button>
+        <button onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';">📄 Informações Contratuais</button>
+        <button onclick="window.location.href='medicoes.php?id_iniciativa=<?php echo $row['id']; ?>';">📊 Medições</button>
+        <button onclick="window.location.href='cronogramamarcos.php?id_iniciativa=<?php echo $row['id']; ?>';">📆 Cronograma</button>
+        <button onclick="window.location.href='fotografico.php?id_iniciativa=<?php echo $row['id']; ?>';">📷 Fotografias</button>
+        <button onclick="window.location.href='galeria.php?id_iniciativa=<?php echo $row['id']; ?>';">💾 Galeria</button>
       </div>
-      <br>
-
     </div>
-
   <?php endwhile; ?>
-    
+
   <div class="botao-voltar">
-    <button class="btn-azul" onclick="window.location.href='home.php';">&lt; Voltar</button>
+    <button onclick="window.location.href='home.php';">&lt; Voltar</button>
   </div>
 </div>
-
-</body>
-</html>
 
 <script>
   const accordions = document.querySelectorAll(".accordion");
@@ -367,5 +230,6 @@ h1 {
       }
     });
   });
-
 </script>
+</body>
+</html>
