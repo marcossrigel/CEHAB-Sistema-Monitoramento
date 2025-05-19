@@ -41,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensagem = "Medições salvas com sucesso!";
 }
 
-// Agora fora do POST, assim sempre é carregado:
 $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa");
 ?>
 
@@ -170,7 +169,9 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
             <th>Data Vistoria</th>
           </tr>
         </thead>
-        <tbody>
+
+        <!-- Linha de entrada -->
+        <tbody id="linha-formulario">
           <tr>
             <td><input type="text" name="valor_orcamento[]"></td>
             <td><input type="text" name="valor_bm[]"></td>
@@ -183,6 +184,8 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
           </tr>
         </tbody>
 
+        <!-- Linhas salvas -->
+        <tbody id="linhas-salvas">
         <?php if ($resultado_medicoes && mysqli_num_rows($resultado_medicoes) > 0): ?>
           <?php while ($linha = mysqli_fetch_assoc($resultado_medicoes)) { ?>
             <tr>
@@ -196,7 +199,7 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
             </tr>
           <?php } ?>
         <?php endif; ?>
-
+        </tbody>
       </table>
       <div class="button-group">
         <button type="button" class="btn-azul" onclick="adicionarLinha()">Adicionar Linha</button>
@@ -209,7 +212,7 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
 
   <script>
     function adicionarLinha() {
-      const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
+      const tabela = document.getElementById('linha-formulario');
       const novaLinha = tabela.insertRow();
       const dataAtual = new Date().toISOString().split('T')[0];
       novaLinha.innerHTML = `
@@ -226,8 +229,8 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
     }
 
     function excluirLinha() {
-      const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
-      if (tabela.rows.length > 1) {
+      const tabela = document.getElementById('linha-formulario');
+      if (tabela.rows.length > 0) {
         tabela.deleteRow(tabela.rows.length - 1);
       }
     }
@@ -241,7 +244,7 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
     }
 
     function atualizarSaldos() {
-      const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
+      const tabela = document.getElementById('linha-formulario');
       let saldoAnterior = 0;
       for (let i = 0; i < tabela.rows.length; i++) {
         const row = tabela.rows[i];
@@ -273,9 +276,9 @@ $resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_us
     }
 
     window.onload = function () {
-      const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
-      if (tabela.rows.length > 0) {
-        aplicarEventosLinha(tabela.rows[0]);
+      const tabela = document.getElementById('linha-formulario');
+      for (let i = 0; i < tabela.rows.length; i++) {
+        aplicarEventosLinha(tabela.rows[i]);
       }
     }
 
