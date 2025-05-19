@@ -91,14 +91,6 @@ h2 {
 
 .linha-fotos {
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 30px;
-    flex-wrap: nowrap;
-}
-
-.linha-fotos {
-    display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
     gap: 10px;
@@ -182,6 +174,27 @@ button:hover {
   border-radius: 6px;
   margin-top: 5px;
   object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .linha-fotos {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .foto-box {
+    flex: 0 0 48%;
+    max-width: 48%;
+    min-width: unset;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .foto-box {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
   </style>
 </head>

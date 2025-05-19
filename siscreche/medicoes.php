@@ -5,6 +5,7 @@ include_once("config.php");
 $id_usuario = $_SESSION['id_usuario'];
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
 $nome_iniciativa = '';
+$mensagem = '';
 
 if ($id_iniciativa > 0) {
     $query = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
@@ -15,7 +16,6 @@ if ($id_iniciativa > 0) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_usuario = $_SESSION['id_usuario'];
     $id_iniciativa = isset($_POST['id_iniciativa']) ? intval($_POST['id_iniciativa']) : 0;
 
     foreach ($_POST['valor_orcamento'] as $index => $orcamento) {
@@ -35,13 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     '$id_usuario', '$id_iniciativa', '$valor_orcamento', '$valor_bm', '$saldo_obra',
                     '$bm', '$data_inicio', '$data_fim', '$data_vistoria', '$data_registro'
                 )";
-
         mysqli_query($conexao, $sql);
     }
 
-    header("Location: medicoes.php");
-    exit;
+    $mensagem = "Medições salvas com sucesso!";
 }
+
+// Agora fora do POST, assim sempre é carregado:
+$resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa");
 ?>
 
 <!DOCTYPE html>
@@ -70,8 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-weight: 500;
       font-size: 22px;
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 10px;
       color: #222;
+    }
+    .mensagem-sucesso {
+      color: green;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 15px;
     }
     table {
       width: 100%;
@@ -148,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="formulario-box">
     <h1><?php echo $nome_iniciativa ? $nome_iniciativa . ' - ' : ''; ?>Acompanhamento de Medições</h1>
+    <?php if (!empty($mensagem)) echo "<p class='mensagem-sucesso'>$mensagem</p>"; ?>
     <form method="post">
       <input type="hidden" name="id_iniciativa" value="<?php echo $id_iniciativa; ?>">
       <table id="tabelaBM">
@@ -171,9 +179,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <td><input type="date" name="data_inicio[]"></td>
             <td><input type="date" name="data_fim[]"></td>
             <td><input type="date" name="data_vistoria[]"></td>
-            <input type="hidden" name="data[]" value="<?php echo date('d-m-Y'); ?>">
+            <input type="hidden" name="data[]" value="<?php echo date('Y-m-d'); ?>">
           </tr>
         </tbody>
+
+        <?php if ($resultado_medicoes && mysqli_num_rows($resultado_medicoes) > 0): ?>
+          <?php while ($linha = mysqli_fetch_assoc($resultado_medicoes)) { ?>
+            <tr>
+              <td><?php echo 'R$ ' . number_format($linha['valor_orcamento'], 2, ',', '.'); ?></td>
+              <td><?php echo 'R$ ' . number_format($linha['valor_bm'], 2, ',', '.'); ?></td>
+              <td><?php echo 'R$ ' . number_format($linha['saldo_obra'], 2, ',', '.'); ?></td>
+              <td><?php echo htmlspecialchars($linha['bm']); ?></td>
+              <td><?php echo htmlspecialchars($linha['data_inicio']); ?></td>
+              <td><?php echo htmlspecialchars($linha['data_fim']); ?></td>
+              <td><?php echo htmlspecialchars($linha['data_vistoria']); ?></td>
+            </tr>
+          <?php } ?>
+        <?php endif; ?>
+
       </table>
       <div class="button-group">
         <button type="button" class="btn-azul" onclick="adicionarLinha()">Adicionar Linha</button>
@@ -183,6 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </form>
   </div>
+
   <script>
     function adicionarLinha() {
       const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
@@ -200,18 +224,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       `;
       aplicarEventosLinha(novaLinha);
     }
+
     function excluirLinha() {
       const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
       if (tabela.rows.length > 1) {
         tabela.deleteRow(tabela.rows.length - 1);
       }
     }
+
     function parseMoeda(valor) {
       return parseFloat(valor.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
     }
+
     function formatarMoeda(valor) {
       return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+
     function atualizarSaldos() {
       const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
       let saldoAnterior = 0;
@@ -220,21 +248,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const valorOrcamento = row.querySelector('input[name="valor_orcamento[]"]');
         const valorBM = row.querySelector('input[name="valor_bm[]"]');
         const saldoObra = row.querySelector('input[name="saldo_obra[]"]');
-        const orcamento = parseMoeda(valorOrcamento.value);
-        const bm = parseMoeda(valorBM.value);
+        const orcamento = parseMoeda(valorOrcamento?.value || '0');
+        const bm = parseMoeda(valorBM?.value || '0');
         let novoSaldo = 0;
         if (i === 0) {
           novoSaldo = orcamento - bm;
-          saldoAnterior = novoSaldo;
         } else {
           novoSaldo = saldoAnterior - bm;
-          saldoAnterior = novoSaldo;
         }
+        saldoAnterior = novoSaldo;
         if (saldoObra) {
           saldoObra.value = formatarMoeda(novoSaldo);
         }
       }
     }
+
     function aplicarEventosLinha(linha) {
       const orcamentoInput = linha.querySelector('input[name="valor_orcamento[]"]');
       const valorBMInput = linha.querySelector('input[name="valor_bm[]"]');
@@ -243,16 +271,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         aplicarMascaraMoeda(input);
       });
     }
+
     window.onload = function () {
       const tabela = document.getElementById('tabelaBM').getElementsByTagName('tbody')[0];
       if (tabela.rows.length > 0) {
         aplicarEventosLinha(tabela.rows[0]);
-        const hiddenData = tabela.rows[0].querySelector('input[name="data[]"]');
-        if (hiddenData) {
-          hiddenData.value = new Date().toISOString().split('T')[0];
-        }
       }
     }
+
     function aplicarMascaraMoeda(input) {
       input.addEventListener('input', function () {
         let valor = input.value.replace(/\D/g, '');
