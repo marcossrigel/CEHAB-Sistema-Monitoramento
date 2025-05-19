@@ -76,9 +76,14 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       color: #2c2c2c;
     }
     table {
+      min-width: 700px;
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
+    }
+    .tabela-scroll {
+      width: 100%;
+      overflow-x: auto;
     }
     th, td {
       padding: 12px;
@@ -116,17 +121,20 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
     }
 
     .button-group {
+      flex-wrap: wrap;
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 10px;
     }
     .button-group button {
       background-color: #339af0;
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 9px;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 13px;
+      flex: 1 1 45%;
+      max-width: 140px;
       font-weight: bold;
       cursor: pointer;
       transition: background-color 0.3s ease;
@@ -139,7 +147,9 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
 <body>
   <div class="container">
     <h1><?php echo htmlspecialchars($titulo_iniciativa); ?> - CRONOGRAMA DE MARCOS</h1>
-    <form method="post">
+    
+  <form method="post">
+  <div class="tabela-scroll">
     <table id="cronogramaTable">
       <thead>
         <tr>
@@ -153,24 +163,25 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       </thead>
       <tbody>
         <?php while($row = mysqli_fetch_assoc($dados)): ?>
-          <tr data-id="<?php echo $row['id']; ?>" class="<?php echo $row['tipo_etapa'] === 'subtitulo' ? 'subtitle-row' : ''; ?>">
-            <td>
-              <?php if ($row['tipo_etapa'] === 'subtitulo'): ?>
-                <input type="text" value="<?php echo htmlspecialchars($row['etapa']); ?>" readonly>
-              <?php else: ?>
-                <textarea class="no-border" readonly><?php echo htmlspecialchars($row['etapa']); ?></textarea>
-              <?php endif; ?>
-            </td>
-            <td><input type="date" value="<?php echo $row['inicio_previsto']; ?>" readonly></td>
-            <td><input type="date" value="<?php echo $row['termino_previsto']; ?>" readonly></td>
-            <td><input type="date" value="<?php echo $row['inicio_real']; ?>" readonly></td>
-            <td><input type="date" value="<?php echo $row['termino_real']; ?>" readonly></td>
-            <td><input type="text" value="<?php echo $row['evolutivo']; ?>" readonly></td>
-          </tr>
-          <?php endwhile; ?>
-
+        <tr data-id="<?php echo $row['id']; ?>" class="<?php echo $row['tipo_etapa'] === 'subtitulo' ? 'subtitle-row' : ''; ?>">
+          <td>
+            <?php if ($row['tipo_etapa'] === 'subtitulo'): ?>
+              <input type="text" value="<?php echo htmlspecialchars($row['etapa']); ?>" readonly>
+            <?php else: ?>
+              <textarea class="no-border" readonly><?php echo htmlspecialchars($row['etapa']); ?></textarea>
+            <?php endif; ?>
+          </td>
+          <td><input type="date" value="<?php echo $row['inicio_previsto']; ?>" readonly></td>
+          <td><input type="date" value="<?php echo $row['termino_previsto']; ?>" readonly></td>
+          <td><input type="date" value="<?php echo $row['inicio_real']; ?>" readonly></td>
+          <td><input type="date" value="<?php echo $row['termino_real']; ?>" readonly></td>
+          <td><input type="text" value="<?php echo $row['evolutivo']; ?>" readonly></td>
+        </tr>
+        <?php endwhile; ?>
       </tbody>
     </table>
+  </div>
+
     <div class="button-group">
       <button type="button" onclick="adicionarLinha()">Adicionar Linha</button>
       <button type="button" onclick="adicionarSubtitulo()">Adicionar Subtítulo</button>
@@ -178,8 +189,9 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       <button type="submit" name="salvar" style="background-color:rgb(42, 179, 0);">Salvar</button>
       <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
     </div>
-    </form>
-  </div>
+    
+  </form>
+  
 
   <script>
     function adicionarLinha(classeExtra = '') {
@@ -226,5 +238,6 @@ $dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usu
       }
     }
   </script>
+
 </body>
 </html>
