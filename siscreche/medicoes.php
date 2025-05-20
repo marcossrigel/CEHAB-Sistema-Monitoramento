@@ -60,6 +60,11 @@ $query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
 $resultado_nome = mysqli_query($conexao, $query_nome);
 $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
+
+function formatarParaBrasileiro($valor) {
+    return 'R$ ' . number_format((float)$valor, 2, ',', '.');
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -84,18 +89,20 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
       min-height: 100vh;
     }
     .table-container {
-      max-width: 1000px;
-      margin: 40px auto;
+      width: 90%;                    /* reduzido de 100% para manter margem lateral */
+      max-width: 1200px;             /* limite para telas grandes */
+      margin: 40px auto;             /* centraliza */
       background: #fff;
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      overflow-x: auto;
+      overflow-x: auto;              /* apenas se ultrapassar */
     }
     table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 8px 15px;
+      table-layout: fixed;           /* ajuda a distribuir colunas de forma equilibrada */
     }
     th, td {
       text-align: left;
@@ -108,6 +115,21 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
       min-width: 120px;
     }
     td[contenteditable]:focus {
+      outline: none;
+      border: 1px solid #4da6ff;
+      background-color: #f0f8ff;
+    }
+    input[type="date"] {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      min-width: 100px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input[type="date"]:focus {
       outline: none;
       border: 1px solid #4da6ff;
       background-color: #f0f8ff;
@@ -182,13 +204,14 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
       <tbody>
       <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
         <tr data-id="<?php echo $linha['id']; ?>">
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['valor_orcamento']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['valor_bm']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['saldo_obra']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['bm']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['data_inicio']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['data_fim']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['data_vistoria']); ?></td>
+          <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['valor_orcamento']); ?></td>
+          <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['valor_bm']); ?></td>
+          <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['saldo_obra']); ?></td>
+          <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['bm']); ?></td>
+          <td><input type="date" name="data_inicio[]" value="<?php echo htmlspecialchars($linha['data_inicio']); ?>" /></td>
+          <td><input type="date" name="data_fim[]" value="<?php echo htmlspecialchars($linha['data_fim']); ?>" /></td>
+          <td><input type="date" name="data_vistoria[]" value="<?php echo htmlspecialchars($linha['data_vistoria']); ?>" /></td>
+          
         </tr>
       <?php } ?>
       </tbody>
@@ -213,14 +236,22 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
+    const valor_orcamento = cells[0]?.innerText.trim();
+    const valor_bm = cells[1]?.innerText.trim();
+    const saldo_obra = cells[2]?.innerText.trim();
+    const bm = cells[3]?.innerText.trim();
+    const data_inicio = cells[4].querySelector('input').value.trim();
+    const data_fim = cells[5].querySelector('input').value.trim();
+    const data_vistoria = cells[6].querySelector('input').value.trim();
+
     const campos = [
-      cells[0]?.innerText.trim(), 
-      cells[1]?.innerText.trim(),
-      cells[2]?.innerText.trim(), 
-      cells[3]?.innerText.trim(), 
-      cells[4]?.innerText.trim(), 
-      cells[5]?.innerText.trim(), 
-      cells[6]?.innerText.trim()  
+      valor_orcamento,
+      valor_bm,
+      saldo_obra,
+      bm,
+      data_inicio,
+      data_fim,
+      data_vistoria
     ];
 
     const nomesCampos = [
@@ -237,7 +268,13 @@ document.querySelector('form').addEventListener('submit', function(event) {
       const input = document.createElement('input');
       input.type = 'hidden';
       input.name = campo + '[]';
-      input.value = campos[idx];
+
+      if (campo.includes('valor') || campo === 'bm') {
+        input.value = converterParaFloatBrasileiro(campos[idx]);
+      } else {
+        input.value = campos[idx];
+      }
+
       this.appendChild(input);
     });
 
@@ -259,9 +296,22 @@ document.querySelector('form').addEventListener('submit', function(event) {
 function addRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const newRow = table.insertRow();
+
   for (let i = 0; i < 7; i++) {
     const newCell = newRow.insertCell();
-    newCell.contentEditable = "true";
+
+    if (i >= 4) {
+      const input = document.createElement('input');
+      input.type = 'date';
+      input.name = ['data_inicio[]', 'data_fim[]', 'data_vistoria[]'][i - 4];
+      input.style.border = 'none';
+      input.style.width = '100%';
+      input.style.font = 'inherit';
+      input.style.background = 'transparent';
+      newCell.appendChild(input);
+    } else {
+      newCell.contentEditable = "true";
+    }
   }
 }
 
@@ -284,8 +334,16 @@ function deleteRow() {
 }
 
 function converterParaFloatBrasileiro(valor) {
-  valor = valor.replace(/\./g, '').replace(',', '.');
-  return valor;
+  return valor.replace(/[^0-9,]/g, '').replace(/\./g, '').replace(',', '.');
+}
+
+function converterParaDataISO(dataBR) {
+  if (!dataBR.includes('/')) return dataBR;
+  const partes = dataBR.split('/');
+  if (partes.length === 3) {
+    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+  }
+  return dataBR;
 }
 
 </script>
