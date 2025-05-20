@@ -1,297 +1,293 @@
 <?php
 session_start();
-include_once("config.php");
+if (!isset($_SESSION['id_usuario'])) {
+  header('Location: login.php');
+  exit;
+}
 
-$id_usuario = $_SESSION['id_usuario'];
+include_once('config.php');
+
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
-$nome_iniciativa = '';
-$mensagem = '';
 
-if ($id_iniciativa > 0) {
-    $query = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
-    $resultado = mysqli_query($conexao, $query);
-    if ($linha = mysqli_fetch_assoc($resultado)) {
-        $nome_iniciativa = $linha['iniciativa'];
+if (isset($_POST['salvar'])) {
+    $id_usuario = $_SESSION['id_usuario'];
+    $valor_orcamento = $_POST['valor_orcamento'];
+    $valor_bm = $_POST['valor_bm'];
+    $saldo_obra = $_POST['saldo_obra'];
+    $bm = $_POST['bm'];
+    $data_inicio = $_POST['data_inicio'];
+    $data_fim = $_POST['data_fim'];
+    $data_vistoria = $_POST['data_vistoria'];
+    $ids = isset($_POST['ids']) ? $_POST['ids'] : [];
+
+    function formatarDinheiro($valor) {
+        return str_replace(',', '.', str_replace('.', '', $valor));
+    }
+
+    for ($i = 0; $i < count($valor_orcamento); $i++) {
+        $id_existente = isset($ids[$i]) ? intval($ids[$i]) : 0;
+        $valor_orcamento_item = mysqli_real_escape_string($conexao, formatarDinheiro($valor_orcamento[$i]));
+        $valor_bm_item = mysqli_real_escape_string($conexao, formatarDinheiro($valor_bm[$i]));
+        $saldo_obra_item = mysqli_real_escape_string($conexao, formatarDinheiro($saldo_obra[$i]));
+        $bm_item = mysqli_real_escape_string($conexao, formatarDinheiro($bm[$i]));
+        $data_inicio_item = mysqli_real_escape_string($conexao, $data_inicio[$i]);
+        $data_fim_item = mysqli_real_escape_string($conexao, $data_fim[$i]);
+        $data_vistoria_item = mysqli_real_escape_string($conexao, $data_vistoria[$i]);
+        $data_registro_item = date('Y-m-d H:i:s');
+
+        if ($id_existente > 0) {
+            $query = "UPDATE medicoes SET 
+                        valor_orcamento = '$valor_orcamento_item',
+                        valor_bm = '$valor_bm_item',
+                        saldo_obra = '$saldo_obra_item',
+                        bm = '$bm_item',
+                        data_inicio = '$data_inicio_item',
+                        data_fim = '$data_fim_item',
+                        data_vistoria = '$data_vistoria_item'
+                      WHERE id = $id_existente AND id_usuario = $id_usuario";
+        } else {
+            $query = "INSERT INTO medicoes (id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra, bm, data_inicio, data_fim, data_vistoria, data_registro) 
+                      VALUES ('$id_usuario', '$id_iniciativa', '$valor_orcamento_item', '$valor_bm_item', '$saldo_obra_item', '$bm_item', '$data_inicio_item', '$data_fim_item', '$data_vistoria_item', '$data_registro_item')";
+        }
+
+        mysqli_query($conexao, $query);
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_iniciativa = isset($_POST['id_iniciativa']) ? intval($_POST['id_iniciativa']) : 0;
+$dados = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_iniciativa = $id_iniciativa");
 
-    foreach ($_POST['valor_orcamento'] as $index => $orcamento) {
-        $valor_orcamento = mysqli_real_escape_string($conexao, $_POST['valor_orcamento'][$index]);
-        $valor_bm = mysqli_real_escape_string($conexao, $_POST['valor_bm'][$index]);
-        $saldo_obra = mysqli_real_escape_string($conexao, $_POST['saldo_obra'][$index]);
-        $bm = intval($_POST['bm'][$index]);
-        $data_inicio = $_POST['data_inicio'][$index];
-        $data_fim = $_POST['data_fim'][$index];
-        $data_vistoria = $_POST['data_vistoria'][$index];
-        $data_registro = $_POST['data'][$index];
-
-        $sql = "INSERT INTO medicoes (
-                    id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra,
-                    bm, data_inicio, data_fim, data_vistoria, data_registro
-                ) VALUES (
-                    '$id_usuario', '$id_iniciativa', '$valor_orcamento', '$valor_bm', '$saldo_obra',
-                    '$bm', '$data_inicio', '$data_fim', '$data_vistoria', '$data_registro'
-                )";
-        mysqli_query($conexao, $sql);
-    }
-
-    $mensagem = "Medições salvas com sucesso!";
-}
-
-$resultado_medicoes = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa");
+$query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
+$resultado_nome = mysqli_query($conexao, $query_nome);
+$linha_nome = mysqli_fetch_assoc($resultado_nome);
+$nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Acompanhamento de Medições</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <title>Medições</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #e9eef1;
+    :root {
+      --color-dark: #1d2129;
+    }
+    * {
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .formulario-box {
+    html, body {
+      font-family: 'Poppins', sans-serif;
+      background: #e3e8ec;
+      min-height: 100vh;
+    }
+    .table-container {
+      max-width: 1000px;
+      margin: 40px auto;
       background: #fff;
-      padding: 25px 20px;
+      padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    h1 {
-      font-weight: 500;
-      font-size: 22px;
-      text-align: center;
-      margin-bottom: 10px;
-      color: #222;
-    }
-    .mensagem-sucesso {
-      color: green;
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow-x: auto;
     }
     table {
       width: 100%;
-      border-collapse: collapse;
-      overflow-x: auto;
-      display: block;
-    }
-    thead {
-      background-color: #eeeeee;
+      border-collapse: separate;
+      border-spacing: 8px 15px;
     }
     th, td {
-      text-align: center;
-      padding: 8px;
-      font-size: 14px;
+      text-align: left;
+      padding: 10px;
+    }
+    td[contenteditable] {
       border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
       min-width: 120px;
     }
-    input[type="text"],
-    input[type="date"],
-    input[type="number"] {
-      width: 100%;
-      padding: 7px 10px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-family: 'Poppins', sans-serif;
-      box-sizing: border-box;
+    td[contenteditable]:focus {
+      outline: none;
+      border: 1px solid #4da6ff;
+      background-color: #f0f8ff;
+    }
+    .main-title {
+      font-size: 26px;
+      color: var(--color-dark);
+      text-align: center;
+      margin-bottom: 20px;
     }
     .button-group {
       margin-top: 20px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 15px;
+      gap: 10px;
     }
     .button-group button {
       padding: 10px 20px;
+      background-color: #4da6ff;
+      color: white;
       border: none;
       border-radius: 10px;
-      font-weight: 500;
       cursor: pointer;
-      font-size: 14px;
-      font-family: 'Poppins', sans-serif;
-      transition: 0.2s;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
     }
-    .btn-azul {
-      background-color: #339af0;
-      color: white;
-    }
-    .btn-azul:hover {
-      background-color: #228be6;
-    }
-    .btn-verde {
-      background-color: #2ab300;
-      color: white;
-    }
-    .btn-verde:hover {
-      background-color: #219200;
+    .button-group button:hover {
+      background-color: #3399ff;
     }
     @media (max-width: 768px) {
-      .formulario-box {
-        padding: 20px 10px;
+      .main-title {
+        font-size: 20px;
+        padding: 0 10px;
       }
-      th, td {
-        font-size: 12px;
-        padding: 6px;
+      table {
+        font-size: 13px;
+        display: block;
+        overflow-x: auto;
       }
-      h1 {
-        font-size: 18px;
+      td[contenteditable] {
+        min-width: 90px;
+        font-size: 13px;
+      }
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      .button-group button {
+        width: 100%;
+        max-width: 250px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="formulario-box">
-    <h1><?php echo $nome_iniciativa ? $nome_iniciativa . ' - ' : ''; ?>Acompanhamento de Medições</h1>
-    <?php if (!empty($mensagem)) echo "<p class='mensagem-sucesso'>$mensagem</p>"; ?>
-    <form method="post">
-      <input type="hidden" name="id_iniciativa" value="<?php echo $id_iniciativa; ?>">
-      <table id="tabelaBM">
-        <thead>
-          <tr>
-            <th>Valor Total da Obra</th>
-            <th>Valor BM</th>
-            <th>Saldo da Obra</th>
-            <th>BM</th>
-            <th>Data Início</th>
-            <th>Data Fim</th>
-            <th>Data Vistoria</th>
-          </tr>
-        </thead>
+<div class="table-container">
+  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Acompanhamento de Medições</div>
+  <form method="post" action="medicoes.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
+    <table id="spreadsheet">
+      <thead>
+        <tr>
+          <th>Valor Total da Obra</th>
+          <th>Valor BM</th>
+          <th>Saldo da Obra</th>
+          <th>BM</th>
+          <th>Data Início</th>
+          <th>Data Fim</th>
+          <th>Data Vistoria</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
+        <tr data-id="<?php echo $linha['id']; ?>">
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['valor_orcamento']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['valor_bm']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['saldo_obra']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['bm']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['data_inicio']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['data_fim']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['data_vistoria']); ?></td>
+        </tr>
+      <?php } ?>
+      </tbody>
+    </table>
+    <div class="button-group">
+      <button type="button" onclick="addRow()">Adicionar Linha</button>
+      <button type="button" onclick="deleteRow()">Excluir Linha</button>
+      <button type="submit" name="salvar" id="submit" style="background-color:rgb(42, 179, 0);">Salvar</button>
+      <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
+    </div>
+  </form>
+</div>
 
-        <!-- Linha de entrada -->
-        <tbody id="linha-formulario">
-          <tr>
-            <td><input type="text" name="valor_orcamento[]"></td>
-            <td><input type="text" name="valor_bm[]"></td>
-            <td><input type="text" name="saldo_obra[]" readonly></td>
-            <td><input type="number" name="bm[]"></td>
-            <td><input type="date" name="data_inicio[]"></td>
-            <td><input type="date" name="data_fim[]"></td>
-            <td><input type="date" name="data_vistoria[]"></td>
-            <input type="hidden" name="data[]" value="<?php echo date('Y-m-d'); ?>">
-          </tr>
-        </tbody>
+<script>
+document.querySelector('form').addEventListener('submit', function(event) {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const linhas = table.rows;
+  let temLinhaValida = false;
 
-        <!-- Linhas salvas -->
-        <tbody id="linhas-salvas">
-        <?php if ($resultado_medicoes && mysqli_num_rows($resultado_medicoes) > 0): ?>
-          <?php while ($linha = mysqli_fetch_assoc($resultado_medicoes)) { ?>
-            <tr>
-              <td><?php echo 'R$ ' . number_format($linha['valor_orcamento'], 2, ',', '.'); ?></td>
-              <td><?php echo 'R$ ' . number_format($linha['valor_bm'], 2, ',', '.'); ?></td>
-              <td><?php echo 'R$ ' . number_format($linha['saldo_obra'], 2, ',', '.'); ?></td>
-              <td><?php echo htmlspecialchars($linha['bm']); ?></td>
-              <td><?php echo htmlspecialchars($linha['data_inicio']); ?></td>
-              <td><?php echo htmlspecialchars($linha['data_fim']); ?></td>
-              <td><?php echo htmlspecialchars($linha['data_vistoria']); ?></td>
-            </tr>
-          <?php } ?>
-        <?php endif; ?>
-        </tbody>
-      </table>
-      <div class="button-group">
-        <button type="button" class="btn-azul" onclick="adicionarLinha()">Adicionar Linha</button>
-        <button type="button" class="btn-azul" onclick="excluirLinha()">Excluir Linha</button>
-        <button type="submit" class="btn-verde">Salvar</button>
-        <button type="button" class="btn-azul" onclick="window.location.href='visualizar.php'">&lt; Voltar</button>
-      </div>
-    </form>
-  </div>
+  for (let i = 0; i < linhas.length; i++) {
+    const linha = linhas[i];
+    const id = linha.getAttribute('data-id');
+    const cells = linha.cells;
 
-  <script>
-    function adicionarLinha() {
-      const tabela = document.getElementById('linha-formulario');
-      const novaLinha = tabela.insertRow();
-      const dataAtual = new Date().toISOString().split('T')[0];
-      novaLinha.innerHTML = `
-        <td><input type="text" name="valor_orcamento[]"></td>
-        <td><input type="text" name="valor_bm[]"></td>
-        <td><input type="text" name="saldo_obra[]" readonly></td>
-        <td><input type="number" name="bm[]"></td>
-        <td><input type="date" name="data_inicio[]"></td>
-        <td><input type="date" name="data_fim[]"></td>
-        <td><input type="date" name="data_vistoria[]"></td>
-        <input type="hidden" name="data[]" value="${dataAtual}">
-      `;
-      aplicarEventosLinha(novaLinha);
+    const campos = [
+      cells[0]?.innerText.trim(), 
+      cells[1]?.innerText.trim(),
+      cells[2]?.innerText.trim(), 
+      cells[3]?.innerText.trim(), 
+      cells[4]?.innerText.trim(), 
+      cells[5]?.innerText.trim(), 
+      cells[6]?.innerText.trim()  
+    ];
+
+    const nomesCampos = [
+      'valor_orcamento',
+      'valor_bm',
+      'saldo_obra',
+      'bm',
+      'data_inicio',
+      'data_fim',
+      'data_vistoria'
+    ];
+
+    nomesCampos.forEach((campo, idx) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = campo + '[]';
+      input.value = campos[idx];
+      this.appendChild(input);
+    });
+
+    const inputId = document.createElement('input');
+    inputId.type = 'hidden';
+    inputId.name = 'ids[]';
+    inputId.value = id ? id : '';
+    this.appendChild(inputId);
+
+    temLinhaValida = true;
+  }
+
+  if (!temLinhaValida) {
+    event.preventDefault();
+    alert('Nenhuma medição válida para salvar!');
+  }
+});
+
+function addRow() {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+  for (let i = 0; i < 7; i++) {
+    const newCell = newRow.insertCell();
+    newCell.contentEditable = "true";
+  }
+}
+
+function deleteRow() {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  if (table.rows.length > 0) {
+    const lastRow = table.rows[table.rows.length - 1];
+    const id = lastRow.getAttribute('data-id');
+    if (id) {
+      fetch('excluir_pendencia.php?id=' + id, { method: 'GET' })
+        .then(response => response.text())
+        .then(data => {
+          console.log(data);
+          table.deleteRow(-1);
+        });
+    } else {
+      table.deleteRow(-1);
     }
+  }
+}
 
-    function excluirLinha() {
-      const tabela = document.getElementById('linha-formulario');
-      if (tabela.rows.length > 0) {
-        tabela.deleteRow(tabela.rows.length - 1);
-      }
-    }
+function converterParaFloatBrasileiro(valor) {
+  valor = valor.replace(/\./g, '').replace(',', '.');
+  return valor;
+}
 
-    function parseMoeda(valor) {
-      return parseFloat(valor.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
-    }
-
-    function formatarMoeda(valor) {
-      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    function atualizarSaldos() {
-      const tabela = document.getElementById('linha-formulario');
-      let saldoAnterior = 0;
-      for (let i = 0; i < tabela.rows.length; i++) {
-        const row = tabela.rows[i];
-        const valorOrcamento = row.querySelector('input[name="valor_orcamento[]"]');
-        const valorBM = row.querySelector('input[name="valor_bm[]"]');
-        const saldoObra = row.querySelector('input[name="saldo_obra[]"]');
-        const orcamento = parseMoeda(valorOrcamento?.value || '0');
-        const bm = parseMoeda(valorBM?.value || '0');
-        let novoSaldo = 0;
-        if (i === 0) {
-          novoSaldo = orcamento - bm;
-        } else {
-          novoSaldo = saldoAnterior - bm;
-        }
-        saldoAnterior = novoSaldo;
-        if (saldoObra) {
-          saldoObra.value = formatarMoeda(novoSaldo);
-        }
-      }
-    }
-
-    function aplicarEventosLinha(linha) {
-      const orcamentoInput = linha.querySelector('input[name="valor_orcamento[]"]');
-      const valorBMInput = linha.querySelector('input[name="valor_bm[]"]');
-      [orcamentoInput, valorBMInput].forEach(input => {
-        input.addEventListener('input', atualizarSaldos);
-        aplicarMascaraMoeda(input);
-      });
-    }
-
-    window.onload = function () {
-      const tabela = document.getElementById('linha-formulario');
-      for (let i = 0; i < tabela.rows.length; i++) {
-        aplicarEventosLinha(tabela.rows[i]);
-      }
-    }
-
-    function aplicarMascaraMoeda(input) {
-      input.addEventListener('input', function () {
-        let valor = input.value.replace(/\D/g, '');
-        valor = (parseInt(valor) / 100).toFixed(2) + '';
-        valor = valor.replace(".", ",");
-        valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-        input.value = valor;
-        atualizarSaldos();
-      });
-    }
-  </script>
+</script>
 </body>
 </html>
