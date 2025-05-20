@@ -62,9 +62,8 @@ $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
 function formatarParaBrasileiro($valor) {
-    return 'R$ ' . number_format((float)$valor, 2, ',', '.');
+    return number_format((float)$valor, 2, ',', '.');
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -119,21 +118,19 @@ function formatarParaBrasileiro($valor) {
       border: 1px solid #4da6ff;
       background-color: #f0f8ff;
     }
+    
+    input[type="text"],
     input[type="date"] {
+      height: 20px;
+      padding: 4px 8px;
+      font-size: 13px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 8px;
-      min-width: 100px;
+      border-radius: 6px;
       font-family: 'Poppins', sans-serif;
-      font-size: 14px;
+      width: 100%;
       box-sizing: border-box;
     }
 
-    input[type="date"]:focus {
-      outline: none;
-      border: 1px solid #4da6ff;
-      background-color: #f0f8ff;
-    }
     .main-title {
       font-size: 26px;
       color: var(--color-dark);
@@ -236,22 +233,14 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
-    const valor_orcamento = cells[0]?.innerText.trim();
-    const valor_bm = cells[1]?.innerText.trim();
-    const saldo_obra = cells[2]?.innerText.trim();
-    const bm = cells[3]?.innerText.trim();
-    const data_inicio = cells[4].querySelector('input').value.trim();
-    const data_fim = cells[5].querySelector('input').value.trim();
-    const data_vistoria = cells[6].querySelector('input').value.trim();
-
     const campos = [
-      valor_orcamento,
-      valor_bm,
-      saldo_obra,
-      bm,
-      data_inicio,
-      data_fim,
-      data_vistoria
+      cells[0]?.innerText.trim(),
+      cells[1]?.innerText.trim(),
+      cells[2]?.innerText.trim(),
+      cells[3]?.innerText.trim(),
+      cells[4]?.innerText.trim(),
+      cells[5]?.innerText.trim(),
+      cells[6]?.innerText.trim()
     ];
 
     const nomesCampos = [
@@ -271,6 +260,8 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
       if (campo.includes('valor') || campo === 'bm') {
         input.value = converterParaFloatBrasileiro(campos[idx]);
+      } else if (campo.includes('data')) {
+        input.value = converterParaDataISO(campos[idx]);
       } else {
         input.value = campos[idx];
       }
@@ -289,7 +280,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
   if (!temLinhaValida) {
     event.preventDefault();
-    alert('Nenhuma medição válida para salvar!');
+    alert('Nenhuma medicao valida para salvar!');
   }
 });
 
@@ -334,7 +325,7 @@ function deleteRow() {
 }
 
 function converterParaFloatBrasileiro(valor) {
-  return valor.replace(/[^0-9,]/g, '').replace(/\./g, '').replace(',', '.');
+  return valor.replace(/\./g, '').replace(',', '.');
 }
 
 function converterParaDataISO(dataBR) {
