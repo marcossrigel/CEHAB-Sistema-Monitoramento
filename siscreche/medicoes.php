@@ -308,19 +308,28 @@ function addRow() {
 
 function deleteRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-  if (table.rows.length > 0) {
-    const lastRow = table.rows[table.rows.length - 1];
-    const id = lastRow.getAttribute('data-id');
-    if (id) {
-      fetch('excluir_pendencia.php?id=' + id, { method: 'GET' })
-        .then(response => response.text())
-        .then(data => {
-          console.log(data);
-          table.deleteRow(-1);
-        });
-    } else {
-      table.deleteRow(-1);
-    }
+  const lastRow = table.rows[table.rows.length - 1];
+
+  if (!lastRow) return;
+
+  const id = lastRow.getAttribute('data-id');
+
+  if (id) {
+    fetch(`excluir_linha.php?id=${id}`, { method: 'GET' })
+      .then(response => {
+        if (!response.ok) throw new Error("Erro ao excluir do banco");
+        return response.text();
+      })
+      .then(data => {
+        console.log(data);
+        table.deleteRow(-1);
+      })
+      .catch(error => {
+        alert("Erro ao excluir no servidor.");
+        console.error(error);
+      });
+  } else {
+    table.deleteRow(-1);
   }
 }
 
