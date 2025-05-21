@@ -5,37 +5,22 @@ if (!isset($_SESSION['id_usuario'])) {
   exit;
 }
 
-include("config.php");
+include_once('config.php');
 
-$id_usuario = $_SESSION['id_usuario'];
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
 
-if ($id_iniciativa === 0) {
-  die("ID da iniciativa inválido.");
-}
-
-// Exclusão (usada por JavaScript via fetch)
-if (isset($_GET['id'])) {
-  $id = intval($_GET['id']);
-  mysqli_query($conexao, "DELETE FROM marcos WHERE id = $id");
-  echo "OK";
-  exit;
-}
-
-// Salvamento
 if (isset($_POST['salvar'])) {
-  $tipo_etapa = $_POST['tipo_etapa'];
-  $etapa = $_POST['etapa'];
-  $inicio_previsto = $_POST['inicio_previsto'];
-  $termino_previsto = $_POST['termino_previsto'];
-  $inicio_real = $_POST['inicio_real'];
-  $termino_real = $_POST['termino_real'];
-  $evolutivo = $_POST['evolutivo'];
-  $ids = $_POST['ids'];
+    $id_usuario = $_SESSION['id_usuario'];
+    $etapa = $_POST['etapa'];
+    $inicio_previsto = $_POST['inicio_previsto'];
+    $termino_previsto = $_POST['termino_previsto'];
+    $inicio_real = $_POST['inicio_real'];
+    $termino_real = $_POST['termino_real'];
+    $evolutivo = $_POST['evolutivo'];
+    $ids = $_POST['ids'];
 
-  for ($i = 0; $i < count($etapa); $i++) {
-    $id_existente = intval($ids[$i]);
-    $tipo = mysqli_real_escape_string($conexao, $tipo_etapa[$i]);
+for ($i = 0; $i < count($etapa); $i++) {
+    $id_existente = isset($ids[$i]) ? intval($ids[$i]) : 0;
     $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
     $ini_prev = mysqli_real_escape_string($conexao, $inicio_previsto[$i]);
     $ter_prev = mysqli_real_escape_string($conexao, $termino_previsto[$i]);
@@ -44,104 +29,152 @@ if (isset($_POST['salvar'])) {
     $evo = mysqli_real_escape_string($conexao, $evolutivo[$i]);
 
     if ($id_existente > 0) {
-      $query = "UPDATE marcos SET tipo_etapa='$tipo', etapa='$etp', inicio_previsto='$ini_prev',
-                termino_previsto='$ter_prev', inicio_real='$ini_real', termino_real='$ter_real',
-                evolutivo='$evo' WHERE id = $id_existente AND id_usuario = $id_usuario";
+        $query = "UPDATE marcos SET etapa='$etp', inicio_previsto='$ini_prev', termino_previsto='$ter_prev',
+                    inicio_real='$ini_real', termino_real='$ter_real', evolutivo='$evo'
+                  WHERE id = $id_existente AND id_usuario = $id_usuario";
     } else {
-      $query = "INSERT INTO marcos (id_usuario, id_iniciativa, tipo_etapa, etapa, inicio_previsto, 
-                termino_previsto, inicio_real, termino_real, evolutivo) VALUES (
-                '$id_usuario', '$id_iniciativa', '$tipo', '$etp', '$ini_prev', '$ter_prev', 
-                '$ini_real', '$ter_real', '$evo')";
+        $query = "INSERT INTO marcos (id_usuario, id_iniciativa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo)
+                  VALUES ('$id_usuario', '$id_iniciativa', '$etp', '$ini_prev', '$ter_prev', '$ini_real', '$ter_real', '$evo')";
     }
 
     mysqli_query($conexao, $query);
   }
 }
 
-// Carregar dados
-$dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa");
+$dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa");
 
-// Nome da iniciativa
 $query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
 $resultado_nome = mysqli_query($conexao, $query_nome);
 $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
+
+function formatarParaBrasileiro($valor) {
+    return number_format((float)$valor, 2, ',', '.');
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title><?php echo $nome_iniciativa; ?> - CRONOGRAMA DE MARCOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medições</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    :root {
+      --color-dark: #1d2129;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
       font-family: 'Poppins', sans-serif;
-      background-color: #e3e8ec;
+      background: #e3e8ec;
+      min-height: 100vh;
     }
     .table-container {
-      max-width: 1100px;
+      width: 95%;
       margin: 40px auto;
       background: #fff;
+      padding: 20px;
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 20px;
+      overflow-x: auto;
     }
     table {
       width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 8px 15px;
+      table-layout: fixed;          
     }
     th, td {
-      padding: 10px;
       text-align: left;
+      padding: 10px;
     }
+    td[contenteditable] {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      min-width: 120px;
+    }
+    td[contenteditable]:focus {
+      outline: none;
+      border: 1px solid #4da6ff;
+      background-color: #f0f8ff;
+    }
+    
     input[type="text"],
     input[type="date"] {
-      width: 100%;
-      padding: 6px 10px;
-      border-radius: 8px;
+      height: 20px;
+      padding: 4px 8px;
+      font-size: 13px;
       border: 1px solid #ccc;
+      border-radius: 6px;
       font-family: 'Poppins', sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .main-title {
+      font-size: 26px;
+      color: var(--color-dark);
+      text-align: center;
+      margin-bottom: 20px;
     }
     .button-group {
+      margin-top: 20px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      margin-top: 20px;
-      flex-wrap: wrap;
     }
     .button-group button {
       padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      color: white;
-      cursor: pointer;
-    }
-    .button-group button:nth-child(1),
-    .button-group button:nth-child(2),
-    .button-group button:nth-child(3) {
       background-color: #4da6ff;
-    }
-    .button-group button:nth-child(3) {
-      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
     }
     .button-group button:hover {
-      opacity: 0.9;
+      background-color: #3399ff;
     }
-    .main-title {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
+    textarea {
+      resize: vertical; 
+    }
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 20px;
+        padding: 0 10px;
+      }
+      table {
+        font-size: 13px;
+        display: block;
+        overflow-x: auto;
+      }
+      td[contenteditable] {
+        min-width: 90px;
+        font-size: 13px;
+      }
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      .button-group button {
+        width: 100%;
+        max-width: 250px;
+      }
     }
   </style>
 </head>
 <body>
-
 <div class="table-container">
-  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - CRONOGRAMA DE MARCOS</div>
-  <form method="post" action="?id_iniciativa=<?php echo $id_iniciativa; ?>">
+  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Cronograma de Marcos</div>
+  <form method="post" action="medicoes.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
       <thead>
         <tr>
@@ -151,64 +184,234 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
           <th>Início Real</th>
           <th>Término Real</th>
           <th>% Evolutivo</th>
+
         </tr>
       </thead>
+
       <tbody>
-        <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
+      <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
         <tr data-id="<?php echo $linha['id']; ?>">
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['etapa']); ?></td>
+          <td>
+            <textarea name="etapa[]" rows="2" class="campo-etapa"></textarea>
+          </td>
+
           <td><input type="date" name="inicio_previsto[]" value="<?php echo $linha['inicio_previsto']; ?>"></td>
           <td><input type="date" name="termino_previsto[]" value="<?php echo $linha['termino_previsto']; ?>"></td>
           <td><input type="date" name="inicio_real[]" value="<?php echo $linha['inicio_real']; ?>"></td>
           <td><input type="date" name="termino_real[]" value="<?php echo $linha['termino_real']; ?>"></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['evolutivo']); ?></td>
+          <td><input type="number" name="evolutivo[]" value="<?php echo $linha['evolutivo']; ?>" min="0" max="100" step="0.1" placeholder="0 a 100%"></td>
         </tr>
-        <?php } ?>
+      <?php } ?>
       </tbody>
-    </table>
 
+    </table>
     <div class="button-group">
+      <button type="button" onclick="addTitleRow()">Adicionar Título</button>
       <button type="button" onclick="addRow()">Adicionar Linha</button>
       <button type="button" onclick="deleteRow()">Excluir Linha</button>
-      <button type="submit" name="salvar">Salvar</button>
+      <button type="submit" name="salvar" id="submit" style="background-color:rgb(42, 179, 0);">Salvar</button>
       <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
     </div>
   </form>
 </div>
 
 <script>
-function addRow() {
-  const tbody = document.querySelector('#spreadsheet tbody');
-  const row = tbody.insertRow();
-  for (let i = 0; i < 6; i++) {
-    const cell = row.insertCell();
-    if (i === 1 || i === 2 || i === 3 || i === 4) {
+document.querySelector('form').addEventListener('submit', function(event) {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const linhas = table.rows;
+  let temLinhaValida = false;
+
+  for (let i = 0; i < linhas.length; i++) {
+    const linha = linhas[i];
+    const id = linha.getAttribute('data-id');
+    const cells = linha.cells;
+
+    const etapaField = cells[0].querySelector('textarea, input');
+    const campos = [
+      etapaField ? etapaField.value.trim() : '',
+      cells[1].querySelector('input')?.value.trim() || '',
+      cells[2].querySelector('input')?.value.trim() || '',
+      cells[3].querySelector('input')?.value.trim() || '',
+      cells[4].querySelector('input')?.value.trim() || '',
+      cells[5].querySelector('input')?.value.trim() || ''
+    ];
+
+    const nomesCampos = [
+      'etapa',
+      'inicio_previsto',
+      'termino_previsto',
+      'inicio_real',
+      'termino_real',
+      'evolutivo'
+    ];
+
+    nomesCampos.forEach((campo, idx) => {
       const input = document.createElement('input');
-      input.type = 'date';
-      input.name = ['inicio_previsto[]', 'termino_previsto[]', 'inicio_real[]', 'termino_real[]'][i - 1];
-      cell.appendChild(input);
-    } else {
-      cell.contentEditable = true;
-    }
+      input.type = 'hidden';
+      input.name = campo + '[]';
+
+      if (campo.includes('valor') || campo === 'bm') {
+        input.value = converterParaFloatBrasileiro(campos[idx]);
+      } else if (campo.includes('data')) {
+        input.value = converterParaDataISO(campos[idx]);
+      } else {
+        input.value = campos[idx];
+      }
+
+      this.appendChild(input);
+    });
+
+    const inputId = document.createElement('input');
+    inputId.type = 'hidden';
+    inputId.name = 'ids[]';
+    inputId.value = id ? id : '';
+    this.appendChild(inputId);
+
+    temLinhaValida = true;
   }
+
+  if (!temLinhaValida) {
+    event.preventDefault();
+    alert('Nenhuma medicao valida para salvar!');
+  }
+});
+
+function addTitleRow() {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+
+  const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+
+  campos.forEach((campo, index) => {
+    const cell = newRow.insertCell();
+
+
+    if (index === 0) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = campo + '[]';
+      input.placeholder = 'Título';
+      input.style.width = '100%';
+      input.style.fontFamily = "'Poppins', sans-serif";
+      input.style.fontSize = '13px';
+      input.style.padding = '4px 8px';
+      input.style.border = '1px solid #ccc';
+      input.style.borderRadius = '6px';
+      input.style.boxSizing = 'border-box';
+      cell.appendChild(input);
+    }
+    else {
+      const input = document.createElement('input');
+      if (campo === 'evolutivo') {
+        input.type = 'number';
+        input.min = '0';
+        input.max = '100';
+        input.step = '0.1';
+        input.placeholder = '0 a 100%';
+      } else {
+        input.type = 'date';
+      }
+      input.name = campo + '[]';
+      input.style.width = '100%';
+      input.style.opacity = '0.9';
+      input.style.border = 'none';
+      input.style.borderRadius = '6px';
+      input.style.height = '20px';
+      input.style.padding = '4px 8px';
+      input.style.boxSizing = 'border-box';
+      cell.appendChild(input);
+    }
+  });
+}
+
+function addRow() {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+  const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+
+  campos.forEach((campo, index) => {
+    const cell = newRow.insertCell();
+
+    if (index === 0) {
+      const textarea = document.createElement('textarea');
+      textarea.name = campo + '[]';
+      textarea.rows = 2;
+      textarea.className = 'campo-etapa';
+      textarea.style.width = '100%';
+      textarea.style.fontFamily = "'Poppins', sans-serif";
+      textarea.style.fontSize = '13px';
+      textarea.style.padding = '4px 8px';
+      textarea.style.border = '1px solid #ccc';
+      textarea.style.borderRadius = '6px';
+      textarea.style.boxSizing = 'border-box';
+      textarea.style.resize = 'vertical';
+      cell.appendChild(textarea);
+    } 
+    else {
+      const input = document.createElement('input');
+      if (campo === 'evolutivo') {
+        input.type = 'number';
+        input.min = '0';
+        input.max = '100';
+        input.step = '0.1';
+        input.placeholder = '0 a 100%';
+      } else {
+        input.type = 'date';
+      }
+      input.name = campo + '[]';
+      input.style.width = '100%';
+      input.style.font = 'inherit';
+      input.style.border = '1px solid #ccc';
+      input.style.borderRadius = '6px';
+      input.style.height = '20px';
+      input.style.padding = '4px 8px';
+      input.style.boxSizing = 'border-box';
+      cell.appendChild(input);
+    }
+  });
 }
 
 function deleteRow() {
-  const table = document.querySelector('#spreadsheet tbody');
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const lastRow = table.rows[table.rows.length - 1];
+
   if (!lastRow) return;
+
   const id = lastRow.getAttribute('data-id');
+
   if (id) {
-    fetch(`cronogramamarcos.php?id=${id}`, { method: 'GET' })
-      .then(r => r.text())
-      .then(msg => {
-        console.log(msg);
+    fetch(`excluir_linha.php?id=${id}`, { method: 'GET' })
+      .then(response => {
+        if (!response.ok) throw new Error("Erro ao excluir do banco");
+        return response.text();
+      })
+      .then(data => {
+        console.log(data);
         table.deleteRow(-1);
+      })
+      .catch(error => {
+        alert("Erro ao excluir no servidor.");
+        console.error(error);
       });
-  } else {
+  } 
+  else {
     table.deleteRow(-1);
   }
 }
+
+function converterParaFloatBrasileiro(valor) {
+  return valor.replace(/\./g, '').replace(',', '.');
+}
+
+function converterParaDataISO(dataBR) {
+  if (!dataBR.includes('/')) return dataBR;
+  const partes = dataBR.split('/');
+  if (partes.length === 3) {
+    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+  }
+  return dataBR;
+}
+
 </script>
 </body>
 </html>
