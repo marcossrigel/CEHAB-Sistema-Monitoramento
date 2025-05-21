@@ -237,6 +237,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
+    // Se a linha já tem um ID, ela já está no banco, então o input está no DOM corretamente
     if (id) continue;
 
     const etapaField = cells[0].querySelector('textarea, input');
@@ -252,50 +253,30 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const linhaEstaVazia = campos.every(c => c === '');
     if (linhaEstaVazia) continue;
 
-    const nomesCampos = [
-      'etapa',
-      'inicio_previsto',
-      'termino_previsto',
-      'inicio_real',
-      'termino_real',
-      'evolutivo'
-    ];
+    // Apenas marca que tem linha válida, não cria inputs ocultos
+    temLinhaValida = true;
 
-    nomesCampos.forEach((campo, idx) => {
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = campo + '[]';
-
-  if (campo.includes('valor') || campo === 'bm') {
-    input.value = converterParaFloatBrasileiro(campos[idx]);
-  } else if (campo.includes('data')) {
-    input.value = converterParaDataISO(campos[idx]);
-  } else {
-    input.value = campos[idx];
-  }
-
-      this.appendChild(input);
-    });
-
-    const inputId = document.createElement('input');
-    inputId.type = 'hidden';
-    inputId.name = 'ids[]';
-    inputId.value = id ? id : '';
-    this.appendChild(inputId);
-
+    // Garante que tipo_etapa seja enviado corretamente para linhas novas
+    const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
+    
+    // Adiciona campo tipo_etapa como hidden
     const inputTipo = document.createElement('input');
     inputTipo.type = 'hidden';
     inputTipo.name = 'tipo_etapa[]';
-    const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
     inputTipo.value = tipo;
     this.appendChild(inputTipo);
 
-    temLinhaValida = true;
+    // Adiciona campo ids como vazio
+    const inputId = document.createElement('input');
+    inputId.type = 'hidden';
+    inputId.name = 'ids[]';
+    inputId.value = '';
+    this.appendChild(inputId);
   }
 
   if (!temLinhaValida) {
     event.preventDefault();
-    alert('Nenhuma medicao valida para salvar!');
+    alert('Nenhuma medição válida para salvar!');
   }
 });
 
