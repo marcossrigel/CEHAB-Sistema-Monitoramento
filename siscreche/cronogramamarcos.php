@@ -9,44 +9,57 @@ include_once('config.php');
 
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
 
-if (isset($_POST['salvar'])) {
+// Verifica se dados foram enviados
+if (isset($_POST['etapa'])) {
     $id_usuario = $_SESSION['id_usuario'];
-    $etapa = $_POST['etapa'];
-    $inicio_previsto = $_POST['inicio_previsto'];
-    $termino_previsto = $_POST['termino_previsto'];
-    $inicio_real = $_POST['inicio_real'];
-    $termino_real = $_POST['termino_real'];
-    $evolutivo = $_POST['evolutivo'];
-    $ids = $_POST['ids'];
+    $etapa = $_POST['etapa'] ?? [];
+    $inicio_previsto = $_POST['inicio_previsto'] ?? [];
+    $termino_previsto = $_POST['termino_previsto'] ?? [];
+    $inicio_real = $_POST['inicio_real'] ?? [];
+    $termino_real = $_POST['termino_real'] ?? [];
+    $evolutivo = $_POST['evolutivo'] ?? [];
+    $ids = $_POST['ids'] ?? [];
+    $tipo_etapa = $_POST['tipo_etapa'] ?? [];
 
-for ($i = 0; $i < count($etapa); $i++) {
     $id_existente = isset($ids[$i]) ? intval($ids[$i]) : 0;
-    $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
-    $ini_prev = mysqli_real_escape_string($conexao, $inicio_previsto[$i]);
-    $ter_prev = mysqli_real_escape_string($conexao, $termino_previsto[$i]);
-    $ini_real = mysqli_real_escape_string($conexao, $inicio_real[$i]);
-    $ter_real = mysqli_real_escape_string($conexao, $termino_real[$i]);
-    $evo = mysqli_real_escape_string($conexao, $evolutivo[$i]);
 
-    if ($id_existente > 0) {
-        $query = "UPDATE marcos SET etapa='$etp', inicio_previsto='$ini_prev', termino_previsto='$ter_prev',
-                    inicio_real='$ini_real', termino_real='$ter_real', evolutivo='$evo'
-                  WHERE id = $id_existente AND id_usuario = $id_usuario";
-    } else {
-        $query = "INSERT INTO marcos (id_usuario, id_iniciativa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo)
-                  VALUES ('$id_usuario', '$id_iniciativa', '$etp', '$ini_prev', '$ter_prev', '$ini_real', '$ter_real', '$evo')";
+    if (count($etapa) === 0) {
+        echo "<p style='color:red;text-align:center'>Nenhuma linha foi enviada.</p>";
+        exit;
     }
 
-    mysqli_query($conexao, $query);
-  }
+    for ($i = 0; $i < count($etapa); $i++) {
+        $id_existente = intval($ids[$i] ?? 0);
+        $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
+        $ini_prev = mysqli_real_escape_string($conexao, $inicio_previsto[$i]);
+        $ter_prev = mysqli_real_escape_string($conexao, $termino_previsto[$i]);
+        $ini_real = mysqli_real_escape_string($conexao, $inicio_real[$i]);
+        $ter_real = mysqli_real_escape_string($conexao, $termino_real[$i]);
+        $evo = mysqli_real_escape_string($conexao, $evolutivo[$i]);
+        $tipo = mysqli_real_escape_string($conexao, $tipo_etapa[$i]);
+
+        if ($id_existente > 0) {
+            $query = "UPDATE marcos SET tipo_etapa='$tipo', etapa='$etp', inicio_previsto='$ini_prev', termino_previsto='$ter_prev',
+                        inicio_real='$ini_real', termino_real='$ter_real', evolutivo='$evo'
+                      WHERE id = $id_existente AND id_usuario = $id_usuario";
+        } else {
+            $query = "INSERT INTO marcos (id_usuario, id_iniciativa, tipo_etapa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo)
+                      VALUES ('$id_usuario', '$id_iniciativa', '$tipo', '$etp', '$ini_prev', '$ter_prev', '$ini_real', '$ter_real', '$evo')";
+        }
+
+        mysqli_query($conexao, $query);
+    }
 }
 
-$dados = mysqli_query($conexao, "SELECT * FROM marcos WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa");
-
+// Recupera o nome da iniciativa
 $query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
 $resultado_nome = mysqli_query($conexao, $query_nome);
 $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
+
+// Recupera os marcos já cadastrados
+$query_dados = "SELECT * FROM marcos WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa";
+$dados = mysqli_query($conexao, $query_dados);
 
 function formatarParaBrasileiro($valor) {
     return number_format((float)$valor, 2, ',', '.');
@@ -174,7 +187,7 @@ function formatarParaBrasileiro($valor) {
 <body>
 <div class="table-container">
   <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Cronograma de Marcos</div>
-  <form method="post" action="medicoes.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
+  <form method="post" action="cronogramamarcos.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
       <thead>
         <tr>
@@ -192,7 +205,7 @@ function formatarParaBrasileiro($valor) {
       <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
         <tr data-id="<?php echo $linha['id']; ?>">
           <td>
-            <textarea name="etapa[]" rows="2" class="campo-etapa"></textarea>
+            <textarea name="etapa[]" rows="2" class="campo-etapa"><?php echo htmlspecialchars($linha['etapa']); ?></textarea>
           </td>
 
           <td><input type="date" name="inicio_previsto[]" value="<?php echo $linha['inicio_previsto']; ?>"></td>
@@ -236,6 +249,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
       cells[5].querySelector('input')?.value.trim() || ''
     ];
 
+    const linhaEstaVazia = campos.every(c => c === '');
+    if (linhaEstaVazia) continue;
+
     const nomesCampos = [
       'etapa',
       'inicio_previsto',
@@ -246,17 +262,17 @@ document.querySelector('form').addEventListener('submit', function(event) {
     ];
 
     nomesCampos.forEach((campo, idx) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = campo + '[]';
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = campo + '[]';
 
-      if (campo.includes('valor') || campo === 'bm') {
-        input.value = converterParaFloatBrasileiro(campos[idx]);
-      } else if (campo.includes('data')) {
-        input.value = converterParaDataISO(campos[idx]);
-      } else {
-        input.value = campos[idx];
-      }
+  if (campo.includes('valor') || campo === 'bm') {
+    input.value = converterParaFloatBrasileiro(campos[idx]);
+  } else if (campo.includes('data')) {
+    input.value = converterParaDataISO(campos[idx]);
+  } else {
+    input.value = campos[idx];
+  }
 
       this.appendChild(input);
     });
@@ -266,6 +282,13 @@ document.querySelector('form').addEventListener('submit', function(event) {
     inputId.name = 'ids[]';
     inputId.value = id ? id : '';
     this.appendChild(inputId);
+
+    const inputTipo = document.createElement('input');
+    inputTipo.type = 'hidden';
+    inputTipo.name = 'tipo_etapa[]';
+    const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
+    inputTipo.value = tipo;
+    this.appendChild(inputTipo);
 
     temLinhaValida = true;
   }
