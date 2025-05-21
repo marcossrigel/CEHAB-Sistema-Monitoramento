@@ -21,8 +21,6 @@ if (isset($_POST['etapa'])) {
     $ids = $_POST['ids'] ?? [];
     $tipo_etapa = $_POST['tipo_etapa'] ?? [];
 
-    $id_existente = isset($ids[$i]) ? intval($ids[$i]) : 0;
-
     if (count($etapa) === 0) {
         echo "<p style='color:red;text-align:center'>Nenhuma linha foi enviada.</p>";
         exit;
@@ -36,7 +34,7 @@ if (isset($_POST['etapa'])) {
         $ini_real = mysqli_real_escape_string($conexao, $inicio_real[$i]);
         $ter_real = mysqli_real_escape_string($conexao, $termino_real[$i]);
         $evo = mysqli_real_escape_string($conexao, $evolutivo[$i]);
-        $tipo = mysqli_real_escape_string($conexao, $tipo_etapa[$i]);
+        $tipo = mysqli_real_escape_string($conexao, isset($tipo_etapa[$i]) ? $tipo_etapa[$i] : 'linha');
 
         if ($id_existente > 0) {
             $query = "UPDATE marcos SET tipo_etapa='$tipo', etapa='$etp', inicio_previsto='$ini_prev', termino_previsto='$ter_prev',
@@ -238,6 +236,8 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const linha = linhas[i];
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
+
+    if (id) continue;
 
     const etapaField = cells[0].querySelector('textarea, input');
     const campos = [
