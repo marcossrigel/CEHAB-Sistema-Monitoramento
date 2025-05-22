@@ -8,6 +8,7 @@ if (!isset($_SESSION['id_usuario'])) {
 include_once('config.php');
 
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+$ids = $_POST['ids'] ?? [];
 
 if (isset($_POST['salvar'])) {
     $id_usuario = $_SESSION['id_usuario'];
@@ -18,15 +19,21 @@ if (isset($_POST['salvar'])) {
     $responsaveis = $_POST['responsavel'];
 
     for ($i = 0; $i < count($problemas); $i++) {
-        $problema = mysqli_real_escape_string($conexao, $problemas[$i]);
-        $contramedida = mysqli_real_escape_string($conexao, $contramedidas[$i]);
-        $prazo = mysqli_real_escape_string($conexao, $prazos[$i]);
-        $responsavel = mysqli_real_escape_string($conexao, $responsaveis[$i]);
+    $id_existente = intval($ids[$i] ?? 0);
+    $problema = mysqli_real_escape_string($conexao, $problemas[$i]);
+    $contramedida = mysqli_real_escape_string($conexao, $contramedidas[$i]);
+    $prazo = mysqli_real_escape_string($conexao, $prazos[$i]);
+    $responsavel = mysqli_real_escape_string($conexao, $responsaveis[$i]);
 
-        $query = "INSERT INTO pendencias (id_usuario, id_iniciativa, problema, contramedida, prazo, responsavel) 
-                  VALUES ('$id_usuario', '$id_iniciativa', '$problema', '$contramedida', '$prazo', '$responsavel')";
+      if ($id_existente > 0) {
+          $query = "UPDATE pendencias SET problema='$problema', contramedida='$contramedida', prazo='$prazo', responsavel='$responsavel'
+                    WHERE id=$id_existente AND id_usuario=$id_usuario";
+      } else {
+          $query = "INSERT INTO pendencias (id_usuario, id_iniciativa, problema, contramedida, prazo, responsavel) 
+                    VALUES ('$id_usuario', '$id_iniciativa', '$problema', '$contramedida', '$prazo', '$responsavel')";
+      }
 
-        mysqli_query($conexao, $query);
+      mysqli_query($conexao, $query);
     }
 }
 $dados_pendencias = mysqli_query($conexao, "SELECT * FROM pendencias WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_iniciativa = $id_iniciativa");
@@ -154,11 +161,14 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
   </style>
 </head>
 <body>
+
 <div class="table-container">
   <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Acompanhamento de Pendências</div>
+
   <form method="post" action="acompanhamento.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
-      <thead>
+      
+    <thead>
         <tr>
           <th>Problema</th>
           <th>Contramedida</th>
@@ -166,6 +176,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
           <th>Responsável</th>
         </tr>
       </thead>
+
       <tbody>
       <?php while ($linha = mysqli_fetch_assoc($dados_pendencias)) { ?>
         <tr data-id="<?php echo $linha['id']; ?>">
@@ -173,10 +184,13 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
           <td contenteditable="true"><?php echo htmlspecialchars($linha['contramedida']); ?></td>
           <td contenteditable="true"><?php echo htmlspecialchars($linha['prazo']); ?></td>
           <td contenteditable="true"><?php echo htmlspecialchars($linha['responsavel']); ?></td>
+          <input type="hidden" name="ids[]" value="<?php echo $linha['id']; ?>">
         </tr>
       <?php } ?>
       </tbody>
+
     </table>
+    
     <div class="button-group">
       <button type="button" onclick="addRow()">Adicionar Linha</button>
       <button type="button" onclick="deleteRow()">Excluir Linha</button>
@@ -188,39 +202,47 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
 <script>
 document.querySelector('form').addEventListener('submit', function(event) {
+  const form = this;
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const linhas = table.rows;
-  let temNovaLinha = false;
+
+  let temLinhaValida = false;
 
   for (let i = 0; i < linhas.length; i++) {
     const linha = linhas[i];
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
-    if (!id) {
-      const problema = cells[0].innerText.trim();
-      const contramedida = cells[1].innerText.trim();
-      const prazo = cells[2].innerText.trim();
-      const responsavel = cells[3].innerText.trim();
+    const campos = ['problema', 'contramedida', 'prazo', 'responsavel'];
+    campos.forEach((campo, idx) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = campo + '[]';
 
-      if (problema || contramedida || prazo || responsavel) {
-        temNovaLinha = true;
-        ['problema', 'contramedida', 'prazo', 'responsavel'].forEach((campo, idx) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = campo + '[]';
-          input.value = cells[idx].innerText.trim();
-          this.appendChild(input);
-        });
+      const celula = cells[idx];
+      const inputDentro = celula.querySelector('input');
+
+      if (inputDentro) {
+        input.value = inputDentro.value.trim();
+      } else {
+        input.value = celula.innerText.trim();
       }
-    }
+
+      form.appendChild(input);
+    });
+
+    const inputId = document.createElement('input');
+    inputId.type = 'hidden';
+    inputId.name = 'ids[]';
+    inputId.value = id ? id : '';
+    form.appendChild(inputId);
+
+    temLinhaValida = true;
   }
 
-  if (!temNovaLinha) {
+  if (!temLinhaValida) {
     event.preventDefault();
-    alert('Nenhuma nova pendência para salvar!');
-  } else {
-    localStorage.removeItem('tabelaPendencias');
+    alert('Nenhuma pendência válida para salvar!');
   }
 });
 
