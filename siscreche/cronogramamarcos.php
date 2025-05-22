@@ -9,7 +9,6 @@ include_once('config.php');
 
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
 
-// Verifica se dados foram enviados
 if (isset($_POST['etapa'])) {
     $id_usuario = $_SESSION['id_usuario'];
     $etapa = $_POST['etapa'] ?? [];
@@ -49,13 +48,11 @@ if (isset($_POST['etapa'])) {
     }
 }
 
-// Recupera o nome da iniciativa
 $query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
 $resultado_nome = mysqli_query($conexao, $query_nome);
 $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
-// Recupera os marcos já cadastrados
 $query_dados = "SELECT * FROM marcos WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa";
 $dados = mysqli_query($conexao, $query_dados);
 
@@ -201,7 +198,11 @@ function formatarParaBrasileiro($valor) {
 
       <tbody>
       <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
+        
         <tr data-id="<?php echo $linha['id']; ?>">
+        <input type="hidden" name="ids[]" value="<?php echo $linha['id']; ?>">
+        <input type="hidden" name="tipo_etapa[]" value="<?php echo htmlspecialchars($linha['tipo_etapa']); ?>">
+        
           <td>
             <textarea name="etapa[]" rows="2" class="campo-etapa"><?php echo htmlspecialchars($linha['etapa']); ?></textarea>
           </td>
@@ -237,7 +238,6 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
-    // Se a linha já tem um ID, ela já está no banco, então o input está no DOM corretamente
     if (id) continue;
 
     const etapaField = cells[0].querySelector('textarea, input');
@@ -253,20 +253,16 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const linhaEstaVazia = campos.every(c => c === '');
     if (linhaEstaVazia) continue;
 
-    // Apenas marca que tem linha válida, não cria inputs ocultos
     temLinhaValida = true;
 
-    // Garante que tipo_etapa seja enviado corretamente para linhas novas
     const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
     
-    // Adiciona campo tipo_etapa como hidden
     const inputTipo = document.createElement('input');
     inputTipo.type = 'hidden';
     inputTipo.name = 'tipo_etapa[]';
     inputTipo.value = tipo;
     this.appendChild(inputTipo);
-
-    // Adiciona campo ids como vazio
+    
     const inputId = document.createElement('input');
     inputId.type = 'hidden';
     inputId.name = 'ids[]';
