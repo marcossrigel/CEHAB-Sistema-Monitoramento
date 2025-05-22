@@ -400,7 +400,7 @@ function deleteRow() {
   const id = lastRow.getAttribute('data-id');
 
   if (id) {
-    fetch(`excluir_linha.php?id=${id}`, { method: 'GET' })
+    fetch(`marcos_excluir_linha.php?id=${id}`, { method: 'GET' })
       .then(response => {
         if (!response.ok) throw new Error("Erro ao excluir do banco");
         return response.text();
