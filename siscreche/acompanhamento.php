@@ -87,8 +87,11 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
     }
     td {
       padding-right: 15px;
+      min-width: 120px;
     }
     td[contenteditable] {
+      width: 100%;
+      display: block;
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 8px;
@@ -105,6 +108,12 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
       border: 1px solid #ccc;
       border-radius: 8px;
       box-sizing: border-box;
+    }
+    input[type="text"]:focus,
+    input[type="date"]:focus {
+      outline: none; /* remove a borda azul */
+      border: 1px solid #4da6ff; /* ou troque pela cor que quiser */
+      background-color: #f0f8ff; /* cor de fundo suave opcional */
     }
     .main-title {
       font-size: 26px;
@@ -167,8 +176,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
   <form method="post" action="acompanhamento.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
-      
-    <thead>
+      <thead>
         <tr>
           <th>Problema</th>
           <th>Contramedida</th>
@@ -176,19 +184,19 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
           <th>Responsável</th>
         </tr>
       </thead>
-
       <tbody>
       <?php while ($linha = mysqli_fetch_assoc($dados_pendencias)) { ?>
+        
         <tr data-id="<?php echo $linha['id']; ?>">
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['problema']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['contramedida']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['prazo']); ?></td>
-          <td contenteditable="true"><?php echo htmlspecialchars($linha['responsavel']); ?></td>
+          <td><input type="text" value="<?php echo htmlspecialchars($linha['problema']); ?>"></td>
+          <td><input type="text" value="<?php echo htmlspecialchars($linha['contramedida']); ?>"></td>
+          <td><input type="date" value="<?php echo htmlspecialchars($linha['prazo']); ?>"></td>
+          <td><input type="text" value="<?php echo htmlspecialchars($linha['responsavel']); ?>"></td>
           <input type="hidden" name="ids[]" value="<?php echo $linha['id']; ?>">
         </tr>
+
       <?php } ?>
       </tbody>
-
     </table>
     
     <div class="button-group">
@@ -249,9 +257,13 @@ document.querySelector('form').addEventListener('submit', function(event) {
 function addRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const newRow = table.insertRow();
-  for (let i = 0; i < 4; i++) {
+  const campos = ['text', 'text', 'date', 'text']; // tipos dos inputs
+
+  for (let i = 0; i < campos.length; i++) {
     const newCell = newRow.insertCell();
-    newCell.contentEditable = "true";
+    const input = document.createElement('input');
+    input.type = campos[i];
+    newCell.appendChild(input);
   }
 }
 
@@ -272,8 +284,6 @@ function deleteRow() {
     }
   }
 }
-
 </script>
 </body>
-
 </html>
