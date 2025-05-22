@@ -47,8 +47,9 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planilha Web</title>
   <style>
     :root {
@@ -111,9 +112,9 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
     }
     input[type="text"]:focus,
     input[type="date"]:focus {
-      outline: none; /* remove a borda azul */
-      border: 1px solid #4da6ff; /* ou troque pela cor que quiser */
-      background-color: #f0f8ff; /* cor de fundo suave opcional */
+      outline: none; 
+      border: 1px solid #4da6ff; 
+      background-color: #f0f8ff;
     }
     .main-title {
       font-size: 26px;
@@ -176,7 +177,8 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
   <form method="post" action="acompanhamento.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
-      <thead>
+      
+    <thead>
         <tr>
           <th>Problema</th>
           <th>Contramedida</th>
@@ -184,6 +186,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
           <th>Responsável</th>
         </tr>
       </thead>
+      
       <tbody>
       <?php while ($linha = mysqli_fetch_assoc($dados_pendencias)) { ?>
         
@@ -196,6 +199,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
         </tr>
 
       <?php } ?>
+
       </tbody>
     </table>
     
@@ -286,4 +290,5 @@ function deleteRow() {
 }
 </script>
 </body>
+
 </html>
