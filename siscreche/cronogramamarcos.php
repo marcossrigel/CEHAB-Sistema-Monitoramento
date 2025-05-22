@@ -197,23 +197,27 @@ function formatarParaBrasileiro($valor) {
       </thead>
 
       <tbody>
-      <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
-        
-        <tr data-id="<?php echo $linha['id']; ?>">
-        <input type="hidden" name="ids[]" value="<?php echo $linha['id']; ?>">
-        <input type="hidden" name="tipo_etapa[]" value="<?php echo htmlspecialchars($linha['tipo_etapa']); ?>">
-        
-          <td>
-            <textarea name="etapa[]" rows="2" class="campo-etapa"><?php echo htmlspecialchars($linha['etapa']); ?></textarea>
-          </td>
+        <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
+          <tr data-id="<?php echo $linha['id']; ?>">
+            <td>
+              <?php if ($linha['tipo_etapa'] === 'subtitulo') { ?>
+                <input type="text" name="etapa[]" value="<?php echo htmlspecialchars($linha['etapa']); ?>" 
+                  style="width:100%; font-family:'Poppins', sans-serif; font-size:13px; padding:4px 8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+              <?php } else { ?>
+                <textarea name="etapa[]" rows="2" class="campo-etapa" 
+                  style="width:100%; font-family:'Poppins', sans-serif; font-size:13px; padding:4px 8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"><?php echo htmlspecialchars($linha['etapa']); ?></textarea>
+              <?php } ?>
+              <input type="hidden" name="ids[]" value="<?php echo $linha['id']; ?>">
+              <input type="hidden" name="tipo_etapa[]" value="<?php echo htmlspecialchars($linha['tipo_etapa']); ?>">
+            </td>
 
-          <td><input type="date" name="inicio_previsto[]" value="<?php echo $linha['inicio_previsto']; ?>"></td>
-          <td><input type="date" name="termino_previsto[]" value="<?php echo $linha['termino_previsto']; ?>"></td>
-          <td><input type="date" name="inicio_real[]" value="<?php echo $linha['inicio_real']; ?>"></td>
-          <td><input type="date" name="termino_real[]" value="<?php echo $linha['termino_real']; ?>"></td>
-          <td><input type="number" name="evolutivo[]" value="<?php echo $linha['evolutivo']; ?>" min="0" max="100" step="0.1" placeholder="0 a 100%"></td>
-        </tr>
-      <?php } ?>
+            <td><input type="date" name="inicio_previsto[]" value="<?php echo $linha['inicio_previsto']; ?>"></td>
+            <td><input type="date" name="termino_previsto[]" value="<?php echo $linha['termino_previsto']; ?>"></td>
+            <td><input type="date" name="inicio_real[]" value="<?php echo $linha['inicio_real']; ?>"></td>
+            <td><input type="date" name="termino_real[]" value="<?php echo $linha['termino_real']; ?>"></td>
+            <td><input type="number" name="evolutivo[]" value="<?php echo $linha['evolutivo']; ?>" min="0" max="100" step="0.1" placeholder="0 a 100%"></td>
+          </tr>
+        <?php } ?>
       </tbody>
 
     </table>
@@ -229,6 +233,7 @@ function formatarParaBrasileiro($valor) {
 
 <script>
 document.querySelector('form').addEventListener('submit', function(event) {
+  const form = this;
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const linhas = table.rows;
   let temLinhaValida = false;
@@ -238,11 +243,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
-    if (id) continue;
-
     const etapaField = cells[0].querySelector('textarea, input');
     const campos = [
-      etapaField ? etapaField.value.trim() : '',
+      etapaField?.value.trim() || '',
       cells[1].querySelector('input')?.value.trim() || '',
       cells[2].querySelector('input')?.value.trim() || '',
       cells[3].querySelector('input')?.value.trim() || '',
@@ -255,24 +258,41 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
     temLinhaValida = true;
 
-    const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
-    
-    const inputTipo = document.createElement('input');
-    inputTipo.type = 'hidden';
-    inputTipo.name = 'tipo_etapa[]';
-    inputTipo.value = tipo;
-    this.appendChild(inputTipo);
-    
-    const inputId = document.createElement('input');
-    inputId.type = 'hidden';
-    inputId.name = 'ids[]';
-    inputId.value = '';
-    this.appendChild(inputId);
+    // Para novas linhas, adiciona os inputs ocultos
+    if (!id) {
+      const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
+
+      const inputTipo = document.createElement('input');
+      inputTipo.type = 'hidden';
+      inputTipo.name = 'tipo_etapa[]';
+      inputTipo.value = tipo;
+      form.appendChild(inputTipo);
+
+      const inputId = document.createElement('input');
+      inputId.type = 'hidden';
+      inputId.name = 'ids[]';
+      inputId.value = '';
+      form.appendChild(inputId);
+    }
   }
 
   if (!temLinhaValida) {
     event.preventDefault();
     alert('Nenhuma medição válida para salvar!');
+  } else {
+    // Mostra aviso visual (substitua por modal se quiser)
+    setTimeout(() => {
+      alert('✅ Dados salvos com sucesso!');
+    }, 300);
+
+    // Destaca as células alteradas (estilo "salvo")
+    const inputs = form.querySelectorAll('textarea, input[type="text"], input[type="number"], input[type="date"]');
+    inputs.forEach(input => {
+      input.style.backgroundColor = '#e0ffe0'; // verde claro
+      setTimeout(() => {
+        input.style.backgroundColor = ''; // limpa depois de 1s
+      }, 1000);
+    });
   }
 });
 
