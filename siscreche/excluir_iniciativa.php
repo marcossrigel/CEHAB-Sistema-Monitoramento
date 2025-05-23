@@ -16,7 +16,7 @@ $id = intval($_GET['id']);
 
 $check = $conexao->query("SELECT * FROM iniciativas WHERE id = $id");
 if ($check->num_rows == 0) {
-    echo "Iniciativa não encontrada.";
+    header("Location: visualizar.php");
     exit;
 }
 

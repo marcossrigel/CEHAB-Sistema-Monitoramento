@@ -22,7 +22,7 @@ $resultado = $conexao->query($sql);
 
 if ($resultado->num_rows == 0) 
 {
-    echo "Iniciativa não encontrada.";
+    header("Location: visualizar.php");
     exit;
 }
 
@@ -36,20 +36,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     $ib_previsto = $_POST['ib_previsto'];
     $ib_variacao = $_POST['ib_variacao'];
     $ib_valor_medio = $_POST['ib_valor_medio'];
+    $objeto = $_POST['objeto'];
+    $informacoes_gerais = $_POST['informacoes_gerais'];
+    $observacoes = $_POST['observacoes'];
 
     $update = "UPDATE iniciativas SET 
-        ib_status = '$ib_status',
-        data_vistoria = '$data_vistoria',
-        ib_execucao = '$ib_execucao',
-        ib_previsto = '$ib_previsto',
-        ib_variacao = '$ib_variacao',
-        ib_valor_medio = '$ib_valor_medio',
-        
-        WHERE id = $id";
+      ib_status = '$ib_status',
+      data_vistoria = '$data_vistoria',
+      ib_execucao = '$ib_execucao',
+      ib_previsto = '$ib_previsto',
+      ib_variacao = '$ib_variacao',
+      ib_valor_medio = '$ib_valor_medio',
+      objeto = '$objeto',
+      informacoes_gerais = '$informacoes_gerais',
+      observacoes = '$observacoes'
+      WHERE id = $id";
 
     if ($conexao->query($update)) 
     {
-        echo "<script>alert('Atualizado com sucesso!'); window.location.href='visualizar.php';</script>";
+        header("Location: visualizar.php");
+        exit;
     } 
     else 
     {
@@ -86,6 +92,40 @@ body {
   gap: 15px;
   margin-bottom: 20px;
   flex-wrap: nowrap;
+}
+.linha-atividade {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.coluna-textarea {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.coluna-textarea textarea {
+  width: 100%;
+  box-sizing: border-box;
+  height: 100px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  margin-left: 2px;
+  font-weight: bold;
 }
 
 .campo {
@@ -222,22 +262,69 @@ form button:hover {
         <input type="text" name="ib_fiscal" value="<?php echo htmlspecialchars($row['ib_fiscal']); ?>" readonly>
       </div>
     </div>
-      
-    <button type="submit">Salvar Alterações</button>
 
-    <div>
-        <button onclick="if(confirm('Tem certeza que deseja excluir?')) { window.location.href='excluir_iniciativa.php?id=<?php echo $row['id']; ?>'; }" 
-          style="background-color: transparent; border: none; cursor: pointer; font-size: 20px; color: red;">
-          delete
-        </button>
-        </div>
-      </div>
-    </form>
+  <div class="linha-atividade">
+  <div class="coluna-textarea">
+    <label class="label">OBJETO</label>
+    <textarea name="objeto"><?php echo htmlspecialchars($row['objeto']); ?></textarea>
+  </div>
+  </div>
 
-    <div class="botao-voltar">
-        <button class="btn-azul" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
+  <div class="linha-atividade">
+    <div class="coluna-textarea">
+      <label class="label">Informações Gerais</label>
+      <textarea name="informacoes_gerais"><?php echo htmlspecialchars($row['informacoes_gerais']); ?></textarea>
     </div>
+  </div>
+
+  <div class="linha-atividade">
+    <div class="coluna-textarea">
+      <label class="label">OBSERVAÇÕES (PONTOS CRÍTICOS)</label>
+      <textarea name="observacoes"><?php echo htmlspecialchars($row['observacoes']); ?></textarea>
+    </div>
+  </div>
+      
+  <button type="submit">Salvar Alterações</button>
+
+<div id="modalConfirmacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:8px; text-align:center;">
+    <p>Tem certeza que deseja excluir esta iniciativa?</p>
+    <button onclick="confirmarExclusao()" style="margin-right:10px;">Sim</button>
+    <button onclick="fecharModal()">Cancelar</button>
+  </div>
+</div>
+
+<div>
+  <button type="button" onclick="abrirModal()" 
+    style="background-color: transparent; border: none; cursor: pointer; font-size: 20px; color: red;">
+    delete
+  </button>
+</div>
+
+</div>
+
+</form>
+
+  <div class="botao-voltar">
+      <button class="btn-azul" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
+  </div>
 </div>
 
 </body>
+
+<script>
+  function abrirModal() {
+    document.getElementById('modalConfirmacao').style.display = 'flex';
+  }
+
+  function fecharModal() {
+    document.getElementById('modalConfirmacao').style.display = 'none';
+  }
+
+  function confirmarExclusao() {
+    window.location.href = 'excluir_iniciativa.php?id=<?php echo $row["id"]; ?>';
+  }
+</script>
+
+
 </html>
