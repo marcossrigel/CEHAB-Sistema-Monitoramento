@@ -284,8 +284,9 @@ form button:hover {
     </div>
   </div>
       
-  <div style="display: flex; gap: 20px; align-items: center; margin-top: 20px;">
-  <button type="submit">Salvar Alterações</button>
+  <button type="submit" style="width: auto; padding: 10px 20px; background-color: #4da6ff; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+    Salvar Alterações
+  </button>
 
   <button type="button" onclick="abrirModal()" 
     style="background-color: transparent; border: none; cursor: pointer; font-size: 18px; color: red; font-weight: bold;">
