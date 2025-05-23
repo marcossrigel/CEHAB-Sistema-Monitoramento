@@ -23,7 +23,7 @@ if ($check->num_rows == 0) {
 $delete = $conexao->query("DELETE FROM iniciativas WHERE id = $id");
 
 if ($delete) {
-    echo "<script>window.location.href='visualizar.php';</script>";
+   echo "<script>window.location.href='editar_iniciativa.php?id=OUTRO_ID';</script>";
 } else {
     echo "Erro ao excluir: " . $conexao->error;
 }

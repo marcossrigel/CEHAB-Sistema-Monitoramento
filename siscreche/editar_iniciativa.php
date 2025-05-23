@@ -284,23 +284,13 @@ form button:hover {
     </div>
   </div>
       
+  <div style="display: flex; gap: 20px; align-items: center; margin-top: 20px;">
   <button type="submit">Salvar Alterações</button>
 
-<div id="modalConfirmacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-  <div style="background:white; padding:20px; border-radius:8px; text-align:center;">
-    <p>Tem certeza que deseja excluir esta iniciativa?</p>
-    <button onclick="confirmarExclusao()" style="margin-right:10px;">Sim</button>
-    <button onclick="fecharModal()">Cancelar</button>
-  </div>
-</div>
-
-<div>
   <button type="button" onclick="abrirModal()" 
-    style="background-color: transparent; border: none; cursor: pointer; font-size: 20px; color: red;">
+    style="background-color: transparent; border: none; cursor: pointer; font-size: 18px; color: red; font-weight: bold;">
     delete
   </button>
-</div>
-
 </div>
 
 </form>
@@ -311,6 +301,18 @@ form button:hover {
 </div>
 
 </body>
+
+<div id="modalConfirmacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+  <div style="background:white; padding:20px; border-radius:8px; text-align:center; min-width: 300px;">
+    <p style="margin-bottom: 20px; font-size: 16px;">Tem certeza que deseja excluir esta iniciativa?</p>
+    <button onclick="confirmarExclusao()" style="padding: 10px 20px; background-color: #ccc; border: none; border-radius: 8px; margin-right: 10px; cursor: pointer;">
+      Sim
+    </button>
+    <button onclick="fecharModal()" style="padding: 10px 20px; background-color: #4da6ff; color: white; border: none; border-radius: 8px; cursor: pointer;">
+      Cancelar
+    </button>
+  </div>
+</div>
 
 <script>
   function abrirModal() {
