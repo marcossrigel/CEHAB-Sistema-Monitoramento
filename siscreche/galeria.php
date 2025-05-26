@@ -25,72 +25,90 @@ if ($linha = mysqli_fetch_assoc($res)) {
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galeria de Fotos</title>
   <style>
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f1f1f1;
-  margin: 0;
-  padding: 30px;
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f1f1f1;
+      margin: 0;
+      padding: 20px;
+    }
 
-h2 {
-  text-align: center;
-  margin-bottom: 30px;
-}
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 20px;
+      color: #333;
+    }
 
-.galeria {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
 
-.foto {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 260px;
-  text-align: center;
-  border-radius: 8px;
-  background: #fff;
-}
+    .foto {
+      border: 1px solid #ccc;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+    }
 
-.foto img {
-  width: 100%;
-  border-radius: 6px;
-}
+    .foto img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 6px;
+    }
 
-.foto textarea {
-  width: 100%;
-  resize: none;
-  height: 60px;
-  margin-top: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
+    .foto textarea {
+      width: 100%;
+      resize: none;
+      height: 60px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      padding: 8px;
+      background-color: #f9f9f9;
+    }
 
-.voltar-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-}
+    .voltar-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
 
-.btn-voltar {
-  background-color: #4da6ff;
-  color: white;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    .btn-voltar {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-.btn-voltar:hover {
-  background-color: #3399ff;
-}
-</style>
+    .btn-voltar:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 500px) {
+      h2 {
+        font-size: 18px;
+      }
+
+      .foto textarea {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 
 <body>
