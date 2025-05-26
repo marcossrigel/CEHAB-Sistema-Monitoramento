@@ -44,7 +44,7 @@ if ($linha = mysqli_fetch_assoc($res)) {
 
     .galeria {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
 
@@ -106,6 +106,18 @@ if ($linha = mysqli_fetch_assoc($res)) {
 
       .foto textarea {
         font-size: 13px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .galeria {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .galeria {
+        grid-template-columns: 1fr;
       }
     }
   </style>
