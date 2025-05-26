@@ -155,28 +155,28 @@ function formatarParaBrasileiro($valor) {
       resize: vertical; 
     }
     @media (max-width: 768px) {
-      .main-title {
-        font-size: 20px;
-        padding: 0 10px;
-      }
-      table {
-        font-size: 13px;
-        display: block;
-        overflow-x: auto;
-      }
-      td[contenteditable] {
-        min-width: 90px;
-        font-size: 13px;
-      }
-      .button-group {
-        flex-direction: column;
-        align-items: center;
-      }
-      .button-group button {
-        width: 100%;
-        max-width: 250px;
-      }
+    .main-title {
+      font-size: 20px;
+      padding: 0 10px;
     }
+    table {
+      font-size: 13px;
+      display: block;
+      overflow-x: auto;
+    }
+    td[contenteditable], input[type="text"], input[type="date"], input[type="number"], textarea {
+      min-width: 90px;
+      font-size: 13px;
+    }
+    .button-group {
+      flex-direction: column;
+      align-items: center;
+    }
+    .button-group button {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
   </style>
 </head>
 <body>
@@ -202,8 +202,8 @@ function formatarParaBrasileiro($valor) {
             <td>
               <?php if ($linha['tipo_etapa'] === 'subtitulo') { ?>
                 <input type="text" name="etapa[]" value="<?php echo htmlspecialchars($linha['etapa']); ?>" 
-                  style="width:100%; font-family:'Poppins', sans-serif; font-size:13px; padding:4px 8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-              <?php } else { ?>
+                  style="width:100%; min-width:200px; font-family:'Poppins', sans-serif; font-size:13px; padding:4px 8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+                <?php } else { ?>
                 <textarea name="etapa[]" rows="2" class="campo-etapa" 
                   style="width:100%; font-family:'Poppins', sans-serif; font-size:13px; padding:4px 8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;"><?php echo htmlspecialchars($linha['etapa']); ?></textarea>
               <?php } ?>
