@@ -382,20 +382,20 @@ select[type="text"] {
         <select type="text" name="ib_status" class="campo" required>
           <option value="">Selecione...</option>
           <option value="Em Execução">Em Execução</option>
-          <option value="Em Andamento">Em Andamento</option>
-          <option value="Liberado">Liberado</option>
+          <option value="Paralizado">Paralizado</option>
+          <option value="Concluido">Concluido</option>
         </select>
       </div>
       <div class="campo">
-        <label class="label">Execução</label>
+        <label class="label">% Execução</label>
         <input type="text" name="ib_execucao">
       </div>
       <div class="campo">
-        <label class="label">Previsto</label>
+        <label class="label">% Previsto</label>
         <input type="text" name="ib_previsto">
       </div>
       <div class="campo">
-        <label class="label">Variação</label>
+        <label class="label">% Variação</label>
         <input type="text" name="ib_variacao">
       </div>
       <div class="campo-longo">

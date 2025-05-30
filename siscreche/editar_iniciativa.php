@@ -1,35 +1,29 @@
 <?php
-
 session_start();
-if (!isset($_SESSION['id_usuario'])) 
-{
+if (!isset($_SESSION['id_usuario'])) {
     header('Location: login.php');
     exit;
 }
 
 include("config.php");
 
-if (!isset($_GET['id'])) 
-{
+if (!isset($_GET['id'])) {
     echo "ID não fornecido.";
     exit;
 }
 
 $id = intval($_GET['id']);
-
 $sql = "SELECT * FROM iniciativas WHERE id = $id";
 $resultado = $conexao->query($sql);
 
-if ($resultado->num_rows == 0) 
-{
+if ($resultado->num_rows == 0) {
     header("Location: visualizar.php");
     exit;
 }
 
 $row = $resultado->fetch_assoc();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') 
-{
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ib_status = $_POST['ib_status'];
     $data_vistoria = $_POST['data_vistoria'];
     $ib_execucao = $_POST['ib_execucao'];
@@ -41,173 +35,183 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     $observacoes = $_POST['observacoes'];
 
     $update = "UPDATE iniciativas SET 
-      ib_status = '$ib_status',
-      data_vistoria = '$data_vistoria',
-      ib_execucao = '$ib_execucao',
-      ib_previsto = '$ib_previsto',
-      ib_variacao = '$ib_variacao',
-      ib_valor_medio = '$ib_valor_medio',
-      objeto = '$objeto',
-      informacoes_gerais = '$informacoes_gerais',
-      observacoes = '$observacoes'
-      WHERE id = $id";
+        ib_status = '$ib_status',
+        data_vistoria = '$data_vistoria',
+        ib_execucao = '$ib_execucao',
+        ib_previsto = '$ib_previsto',
+        ib_variacao = '$ib_variacao',
+        ib_valor_medio = '$ib_valor_medio',
+        objeto = '$objeto',
+        informacoes_gerais = '$informacoes_gerais',
+        observacoes = '$observacoes'
+        WHERE id = $id";
 
-    if ($conexao->query($update)) 
-    {
+    if ($conexao->query($update)) {
         header("Location: visualizar.php");
         exit;
-    } 
-    else 
-    {
+    } else {
         echo "Erro ao atualizar: " . $conexao->error;
     }
-
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8">
-    <title>Editar Iniciativa</title>
-    <style>
-      
-body {
-  font-family: Arial, sans-serif;
-  background-color: #e9eef1;
-  padding: 40px;
-}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Iniciativa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e9eef1;
+      padding: 20px;
+      margin: 0;
+    }
 
-.container {
-  max-width: 800px;
-  margin: auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
 
-.linha {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: nowrap;
-}
-.linha-atividade {
-  display: flex;
-  gap: 20px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
 
-.coluna-textarea {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
+    .linha {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
 
-.coluna-textarea textarea {
-  width: 100%;
-  box-sizing: border-box;
-  height: 100px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  font-size: 14px;
-  font-family: inherit;
-}
+    .linha-atividade {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 20px;
+    }
 
-.label {
-  display: block;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 4px;
-  margin-left: 2px;
-  font-weight: bold;
-}
+    .campo {
+      flex: 1;
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
+    }
 
-.campo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+    form input[type="text"],
+    form input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
 
-h1 {
-  font-size: 28px;
-  text-align: center;
-  margin-bottom: 30px;
-  color: #333;
-}
+    textarea {
+      resize: vertical;
+      height: 100px;
+      font-family: inherit;
+    }
 
-form label {
-  font-weight: bold;
-  margin-top: 10px;
-  display: block;
-}
+    label {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
 
-form input[type="text"],
-form input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-}
+    form button,
+    .btn-azul {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4da6ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
 
-form button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #4da6ff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
+    form button:hover,
+    .btn-azul:hover {
+      background-color: #3399ff;
+    }
 
-form button:hover {
-  background-color: #3399ff;
-}
+    .botao-voltar {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+    }
 
-.botao-voltar {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
+    #modalConfirmacao {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 10px;
+      box-sizing: border-box;
+    }
 
-.btn-azul {
-  padding: 10px 20px;
-  background-color: #4da6ff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
+    #modalConfirmacao > div {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
 
-.btn-azul:hover {
-  background-color: #3399ff;
-}
+    @media (max-width: 600px) {
+      .linha {
+        flex-direction: column;
+      }
 
-</style>
+      .campo {
+        min-width: 100%;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      form button,
+      .btn-azul {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
 <div class="container">
-    <h1>Editar Iniciativa</h1>
-    <form method="post">
-
+  <h1>Editar Iniciativa</h1>
+  <form method="post">
     <div class="linha">
       <div class="campo">
         <label>Iniciativa:</label>
         <input type="text" name="iniciativa" value="<?php echo htmlspecialchars($row['iniciativa']); ?>" readonly>
-    </div>
+      </div>
       <div class="campo">
         <label>Status:</label>
         <input type="text" name="ib_status" value="<?php echo htmlspecialchars($row['ib_status']); ?>">
@@ -263,55 +267,35 @@ form button:hover {
       </div>
     </div>
 
-  <div class="linha-atividade">
-  <div class="coluna-textarea">
-    <label class="label">OBJETO</label>
-    <textarea name="objeto"><?php echo htmlspecialchars($row['objeto']); ?></textarea>
-  </div>
-  </div>
-
-  <div class="linha-atividade">
-    <div class="coluna-textarea">
-      <label class="label">Informações Gerais</label>
-      <textarea name="informacoes_gerais"><?php echo htmlspecialchars($row['informacoes_gerais']); ?></textarea>
+    <div class="linha-atividade">
+      <div class="campo">
+        <label>OBJETO</label>
+        <textarea name="objeto"><?php echo htmlspecialchars($row['objeto']); ?></textarea>
+      </div>
+      <div class="campo">
+        <label>Informações Gerais</label>
+        <textarea name="informacoes_gerais"><?php echo htmlspecialchars($row['informacoes_gerais']); ?></textarea>
+      </div>
+      <div class="campo">
+        <label>OBSERVAÇÕES (PONTOS CRÍTICOS)</label>
+        <textarea name="observacoes"><?php echo htmlspecialchars($row['observacoes']); ?></textarea>
+      </div>
     </div>
-  </div>
 
-  <div class="linha-atividade">
-    <div class="coluna-textarea">
-      <label class="label">OBSERVAÇÕES (PONTOS CRÍTICOS)</label>
-      <textarea name="observacoes"><?php echo htmlspecialchars($row['observacoes']); ?></textarea>
-    </div>
-  </div>
-      
-  <button type="submit" style="width: auto; padding: 10px 20px; background-color: #4da6ff; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-    Salvar Alterações
-  </button>
-
-  <button type="button" onclick="abrirModal()" 
-    style="background-color: transparent; border: none; cursor: pointer; font-size: 18px; color: red; font-weight: bold;">
-    delete
-  </button>
-</div>
-
-</form>
+    <button type="submit">Salvar Alterações</button>
+    <button type="button" onclick="abrirModal()" style="background-color: transparent; border: none; cursor: pointer; font-size: 18px; color: red; font-weight: bold;">delete</button>
+  </form>
 
   <div class="botao-voltar">
-      <button class="btn-azul" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
+    <button class="btn-azul" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
   </div>
 </div>
 
-</body>
-
-<div id="modalConfirmacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
-  <div style="background:white; padding:20px; border-radius:8px; text-align:center; min-width: 300px;">
-    <p style="margin-bottom: 20px; font-size: 16px;">Tem certeza que deseja excluir esta iniciativa?</p>
-    <button onclick="confirmarExclusao()" style="padding: 10px 20px; background-color: #ccc; border: none; border-radius: 8px; margin-right: 10px; cursor: pointer;">
-      Sim
-    </button>
-    <button onclick="fecharModal()" style="padding: 10px 20px; background-color: #4da6ff; color: white; border: none; border-radius: 8px; cursor: pointer;">
-      Cancelar
-    </button>
+<div id="modalConfirmacao">
+  <div>
+    <p style="margin-bottom: 20px;">Tem certeza que deseja excluir esta iniciativa?</p>
+    <button onclick="confirmarExclusao()">Sim</button>
+    <button onclick="fecharModal()" style="background-color: #4da6ff; color: white;">Cancelar</button>
   </div>
 </div>
 
@@ -319,15 +303,12 @@ form button:hover {
   function abrirModal() {
     document.getElementById('modalConfirmacao').style.display = 'flex';
   }
-
   function fecharModal() {
     document.getElementById('modalConfirmacao').style.display = 'none';
   }
-
   function confirmarExclusao() {
     window.location.href = 'excluir_iniciativa.php?id=<?php echo $row["id"]; ?>';
   }
 </script>
-
-
+</body>
 </html>
