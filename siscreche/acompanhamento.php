@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
   header('Location: login.php');
@@ -23,15 +28,25 @@ if (isset($_POST['salvar'])) {
         $id_existente = intval($ids[$i] ?? 0);
         $problema = mysqli_real_escape_string($conexao, $problemas[$i]);
         $contramedida = mysqli_real_escape_string($conexao, $contramedidas[$i]);
-        $prazo = mysqli_real_escape_string($conexao, $prazos[$i]);
+        $prazo_bruto = trim($prazos[$i]);
         $responsavel = mysqli_real_escape_string($conexao, $responsaveis[$i]);
 
+        // Verifica se prazo está vazio
+        if ($prazo_bruto === '') {
+            $prazo_sql = "NULL";
+        } else {
+            // já vem no formato YYYY-MM-DD do JavaScript
+            $prazo_formatado = mysqli_real_escape_string($conexao, $prazo_bruto);
+            $prazo_sql = "'$prazo_formatado'";
+        }
+
         if ($id_existente > 0) {
-            $query = "UPDATE pendencias SET problema='$problema', contramedida='$contramedida', prazo='$prazo', responsavel='$responsavel' 
+            $query = "UPDATE pendencias 
+                      SET problema='$problema', contramedida='$contramedida', prazo=$prazo_sql, responsavel='$responsavel' 
                       WHERE id = $id_existente AND id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa";
         } else {
             $query = "INSERT INTO pendencias (id_usuario, id_iniciativa, problema, contramedida, prazo, responsavel) 
-                      VALUES ('$id_usuario', '$id_iniciativa', '$problema', '$contramedida', '$prazo', '$responsavel')";
+                      VALUES ('$id_usuario', '$id_iniciativa', '$problema', '$contramedida', $prazo_sql, '$responsavel')";
         }
 
         mysqli_query($conexao, $query);

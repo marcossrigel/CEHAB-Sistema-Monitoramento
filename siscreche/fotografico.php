@@ -31,9 +31,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $caminho = "uploads/" . $nome_final;
 
         if (move_uploaded_file($_FILES['foto']['tmp_name'], $caminho)) {
-            $query = "INSERT INTO fotos (id_usuario, id_iniciativa, caminho, descricao) VALUES ('$id_usuario', '$id_iniciativa', '$nome_final', '$descricao')";
-            mysqli_query($conexao, $query);
+            $query = "INSERT INTO fotos (id_usuario, id_iniciativa, caminho, descricao) 
+                      VALUES ('$id_usuario', '$id_iniciativa', '$nome_final', '$descricao')";
+
+            if (mysqli_query($conexao, $query)) {
+                echo "<script>alert('Foto salva com sucesso!');</script>";
+            } else {
+                echo "<script>alert('Erro ao salvar no banco: " . mysqli_error($conexao) . "');</script>";
+            }
+        } else {
+            echo "<script>alert('Erro ao mover a foto.');</script>";
         }
+
     }
 }
 ?>

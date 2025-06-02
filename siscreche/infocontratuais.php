@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: login.php');
@@ -6,6 +11,10 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 include_once('config.php');
+
+if (!$conexao) {
+    die("Erro na conexão com o banco: " . mysqli_connect_error());
+}
 
 $id_iniciativa = isset($_POST['id_iniciativa']) ? intval($_POST['id_iniciativa']) : (isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0);
 
@@ -22,16 +31,21 @@ if (isset($_POST['salvar'])) {
     $processo_licitatorio = mysqli_real_escape_string($conexao, $_POST['processo_licitatorio']);
     $empresa = mysqli_real_escape_string($conexao, $_POST['empresa']);
     $data_assinatura_contrato = $_POST['data_assinatura_contrato'];
-    $dara_os = $_POST['dara_os'];
+    $data_os = $_POST['data_os'];
     $prazo_execucao_original = $_POST['prazo_execucao_original'];
     $prazo_execucao_atual = $_POST['prazo_execucao_atual'];
 
-    $valor_inicial_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_inicial_obra']);
-    $valor_aditivo_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo_obra']);  
-    $valor_total_obra = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_total_obra']);
-    $valor_inicial_contrato = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_inicial_contrato']);
-    $valor_aditivo = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_aditivo']);
-    $valor_contrato = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['valor_contrato']);
+    function limpar_valor_decimal($valor) {
+    if (trim($valor) === '') return '0';
+        return str_replace(['R$', '.', ','], ['', '', '.'], $valor);
+    }
+
+    $valor_inicial_obra = limpar_valor_decimal($_POST['valor_inicial_obra']);
+    $valor_aditivo_obra = limpar_valor_decimal($_POST['valor_aditivo_obra']);
+    $valor_total_obra = limpar_valor_decimal($_POST['valor_total_obra']);
+    $valor_inicial_contrato = limpar_valor_decimal($_POST['valor_inicial_contrato']);
+    $valor_aditivo = limpar_valor_decimal($_POST['valor_aditivo']);
+    $valor_contrato = limpar_valor_decimal($_POST['valor_contrato']);
 
     $cod_subtracao = mysqli_real_escape_string($conexao, $_POST['cod_subtracao']);
     $secretaria_demandante = mysqli_real_escape_string($conexao, $_POST['secretaria_demandante']);
@@ -41,7 +55,7 @@ if (isset($_POST['salvar'])) {
             processo_licitatorio='$processo_licitatorio',
             empresa='$empresa',
             data_assinatura_contrato='$data_assinatura_contrato',
-            dara_os='$dara_os',
+            data_os='$data_os',
             prazo_execucao_original='$prazo_execucao_original',
             prazo_execucao_atual='$prazo_execucao_atual',
             valor_inicial_obra='$valor_inicial_obra',
@@ -55,8 +69,8 @@ if (isset($_POST['salvar'])) {
             WHERE id_usuario={$_SESSION['id_usuario']} AND id_iniciativa=$id_iniciativa";
         mysqli_query($conexao, $query_update);
     } else {
-        $query_insert = "INSERT INTO contratuais (id_usuario, id_iniciativa, processo_licitatorio, empresa, data_assinatura_contrato, dara_os, prazo_execucao_original, prazo_execucao_atual, valor_inicial_obra, valor_aditivo_obra, valor_total_obra, valor_inicial_contrato, valor_aditivo, valor_contrato, cod_subtracao, secretaria_demandante) VALUES 
-        ({$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$dara_os', '$prazo_execucao_original', '$prazo_execucao_atual', '$valor_inicial_obra', '$valor_aditivo_obra', '$valor_total_obra', '$valor_inicial_contrato', '$valor_aditivo', '$valor_contrato', '$cod_subtracao', '$secretaria_demandante')";
+        $query_insert = "INSERT INTO contratuais (id_usuario, id_iniciativa, processo_licitatorio, empresa, data_assinatura_contrato, data_os, prazo_execucao_original, prazo_execucao_atual, valor_inicial_obra, valor_aditivo_obra, valor_total_obra, valor_inicial_contrato, valor_aditivo, valor_contrato, cod_subtracao, secretaria_demandante) VALUES 
+        ({$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$data_os', '$prazo_execucao_original', '$prazo_execucao_atual', '$valor_inicial_obra', '$valor_aditivo_obra', '$valor_total_obra', '$valor_inicial_contrato', '$valor_aditivo', '$valor_contrato', '$cod_subtracao', '$secretaria_demandante')";
         mysqli_query($conexao, $query_insert);
     }
 
@@ -182,7 +196,7 @@ if (isset($_POST['salvar'])) {
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>
         <tr><td>Empresa</td><td><input type="text" name="empresa" value="<?php echo $dados['empresa'] ?? ''; ?>"></td></tr>
         <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>"></td></tr>
-        <tr><td>Data da O.S.</td><td><input type="date"  name="dara_os" value="<?php echo $dados['dara_os'] ?? ''; ?>"></td></tr>
+        <tr><td>Data da O.S.</td><td><input type="date"  name="data_os" value="<?php echo $dados['data_os'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
         <tr><td>Valor Inicial da Obra</td><td><input type="text" name="valor_inicial_obra" value="<?php echo $dados['valor_inicial_obra'] ?? ''; ?>"></td></tr>
