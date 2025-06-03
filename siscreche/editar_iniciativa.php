@@ -77,22 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .btn-excluir {
-      background: none;
-      border: none;
-      color: #e74c3c;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      padding: 0;
-      transition: color 0.2s;
-      text-decoration: none;
-    }
-
-    .btn-excluir:hover {
-      color: #e74c3c;
-    }
-
 
     h1 {
       font-size: 28px;
@@ -159,6 +143,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       transition: background-color 0.3s ease;
     }
 
+    form button:hover,
+    .btn-azul:hover {
+      background-color: #3399ff;
+    }
+
     .botao-voltar {
       display: flex;
       justify-content: center;
@@ -166,75 +155,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     #modalConfirmacao {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  padding: 10px;
-  box-sizing: border-box;
-}
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 10px;
+      box-sizing: border-box;
+    }
 
-.modal-content {
-  background: #fff;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-  animation: aparecer 0.25s ease-out;
-}
-
-.modal-content p {
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 25px;
-}
-
-.botoes-modal {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.btn-sim {
-  background-color: #f1f1f1;
-  color: black;
-  font-weight: bold;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-sim:hover {
-  background-color: #ddd;
-}
-
-.btn-cancelar {
-  background-color: #4da6ff;
-  color: white;
-  font-weight: bold;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-cancelar:hover {
-  background-color: #3399ff;
-}
-
-@keyframes aparecer {
-  from { transform: scale(0.95); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
+    #modalConfirmacao > div {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
 
     @media (max-width: 600px) {
       .linha {
@@ -340,9 +282,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
 
-    <button type="submit">Salvar Alterações</button> <br>
-    <button type="button" class="btn-excluir" onclick="abrirModal()">delete</button>
-
+    <button type="submit">Salvar Alterações</button>
+    <button type="button" onclick="abrirModal()" style="background-color: transparent; border: none; cursor: pointer; font-size: 18px; color: red; font-weight: bold;">delete</button>
   </form>
 
   <div class="botao-voltar">
@@ -351,12 +292,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <div id="modalConfirmacao">
-  <div class="modal-content">
-    <p>Tem certeza que deseja excluir esta iniciativa?</p>
-    <div class="botoes-modal">
-      <button class="btn-sim" onclick="confirmarExclusao()">Sim</button>
-      <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
-    </div>
+  <div>
+    <p style="margin-bottom: 20px;">Tem certeza que deseja excluir esta iniciativa?</p>
+    <button onclick="confirmarExclusao()">Sim</button>
+    <button onclick="fecharModal()" style="background-color: #4da6ff; color: white;">Cancelar</button>
   </div>
 </div>
 

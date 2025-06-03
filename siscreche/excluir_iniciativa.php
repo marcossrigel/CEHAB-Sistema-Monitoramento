@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: login.php');
@@ -14,17 +18,33 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$check = $conexao->query("SELECT * FROM iniciativas WHERE id = $id");
+// Verifica se a iniciativa existe
+$check = $conexao->query("SELECT * FROM iniciativas WHERE id = $id") or die("Erro ao buscar iniciativa: " . $conexao->error);
 if ($check->num_rows == 0) {
     header("Location: visualizar.php");
     exit;
 }
 
-$delete = $conexao->query("DELETE FROM iniciativas WHERE id = $id");
+// Exclui registros relacionados nas tabelas dependentes
+$queries = [
+    "DELETE FROM fotos WHERE id_iniciativa = $id",
+    "DELETE FROM medicoes WHERE id_iniciativa = $id",
+    "DELETE FROM pendencias WHERE id_iniciativa = $id",
+    "DELETE FROM contratuais WHERE id_iniciativa = $id",
+    "DELETE FROM marcos WHERE id_iniciativa = $id"
+];
 
-if ($delete) {
-   echo "<script>window.location.href='editar_iniciativa.php?id=OUTRO_ID';</script>";
+foreach ($queries as $sql) {
+    if (!$conexao->query($sql)) {
+        die("Erro ao excluir relacionados: " . $conexao->error);
+    }
+}
+
+// Agora exclui a própria iniciativa
+if ($conexao->query("DELETE FROM iniciativas WHERE id = $id")) {
+    header("Location: visualizar.php");
+    exit;
 } else {
-    echo "Erro ao excluir: " . $conexao->error;
+    die("Erro ao excluir iniciativa: " . $conexao->error);
 }
 ?>
