@@ -1,69 +1,86 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
+
 if (!isset($_SESSION['id_usuario'])) {
-  header('Location: login.php');
-  exit;
+    header('Location: login.php');
+    exit;
 }
 
-include_once('config.php');
+include_once("config.php");
+mysqli_set_charset($conexao, "utf8mb4");
 
-$id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+$id_usuario = (int) $_SESSION['id_usuario'];
+$id_iniciativa = (int) ($_GET['id_iniciativa'] ?? 0);
+$data_registro_item = date('Y-m-d');
 
-if (isset($_POST['salvar'])) {
-    $id_usuario = $_SESSION['id_usuario'];
-    $valor_orcamento = $_POST['valor_orcamento'];
-    $valor_bm = $_POST['valor_bm'];
-    $saldo_obra = $_POST['saldo_obra'];
-    $bm = $_POST['bm'];
-    $data_inicio = $_POST['data_inicio'];
-    $data_fim = $_POST['data_fim'];
-    $data_vistoria = $_POST['data_vistoria'];
-    $ids = isset($_POST['ids']) ? $_POST['ids'] : [];
+// Função para transformar "R$ 4.696.029,90" → 4696029.90
+function formatarDinheiro($valor) {
+    $limpo = str_replace(['R$', '.', ','], ['', '', '.'], trim($valor));
+    $limpo = preg_replace('/[^0-9.]/', '', $limpo); // remove qualquer coisa que não seja número ou ponto
+    return is_numeric($limpo) ? $limpo : 'NULL';
+}
 
-    function formatarDinheiro($valor) {
-        return str_replace(',', '.', str_replace('.', '', $valor));
-    }
+function formatarParaBrasileiro($valor) {
+    return is_numeric($valor) ? 'R$ ' . number_format((float)$valor, 2, ',', '.') : '';
+}
+if (isset($_POST['valor_orcamento'])) {
+    $valor_orcamento = $_POST['valor_orcamento'] ?? [];
+    $valor_bm = $_POST['valor_bm'] ?? [];
+    $saldo_obra = $_POST['saldo_obra'] ?? [];
+    $bm = $_POST['bm'] ?? [];
+    $data_inicio = $_POST['data_inicio'] ?? [];
+    $data_fim = $_POST['data_fim'] ?? [];
+    $data_vistoria = $_POST['data_vistoria'] ?? [];
+    $ids = $_POST['ids'] ?? [];
 
     for ($i = 0; $i < count($valor_orcamento); $i++) {
-        $id_existente = isset($ids[$i]) ? intval($ids[$i]) : 0;
-        $valor_orcamento_item = mysqli_real_escape_string($conexao, formatarDinheiro($valor_orcamento[$i]));
-        $valor_bm_item = mysqli_real_escape_string($conexao, formatarDinheiro($valor_bm[$i]));
-        $saldo_obra_item = mysqli_real_escape_string($conexao, formatarDinheiro($saldo_obra[$i]));
-        $bm_item = mysqli_real_escape_string($conexao, formatarDinheiro($bm[$i]));
-        $data_inicio_item = mysqli_real_escape_string($conexao, $data_inicio[$i]);
-        $data_fim_item = mysqli_real_escape_string($conexao, $data_fim[$i]);
-        $data_vistoria_item = mysqli_real_escape_string($conexao, $data_vistoria[$i]);
-        $data_registro_item = date('Y-m-d H:i:s');
+        $id_existente = intval($ids[$i] ?? 0);
+
+        $valor_orcamento_item = trim($valor_orcamento[$i]) !== '' ? "'" . mysqli_real_escape_string($conexao, formatarDinheiro($valor_orcamento[$i])) . "'" : "NULL";
+        $valor_bm_item        = trim($valor_bm[$i])        !== '' ? "'" . mysqli_real_escape_string($conexao, formatarDinheiro($valor_bm[$i]))        . "'" : "NULL";
+        $saldo_obra_item      = trim($saldo_obra[$i])      !== '' ? "'" . mysqli_real_escape_string($conexao, formatarDinheiro($saldo_obra[$i]))      . "'" : "NULL";
+        $bm_item = trim($bm[$i]) !== '' ? "'" . mysqli_real_escape_string($conexao, $bm[$i]) . "'" : "NULL";
+
+        $data_inicio_item     = trim($data_inicio[$i])     !== '' ? "'" . mysqli_real_escape_string($conexao, $data_inicio[$i])     . "'" : "NULL";
+        $data_fim_item        = trim($data_fim[$i])        !== '' ? "'" . mysqli_real_escape_string($conexao, $data_fim[$i])        . "'" : "NULL";
+        $data_vistoria_item   = trim($data_vistoria[$i])   !== '' ? "'" . mysqli_real_escape_string($conexao, $data_vistoria[$i])   . "'" : "NULL";
 
         if ($id_existente > 0) {
             $query = "UPDATE medicoes SET 
-                        valor_orcamento = '$valor_orcamento_item',
-                        valor_bm = '$valor_bm_item',
-                        saldo_obra = '$saldo_obra_item',
-                        bm = '$bm_item',
-                        data_inicio = '$data_inicio_item',
-                        data_fim = '$data_fim_item',
-                        data_vistoria = '$data_vistoria_item'
-                      WHERE id = $id_existente AND id_usuario = $id_usuario";
+                valor_orcamento = $valor_orcamento_item,
+                valor_bm = $valor_bm_item,
+                saldo_obra = $saldo_obra_item,
+                bm = $bm_item,
+                data_inicio = $data_inicio_item,
+                data_fim = $data_fim_item,
+                data_vistoria = $data_vistoria_item
+                WHERE id = $id_existente AND id_usuario = $id_usuario";
         } else {
-            $query = "INSERT INTO medicoes (id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra, bm, data_inicio, data_fim, data_vistoria, data_registro) 
-                      VALUES ('$id_usuario', '$id_iniciativa', '$valor_orcamento_item', '$valor_bm_item', '$saldo_obra_item', '$bm_item', '$data_inicio_item', '$data_fim_item', '$data_vistoria_item', '$data_registro_item')";
+            $query = "INSERT INTO medicoes (
+                id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra, bm, data_inicio, data_fim, data_vistoria, data_registro
+            ) VALUES (
+                $id_usuario, $id_iniciativa, $valor_orcamento_item, $valor_bm_item, $saldo_obra_item, $bm_item, $data_inicio_item, $data_fim_item, $data_vistoria_item, '$data_registro_item'
+            )";
         }
 
-        mysqli_query($conexao, $query);
+        if (!mysqli_query($conexao, $query)) {
+            echo "Erro ao salvar: " . mysqli_error($conexao);
+            exit;
+        }
     }
 }
 
-$dados = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_iniciativa = $id_iniciativa");
-
-$query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
-$resultado_nome = mysqli_query($conexao, $query_nome);
-$linha_nome = mysqli_fetch_assoc($resultado_nome);
-$nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
-
-function formatarParaBrasileiro($valor) {
-    return number_format((float)$valor, 2, ',', '.');
+// Nome da iniciativa
+$nome_iniciativa = "Iniciativa Desconhecida";
+$res_iniciativa = mysqli_query($conexao, "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa");
+if ($row = mysqli_fetch_assoc($res_iniciativa)) {
+    $nome_iniciativa = $row['iniciativa'];
 }
+
+// Dados para preencher tabela
+$dados = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa");
 ?>
 
 <!DOCTYPE html>
@@ -204,7 +221,8 @@ function formatarParaBrasileiro($valor) {
           <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['valor_orcamento']); ?></td>
           <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['valor_bm']); ?></td>
           <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['saldo_obra']); ?></td>
-          <td contenteditable="true"><?php echo formatarParaBrasileiro($linha['bm']); ?></td>
+          <td contenteditable="true"><?php echo htmlspecialchars($linha['bm']); ?></td>
+
           <td><input type="date" name="data_inicio[]" value="<?php echo htmlspecialchars($linha['data_inicio']); ?>" /></td>
           <td><input type="date" name="data_fim[]" value="<?php echo htmlspecialchars($linha['data_fim']); ?>" /></td>
           <td><input type="date" name="data_vistoria[]" value="<?php echo htmlspecialchars($linha['data_vistoria']); ?>" /></td>
@@ -334,7 +352,7 @@ function deleteRow() {
 }
 
 function converterParaFloatBrasileiro(valor) {
-  return valor.replace(/\./g, '').replace(',', '.');
+  return valor.replace(/R\$\s?/g, '').replace(/\./g, '').replace(',', '.');
 }
 
 function converterParaDataISO(dataBR) {
