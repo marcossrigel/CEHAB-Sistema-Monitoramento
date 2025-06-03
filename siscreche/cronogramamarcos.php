@@ -1,16 +1,21 @@
 <?php
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
-  header('Location: login.php');
-  exit;
+    header('Location: login.php');
+    exit;
 }
 
 include_once('config.php');
+mysqli_set_charset($conexao, "utf8mb4");
 
-$id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
+$id_iniciativa = (int) ($_GET['id_iniciativa'] ?? 0);
+$id_usuario = (int) ($_SESSION['id_usuario'] ?? 0);
 
 if (isset($_POST['etapa'])) {
-    $id_usuario = $_SESSION['id_usuario'];
     $etapa = $_POST['etapa'] ?? [];
     $inicio_previsto = $_POST['inicio_previsto'] ?? [];
     $termino_previsto = $_POST['termino_previsto'] ?? [];
@@ -28,23 +33,41 @@ if (isset($_POST['etapa'])) {
     for ($i = 0; $i < count($etapa); $i++) {
         $id_existente = intval($ids[$i] ?? 0);
         $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
-        $ini_prev = mysqli_real_escape_string($conexao, $inicio_previsto[$i]);
-        $ter_prev = mysqli_real_escape_string($conexao, $termino_previsto[$i]);
-        $ini_real = mysqli_real_escape_string($conexao, $inicio_real[$i]);
-        $ter_real = mysqli_real_escape_string($conexao, $termino_real[$i]);
-        $evo = mysqli_real_escape_string($conexao, $evolutivo[$i]);
-        $tipo = mysqli_real_escape_string($conexao, isset($tipo_etapa[$i]) ? $tipo_etapa[$i] : 'linha');
+
+        $ini_prev = trim($inicio_previsto[$i]) !== '' ? "'" . mysqli_real_escape_string($conexao, $inicio_previsto[$i]) . "'" : "NULL";
+        $ter_prev = trim($termino_previsto[$i]) !== '' ? "'" . mysqli_real_escape_string($conexao, $termino_previsto[$i]) . "'" : "NULL";
+        $ini_real = trim($inicio_real[$i]) !== '' ? "'" . mysqli_real_escape_string($conexao, $inicio_real[$i]) . "'" : "NULL";
+        $ter_real = trim($termino_real[$i]) !== '' ? "'" . mysqli_real_escape_string($conexao, $termino_real[$i]) . "'" : "NULL";
+
+        $evo_raw = trim($evolutivo[$i]);
+        $evo = $evo_raw !== '' ? "'" . mysqli_real_escape_string($conexao, $evo_raw) . "'" : "NULL";
+
+        $tipo = mysqli_real_escape_string($conexao, $tipo_etapa[$i] ?? 'linha');
 
         if ($id_existente > 0) {
-            $query = "UPDATE marcos SET tipo_etapa='$tipo', etapa='$etp', inicio_previsto='$ini_prev', termino_previsto='$ter_prev',
-                        inicio_real='$ini_real', termino_real='$ter_real', evolutivo='$evo'
+            $query = "UPDATE marcos SET 
+                        tipo_etapa='$tipo',
+                        etapa='$etp',
+                        inicio_previsto=$ini_prev,
+                        termino_previsto=$ter_prev,
+                        inicio_real=$ini_real,
+                        termino_real=$ter_real,
+                        evolutivo=$evo
                       WHERE id = $id_existente AND id_usuario = $id_usuario";
         } else {
-            $query = "INSERT INTO marcos (id_usuario, id_iniciativa, tipo_etapa, etapa, inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo)
-                      VALUES ('$id_usuario', '$id_iniciativa', '$tipo', '$etp', '$ini_prev', '$ter_prev', '$ini_real', '$ter_real', '$evo')";
+            $query = "INSERT INTO marcos (
+                        id_usuario, id_iniciativa, tipo_etapa, etapa,
+                        inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo
+                      ) VALUES (
+                        '$id_usuario', '$id_iniciativa', '$tipo', '$etp',
+                        $ini_prev, $ter_prev, $ini_real, $ter_real, $evo
+                      )";
         }
 
-        mysqli_query($conexao, $query);
+        if (!mysqli_query($conexao, $query)) {
+            echo "Erro: " . mysqli_error($conexao);
+            exit;
+        }
     }
 }
 
@@ -53,7 +76,7 @@ $resultado_nome = mysqli_query($conexao, $query_nome);
 $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
-$query_dados = "SELECT * FROM marcos WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa";
+$query_dados = "SELECT * FROM marcos WHERE id_usuario = $id_usuario AND id_iniciativa = $id_iniciativa";
 $dados = mysqli_query($conexao, $query_dados);
 
 function formatarParaBrasileiro($valor) {
@@ -229,6 +252,7 @@ function formatarParaBrasileiro($valor) {
       <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
     </div>
   </form>
+  
 </div>
 
 <script>
@@ -433,5 +457,7 @@ function converterParaDataISO(dataBR) {
 }
 
 </script>
+
 </body>
+
 </html>
