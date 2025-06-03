@@ -305,9 +305,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
     alert('Nenhuma medição válida para salvar!');
   } else {
     // Mostra aviso visual (substitua por modal se quiser)
-    setTimeout(() => {
-      alert('✅ Dados salvos com sucesso!');
-    }, 300);
+    //setTimeout(() => {
+    //  alert('✅ Dados salvos com sucesso!');
+   // }, 300);
 
     // Destaca as células alteradas (estilo "salvo")
     const inputs = form.querySelectorAll('textarea, input[type="text"], input[type="number"], input[type="date"]');
