@@ -127,12 +127,18 @@ if ($linha = mysqli_fetch_assoc($res)) {
   <h2>Galeria - Iniciativa <?php echo htmlspecialchars($nome_iniciativa); ?></h2>
 
   <div class="galeria">
+    
     <?php while ($foto = mysqli_fetch_assoc($result)): ?>
-      <div class="foto">
-        <img src="uploads/<?php echo htmlspecialchars($foto['caminho']); ?>" alt="">
-        <textarea readonly><?php echo htmlspecialchars($foto['descricao']); ?></textarea>
-      </div>
+    <div class="foto">
+      <img src="uploads/<?php echo htmlspecialchars($foto['caminho']); ?>" alt="">
+      <textarea readonly><?php echo htmlspecialchars($foto['descricao']); ?></textarea>
+      <form method="get" action="excluir_foto.php" onsubmit="return confirm('Tem certeza que deseja excluir esta foto?');">
+        <input type="hidden" name="id" value="<?php echo $foto['id']; ?>">
+        <button type="submit" style="margin-top: 10px; background-color: red; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer;">Excluir</button>
+      </form>
+    </div>
     <?php endwhile; ?>
+
   </div>
 
   <div class="voltar-container">
