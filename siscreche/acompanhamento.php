@@ -31,11 +31,9 @@ if (isset($_POST['salvar'])) {
         $prazo_bruto = trim($prazos[$i]);
         $responsavel = mysqli_real_escape_string($conexao, $responsaveis[$i]);
 
-        // Verifica se prazo está vazio
         if ($prazo_bruto === '') {
             $prazo_sql = "NULL";
         } else {
-            // já vem no formato YYYY-MM-DD do JavaScript
             $prazo_formatado = mysqli_real_escape_string($conexao, $prazo_bruto);
             $prazo_sql = "'$prazo_formatado'";
         }
