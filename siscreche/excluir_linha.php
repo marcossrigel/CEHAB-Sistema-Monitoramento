@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['id_usuario'])) {
     http_response_code(403);
     exit('Acesso negado.');
@@ -7,8 +8,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
 include_once('config.php');
 
-$id_usuario = $_SESSION['id_usuario'];
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$id_usuario = (int) $_SESSION['id_usuario'];
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($id > 0) {
     $query = "DELETE FROM medicoes WHERE id = $id AND id_usuario = $id_usuario";
@@ -22,4 +23,6 @@ if ($id > 0) {
     http_response_code(400);
     echo "ID inválido.";
 }
+
+// mysqli_close($conexao); // opcional
 ?>

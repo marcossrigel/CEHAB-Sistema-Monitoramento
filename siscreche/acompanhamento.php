@@ -98,7 +98,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
   table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 12px 15px; /* separa as células */
+    border-spacing: 12px 15px;
   }
 
   th {
