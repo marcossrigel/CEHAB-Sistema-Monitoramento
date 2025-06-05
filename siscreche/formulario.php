@@ -396,10 +396,10 @@ select[type="text"] {
       </div>
       <div class="campo">
         <label class="label">% Variação</label>
-        <input type="text" name="ib_variacao">
+        <input type="text" name="ib_variacao" id="ib_variacao" readonly>
       </div>
       <div class="campo-longo">
-        <label class="label">Valor Médio Acumulado</label>
+        <label class="label">Valor Medido Acumulado</label>
         <input type="text" name="ib_valor_medio">
       </div>
     </div>    
@@ -407,11 +407,11 @@ select[type="text"] {
     <div class="linha">
       <div class="campo">
         <label class="label">Secretaria</label>
-        <input type="text" name="ib_secretaria">
+        <input type="text" name="ib_secretaria" value="SEDUH" readonly>
       </div>
       <div class="campo">
         <label class="label">Órgão</label>
-        <input type="text" name="ib_orgao">
+        <input type="text" name="ib_orgao" value="CEHAB" readonly>
       </div>
       
       <div class="campo">
@@ -432,7 +432,7 @@ select[type="text"] {
 
     <div class="linha-atividade">
       <div class="coluna-textarea">
-        <label class="label">OBJETO</label>
+        <label class="label">OBJETO (opcional)</label>
         <textarea name="objeto"></textarea>
       </div>
     </div>
@@ -442,14 +442,14 @@ select[type="text"] {
 
     <div class="linha-atividade">
       <div class="coluna-textarea">
-        <label class="label">Informações Gerais</label>
+        <label class="label">Informações Gerais (opcional)</label>
         <textarea name="informacoes_gerais"></textarea>
       </div>
     </div>
 
     <div class="linha-atividade">
       <div class="coluna-textarea">
-        <label class="label">OBSERVAÇÕES (PONTOS CRÍTICOS)</label>
+        <label class="label">OBSERVAÇÕES (PONTOS CRÍTICOS) (opcional)</label>
         <textarea name="observacoes"></textarea>
       </div>
     </div>
@@ -485,6 +485,10 @@ select[type="text"] {
 </body>
 
 <script>
+  const execucaoInput = document.querySelector('input[name="ib_execucao"]');
+  const previstoInput = document.querySelector('input[name="ib_previsto"]');
+  const variacaoInput = document.getElementById('ib_variacao');
+  
   function showModal(message) {
     document.getElementById('modal-message').innerText = message;
     document.getElementById('modal').classList.remove('hidden');
@@ -513,6 +517,13 @@ select[type="text"] {
     window.location.href = 'home.php';
   }
 
+  function calcularVariacao() {
+    const exec = parseFloat(execucaoInput.value.replace(',', '.')) || 0;
+    const prev = parseFloat(previstoInput.value.replace(',', '.')) || 0;
+    const variacao = (exec - prev).toFixed(2);
+    variacaoInput.value = variacao.replace('.', ',');
+  }
+
 document.getElementById('btn-sim').addEventListener('click', function() {
   window.location.href = 'home.php';
 });
@@ -526,6 +537,9 @@ document.addEventListener('DOMContentLoaded', function() {
       showModal(`<?php echo addslashes($mensagem); ?>`);
     <?php } ?>
 });
+
+execucaoInput.addEventListener('input', calcularVariacao);
+previstoInput.addEventListener('input', calcularVariacao);
 
 </script>
 

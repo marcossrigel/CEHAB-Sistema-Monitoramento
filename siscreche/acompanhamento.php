@@ -203,14 +203,20 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
           <td contenteditable="true"><?php echo htmlspecialchars($linha['problema']); ?></td>
           <td contenteditable="true"><?php echo htmlspecialchars($linha['contramedida']); ?></td>
           
-          <td class="readonly">
-            <?php
-              $data = $linha['prazo'];
-              if ($data && $data !== '0000-00-00') {
-                echo date('d/m/Y', strtotime($data));
-              }
-            ?>
-          </td>
+          <?php
+            $data = $linha['prazo'];
+            if (!$data || $data === '0000-00-00') {
+          ?>
+              <td contenteditable="true"></td>
+          <?php
+            } else {
+          ?>
+              <td class="readonly">
+                <?php echo date('d/m/Y', strtotime($data)); ?>
+              </td>
+          <?php
+            }
+          ?>
           
           <td contenteditable="true"><?php echo htmlspecialchars($linha['responsavel']); ?></td>
         </tr>
