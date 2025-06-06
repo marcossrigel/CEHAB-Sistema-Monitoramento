@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<head>  
   <meta charset="UTF-8">
   <title>Acompanhamento de Medições</title>
-  <!-- Importar fonte Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+
   body {
     font-family: 'Poppins', sans-serif;
     background-color: #e4eaef;
@@ -28,7 +28,6 @@
     font-size: 24px;
     font-weight: 400; /* ou use: normal */
   }
-
 
   .linha {
     display: flex;
@@ -71,6 +70,12 @@
     transition: background-color 0.3s ease;
   }
 
+  .col {
+    flex: 1;
+    min-width: 140px;
+    max-width: 180px;
+  }
+
   .button-group button:hover {
     background-color: #3399ff;
   }
@@ -97,33 +102,26 @@
     <form id="medicoesForm">
       <h2>Acompanhamento de Medições</h2>
 
+      <div class="linha">
+        <div class="col"><label>Valor Total da Obra</label></div>
+        <div class="col"><label>Valor BM</label></div>
+        <div class="col"><label>Saldo da Obra</label></div>
+        <div class="col"><label>BM</label></div>
+        <div class="col"><label>Data Início</label></div>
+        <div class="col"><label>Data Fim</label></div>
+      </div>
+
       <div id="linhasContainer">
         <div class="linha">
-          <div>
-            <label>Valor Total da Obra</label>
-            <input type="text" name="valor_total[]">
-          </div>
-          <div>
-            <label>Valor BM</label>
-            <input type="text" name="valor_bm[]">
-          </div>
-          <div>
-            <label>Saldo da Obra</label>
-            <input type="text" name="saldo_obra[]">
-          </div>
-          <div>
-            <label>BM</label>
-            <input type="text" name="bm[]">
-          </div>
-          <div>
-            <label>Data Início</label>
-            <input type="date" name="data_inicio[]">
-          </div>
-          <div>
-            <label>Data Fim</label>
-            <input type="date" name="data_fim[]">
-          </div>
+          <div><input type="text" name="valor_total[]"></div>
+          <div><input type="text" name="valor_bm[]"></div>
+          <div><input type="text" name="saldo_obra[]"></div>
+          <div><input type="text" name="bm[]"></div>
+          <div><input type="date" name="data_inicio[]"></div>
+          <div><input type="date" name="data_fim[]"></div>
         </div>
+      </div>
+      
       </div>
 
       <div class="button-group">
@@ -141,6 +139,7 @@
       const container = document.getElementById('linhasContainer');
       const primeiraLinha = container.querySelector('.linha');
       const novaLinha = primeiraLinha.cloneNode(true);
+
       novaLinha.querySelectorAll('input').forEach(input => input.value = '');
       container.appendChild(novaLinha);
     }
@@ -148,6 +147,7 @@
     function excluirLinha() {
       const container = document.getElementById('linhasContainer');
       const linhas = container.querySelectorAll('.linha');
+
       if (linhas.length > 1) {
         container.removeChild(linhas[linhas.length - 1]);
       }
