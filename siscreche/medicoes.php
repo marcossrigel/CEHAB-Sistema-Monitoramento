@@ -348,12 +348,12 @@ document.addEventListener('blur', function(e) {
   const cell = e.target;
   const index = cell.cellIndex;
 
-  if (cell.isContentEditable && [0,1,2].includes(index)) {
-    const clean = converterParaFloatBrasileiro(cell.innerText);
-    const valor = parseFloat(clean);
-    if (!isNaN(valor)) {
-      cell.innerText = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
+  if (cell.isContentEditable && [0,1,2].includes(cell.cellIndex)) {
+  const clean = converterParaFloatBrasileiro(cell.innerText);
+  const valor = parseFloat(clean);
+  if (!isNaN(valor)) {
+    // Formata apenas se for valor monetário
+    cell.innerText = 'R$ ' + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 }, true);
 </script>
