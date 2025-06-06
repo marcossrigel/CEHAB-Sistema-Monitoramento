@@ -63,7 +63,7 @@ $linha_nome = mysqli_fetch_assoc($resultado_nome);
 $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 
 function formatarParaBrasileiro($valor) {
-    return number_format((float)$valor, 2, ',', '.');
+    return 'R$ ' . number_format((float)$valor, 2, ',', '.');
 }
 ?>
 
@@ -237,8 +237,8 @@ document.querySelector('form').addEventListener('submit', function(event) {
       cells[1]?.innerText.trim(),
       cells[2]?.innerText.trim(),
       cells[3]?.innerText.trim(),
-      cells[4]?.innerText.trim(),
-      cells[5]?.innerText.trim(),
+      cells[4]?.querySelector('input')?.value || '',
+      cells[5]?.querySelector('input')?.value || ''
     ];
 
     const nomesCampos = [
@@ -247,15 +247,15 @@ document.querySelector('form').addEventListener('submit', function(event) {
       'saldo_obra',
       'bm',
       'data_inicio',
-      'data_fim',
-      ];
+      'data_fim'
+    ];
 
     nomesCampos.forEach((campo, idx) => {
       const input = document.createElement('input');
       input.type = 'hidden';
       input.name = campo + '[]';
 
-      if (campo.includes('valor') || campo === 'bm') {
+      if (campo.includes('valor') || campo === 'bm' || campo === 'saldo_obra') {
         input.value = converterParaFloatBrasileiro(campos[idx]);
       } else if (campo.includes('data')) {
         input.value = converterParaDataISO(campos[idx]);
@@ -277,7 +277,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
   if (!temLinhaValida) {
     event.preventDefault();
-    alert('Nenhuma medicao valida para salvar!');
+    alert('Nenhuma medição válida para salvar!');
   }
 });
 
@@ -299,6 +299,7 @@ function addRow() {
       newCell.appendChild(input);
     } else {
       newCell.contentEditable = "true";
+      newCell.innerText = '';
     }
   }
 }
@@ -307,7 +308,7 @@ function deleteRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const lastRow = table.rows[table.rows.length - 1];
 
-  if (!lastRow) return;
+  if (!lastRow || table.rows.length === 1) return;
 
   const id = lastRow.getAttribute('data-id');
 
@@ -317,10 +318,7 @@ function deleteRow() {
         if (!response.ok) throw new Error("Erro ao excluir do banco");
         return response.text();
       })
-      .then(data => {
-        console.log(data);
-        table.deleteRow(-1);
-      })
+      .then(() => table.deleteRow(-1))
       .catch(error => {
         alert("Erro ao excluir no servidor.");
         console.error(error);
@@ -331,7 +329,9 @@ function deleteRow() {
 }
 
 function converterParaFloatBrasileiro(valor) {
-  return valor.replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+  return valor.replace(/[R$\s]/g, '')
+              .replace(/\./g, '')
+              .replace(',', '.');
 }
 
 function converterParaDataISO(dataBR) {
@@ -343,6 +343,21 @@ function converterParaDataISO(dataBR) {
   return dataBR;
 }
 
+// Reformatar R$ ao sair do campo editável
+document.addEventListener('blur', function(e) {
+  const cell = e.target;
+  const index = cell.cellIndex;
+
+  if (cell.isContentEditable && [0,1,2].includes(index)) {
+    const clean = converterParaFloatBrasileiro(cell.innerText);
+    const valor = parseFloat(clean);
+    if (!isNaN(valor)) {
+      cell.innerText = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+  }
+}, true);
 </script>
+
+
 </body>
 </html>
