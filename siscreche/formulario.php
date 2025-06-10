@@ -380,7 +380,7 @@ select[type="text"] {
         <label class="label">Status</label>
         
         <select type="text" name="ib_status" class="campo" required>
-          <option value="">Selecione...</option>
+          <option value="">Selecione...</option> 
           <option value="Em Execução">Em Execução</option>
           <option value="Paralizado">Paralizado</option>
           <option value="Concluido">Concluido</option>
@@ -388,7 +388,7 @@ select[type="text"] {
       </div>
       <div class="campo">
         <label class="label">% Execução</label>
-        <input type="text" name="ib_execucao">
+        <input type="text" name="ib_execucao" placeholder="visualização" readonly>
       </div>
       <div class="campo">
         <label class="label">% Previsto</label>
@@ -396,7 +396,7 @@ select[type="text"] {
       </div>
       <div class="campo">
         <label class="label">% Variação</label>
-        <input type="text" name="ib_variacao" id="ib_variacao" readonly>
+        <input type="text" name="ib_variacao" id="ib_variacao" placeholder="visualização" readonly>
       </div>
       <div class="campo-longo">
         <label class="label">Valor Medido Acumulado</label>

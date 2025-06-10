@@ -160,6 +160,41 @@ h1 {
   background-color: #3399ff;
 }
 
+.topo-linha {
+  position: relative;
+  text-align: center;
+  margin-bottom: 50px; 
+}
+
+.topo-linha h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #000;
+}
+
+.voltar-box {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.voltar-box button {
+  padding: 8px 16px;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.voltar-box button:hover {
+  background-color: #3399ff;
+}
+
+
 @media (max-width: 768px) {
   .container {
     padding: 15px;
@@ -181,13 +216,20 @@ h1 {
 </head>
 <body>
 <div class="container">
+  
+  <div class="topo-linha">
+  <div class="voltar-box">
+    <button onclick="window.location.href='home.php';">< Voltar</button>
+  </div>
   <h1>Iniciativas Cadastradas</h1>
+</div>
 
   <?php while ($row = $resultado->fetch_assoc()): ?>
     <button class="accordion">
       <strong><?php echo htmlspecialchars($row['iniciativa']); ?></strong>
       <span class="seta">⌄</span>
     </button>
+    
     <div class="panel">
       <p><strong>Status:</strong> <?php echo $row['ib_status']; ?> | <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?></p>
       <p><strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> | <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?></p>
@@ -211,6 +253,7 @@ h1 {
       </div>
     </div>
   <?php endwhile; ?>
+  
 
   <div class="botao-voltar">
     <button onclick="window.location.href='home.php';">&lt; Voltar</button>

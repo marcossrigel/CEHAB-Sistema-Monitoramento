@@ -30,7 +30,7 @@ if (isset($_POST['salvar'])) {
         $orc = limparDinheiro($valor_orcamento[$i]);
         $bm_valor = limparDinheiro($valor_bm[$i]);
         $saldo = limparDinheiro($saldo_obra[$i]);
-        $bm_ind = limparDinheiro($bm[$i]);
+        $bm_ind = intval(limparDinheiro($bm[$i]));
         $inicio = $data_inicio[$i] ?? null;
         $fim = $data_fim[$i] ?? null;
         $registro = date('Y-m-d H:i:s');
@@ -107,7 +107,7 @@ function formatarParaBrasileiro($valor) {
                     <td><input type="text" name="valor_bm[]" value="<?php echo formatarParaBrasileiro($linha['valor_bm']); ?>" required /></td>
                     <td><input type="text" name="saldo_obra[]" value="<?php echo formatarParaBrasileiro($linha['saldo_obra']); ?>" /></td>
                     
-                    <td><input type="text" name="bm[]" value="<?php echo formatarParaBrasileiro($linha['bm']); ?>" /></td>
+                    <td><input type="text" name="bm[]" value="<?php echo intval($linha['bm']); ?>" /></td> 
                     <td><input type="date" name="data_inicio[]" value="<?php echo htmlspecialchars($linha['data_inicio']); ?>" /></td>
                     <td><input type="date" name="data_fim[]" value="<?php echo htmlspecialchars($linha['data_fim']); ?>" /></td>
                   </tr>
@@ -176,9 +176,16 @@ function formatarParaBrasileiro($valor) {
             } else {
                 const input = document.createElement('input');
                 input.type = 'text';
+
                 input.name = ['valor_bm[]', 'saldo_obra[]', 'bm[]'][i - 1];
+                if (['valor_bm[]', 'saldo_obra[]', 'bm[]'][i - 1] === 'bm[]') {
+                    input.type = 'number';
+                    input.step = '1';
+                }
+
                 if (i === 1) input.required = true; // <-- valor_bm[]
                 newCell.appendChild(input);
+
             }
 
         }
@@ -207,7 +214,6 @@ function formatarParaBrasileiro($valor) {
             })
             .catch(() => alert('Erro de conexão ao tentar excluir.'));
         } else {
-            // Linha ainda não foi salva no banco — apenas remove da tela
             tabela.deleteRow(-1);
         }
     }
@@ -218,6 +224,10 @@ function formatarParaBrasileiro($valor) {
 
     function formatarFloatParaDinheiro(valor) {
         return 'R$ ' + valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function formatarFloatParaInteiro(valor) {
+        return Math.round(valor).toString();
     }
 
     function recalcularSaldos() {
