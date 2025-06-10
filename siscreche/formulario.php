@@ -1,5 +1,10 @@
 <?php
   session_start();
+
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
+
   if (!isset($_SESSION['id_usuario'])) {
       header('Location: login.php');
       exit;
@@ -11,6 +16,8 @@
     $iniciativa = trim($_POST['iniciativa']);
     $check_query = "SELECT * FROM iniciativas WHERE iniciativa = '$iniciativa'";
     $check_result = mysqli_query($conexao, $check_query);
+    $ib_valor_medio = str_replace(['.', ','], ['', '.'], $_POST['ib_valor_medio']);
+
 
     if (mysqli_num_rows($check_result) > 0) {
         echo "<script>alert('Erro: Já existe uma iniciativa com esse nome.'); window.history.back();</script>";
@@ -22,7 +29,8 @@
     $ib_execucao = $_POST['ib_execucao'];
     $ib_previsto = $_POST['ib_previsto'];
     $ib_variacao = $_POST['ib_variacao'];
-    $ib_valor_medio = $_POST['ib_valor_medio'];
+    
+    $ib_valor_medio = str_replace(['.', ','], ['', '.'], $_POST['ib_valor_medio']);
     $ib_secretaria = $_POST['ib_secretaria'];
     $ib_orgao = $_POST['ib_orgao'];
     $ib_gestor_responsavel = $_POST['ib_gestor_responsavel'];
