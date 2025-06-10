@@ -223,9 +223,6 @@ h1 {
 <div class="container">
   
   <div class="topo-linha">
-    <div class="voltar-box">
-      <button onclick="window.location.href='home.php';">< Voltar</button>
-    </div>
     <h1>Painel do Administrador</h1>
   </div>
 
@@ -260,9 +257,6 @@ h1 {
     </div>
   <?php endwhile; ?>
 
-  <div class="botao-voltar">
-    <button onclick="window.location.href='home.php';">&lt; Voltar</button>
-  </div>
 </div>
 
 <script>
