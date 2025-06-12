@@ -219,7 +219,6 @@ h1 {
   
   <div class="topo-linha">
   <div class="voltar-box">
-    <button onclick="window.location.href='home.php';">< Voltar</button>
   </div>
   <h1>Iniciativas Cadastradas</h1>
 </div>
