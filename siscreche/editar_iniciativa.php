@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="linha">
       <div class="campo">
-        <label>Valor Medido:</label>
+        <label>Valor Medido Acumulado:</label>
         <input type="text" name="ib_valor_medio" value="<?php echo htmlspecialchars($row['ib_valor_medio']); ?>">
       </div>
       <div class="campo">
