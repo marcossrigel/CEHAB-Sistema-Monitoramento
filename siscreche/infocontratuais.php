@@ -26,6 +26,10 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 $query_busca = "SELECT * FROM contratuais WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa";
 $resultado = mysqli_query($conexao, $query_busca);
 $dados = mysqli_fetch_assoc($resultado);
+  function formatar_moeda($valor) {
+    if ($valor === null || $valor === '') return 'R$ ';
+    return 'R$ ' . number_format((float)$valor, 2, ',', '.');
+}
 
 if (isset($_POST['salvar'])) {
     $processo_licitatorio = mysqli_real_escape_string($conexao, $_POST['processo_licitatorio']);
@@ -73,7 +77,7 @@ if (isset($_POST['salvar'])) {
         ({$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$data_os', '$prazo_execucao_original', '$prazo_execucao_atual', '$valor_inicial_obra', '$valor_aditivo_obra', '$valor_total_obra', '$valor_inicial_contrato', '$valor_aditivo', '$valor_contrato', '$cod_subtracao', '$secretaria_demandante')";
         mysqli_query($conexao, $query_insert);
     }
-
+    
     header("Location: infocontratuais.php?id_iniciativa=$id_iniciativa");
     exit;
 }
@@ -195,16 +199,18 @@ if (isset($_POST['salvar'])) {
         <tr><th class="hide-mobile">Campo</th><th class="hide-mobile">Valor</th></tr>
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>
         <tr><td>Empresa</td><td><input type="text" name="empresa" value="<?php echo $dados['empresa'] ?? ''; ?>"></td></tr>
-        <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>"></td></tr>
-        <tr><td>Data da O.S.</td><td><input type="date"  name="data_os" value="<?php echo $dados['data_os'] ?? ''; ?>"></td></tr>
+        <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>" required></td></tr>
+        <tr><td>Data da O.S.</td><td><input type="date"  name="data_os" value="<?php echo $dados['data_os'] ?? ''; ?>"required></td></tr>
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
-        <tr><td>Valor Inicial da Obra</td><td><input type="text" name="valor_inicial_obra" value="<?php echo $dados['valor_inicial_obra'] ?? ''; ?>"></td></tr>
-        <tr><td>Valor de Aditivo da Obra</td><td><input type="text" name="valor_aditivo_obra" value="<?php echo $dados['valor_aditivo_obra'] ?? ''; ?>"></td></tr>
-        <tr><td>Valor Total da Obra</td><td><input type="text" name="valor_total_obra" value="<?php echo $dados['valor_total_obra'] ?? ''; ?>"></td></tr>
-        <tr><td>Valor Inicial do Contrato</td><td><input type="text" name="valor_inicial_contrato" value="<?php echo $dados['valor_inicial_contrato'] ?? ''; ?>"></td></tr>
-        <tr><td>Valor do Aditivo do Contrato</td><td><input type="text" name="valor_aditivo" value="<?php echo $dados['valor_aditivo'] ?? ''; ?>"></td></tr>
-        <tr><td>Valor Total do Contrato</td><td><input type="text" name="valor_contrato" value="<?php echo $dados['valor_contrato'] ?? ''; ?>"></td></tr>
+        
+        <tr><td>Valor Inicial da Obra</td><td><input type="text" class="dinheiro" name="valor_inicial_obra" value="<?php echo formatar_moeda($dados['valor_inicial_obra'] ?? ''); ?>"></td></tr>
+        <tr><td>Valor de Aditivo da Obra</td><td><input type="text" class="dinheiro" name="valor_aditivo_obra" value="<?php echo formatar_moeda($dados['valor_aditivo_obra'] ?? ''); ?>"></td></tr>
+        <tr><td>Valor Total da Obra</td><td><input type="text" class="dinheiro" name="valor_total_obra" value="<?php echo formatar_moeda($dados['valor_total_obra'] ?? ''); ?>"></td></tr>
+        <tr><td>Valor Inicial do Contrato</td><td><input type="text" class="dinheiro" name="valor_inicial_contrato" value="<?php echo formatar_moeda($dados['valor_inicial_contrato'] ?? ''); ?>"></td></tr>
+        <tr><td>Valor do Aditivo do Contrato</td><td><input type="text" class="dinheiro" name="valor_aditivo" value="<?php echo formatar_moeda($dados['valor_aditivo'] ?? ''); ?>"></td></tr>
+        <tr><td>Valor Total do Contrato</td><td><input type="text" class="dinheiro" name="valor_contrato" value="<?php echo formatar_moeda($dados['valor_contrato'] ?? ''); ?>"></td></tr>
+        
         <tr><td>Subação (LOA)</td><td><input type="text" name="cod_subtracao" value="<?php echo $dados['cod_subtracao'] ?? ''; ?>"></td></tr>
         <tr><td>Secretaria Demandante</td><td><input type="text" name="secretaria_demandante" value="<?php echo $dados['secretaria_demandante'] ?? ''; ?>"></td></tr>
       </table>
@@ -215,6 +221,8 @@ if (isset($_POST['salvar'])) {
     </form>
   </div>
 <script>
+
+
 
 </script>
 </body>
