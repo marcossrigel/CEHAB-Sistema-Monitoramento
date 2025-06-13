@@ -26,6 +26,7 @@ $nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
 $query_busca = "SELECT * FROM contratuais WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa";
 $resultado = mysqli_query($conexao, $query_busca);
 $dados = mysqli_fetch_assoc($resultado);
+
   function formatar_moeda($valor) {
     if ($valor === null || $valor === '') return 'R$ ';
     return 'R$ ' . number_format((float)$valor, 2, ',', '.');
@@ -40,8 +41,10 @@ if (isset($_POST['salvar'])) {
     $prazo_execucao_atual = $_POST['prazo_execucao_atual'];
 
     function limpar_valor_decimal($valor) {
-    if (trim($valor) === '') return '0';
-        return str_replace(['R$', '.', ','], ['', '', '.'], $valor);
+        $valor = trim($valor);
+        if ($valor === '' || strtolower($valor) === 'r$') return "NULL";
+        $valor = str_replace(['R$', '.', ','], ['', '', '.'], $valor);
+        return is_numeric($valor) ? $valor : "NULL";
     }
 
     $valor_inicial_obra = limpar_valor_decimal($_POST['valor_inicial_obra']);
@@ -62,25 +65,37 @@ if (isset($_POST['salvar'])) {
             data_os='$data_os',
             prazo_execucao_original='$prazo_execucao_original',
             prazo_execucao_atual='$prazo_execucao_atual',
-            valor_inicial_obra='$valor_inicial_obra',
-            valor_aditivo_obra='$valor_aditivo_obra',
-            valor_total_obra='$valor_total_obra',
-            valor_inicial_contrato='$valor_inicial_contrato',
-            valor_aditivo='$valor_aditivo',
-            valor_contrato='$valor_contrato',
+            valor_inicial_obra=$valor_inicial_obra,
+            valor_aditivo_obra=$valor_aditivo_obra,
+            valor_total_obra=$valor_total_obra,
+            valor_inicial_contrato=$valor_inicial_contrato,
+            valor_aditivo=$valor_aditivo,
+            valor_contrato=$valor_contrato,
             cod_subtracao='$cod_subtracao',
             secretaria_demandante='$secretaria_demandante'
             WHERE id_usuario={$_SESSION['id_usuario']} AND id_iniciativa=$id_iniciativa";
         mysqli_query($conexao, $query_update);
     } else {
-        $query_insert = "INSERT INTO contratuais (id_usuario, id_iniciativa, processo_licitatorio, empresa, data_assinatura_contrato, data_os, prazo_execucao_original, prazo_execucao_atual, valor_inicial_obra, valor_aditivo_obra, valor_total_obra, valor_inicial_contrato, valor_aditivo, valor_contrato, cod_subtracao, secretaria_demandante) VALUES 
-        ({$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$data_os', '$prazo_execucao_original', '$prazo_execucao_atual', '$valor_inicial_obra', '$valor_aditivo_obra', '$valor_total_obra', '$valor_inicial_contrato', '$valor_aditivo', '$valor_contrato', '$cod_subtracao', '$secretaria_demandante')";
+        $query_insert = "INSERT INTO contratuais (
+            id_usuario, id_iniciativa, processo_licitatorio, empresa, data_assinatura_contrato, data_os, 
+            prazo_execucao_original, prazo_execucao_atual, 
+            valor_inicial_obra, valor_aditivo_obra, valor_total_obra, 
+            valor_inicial_contrato, valor_aditivo, valor_contrato, 
+            cod_subtracao, secretaria_demandante
+        ) VALUES (
+            {$_SESSION['id_usuario']}, $id_iniciativa, '$processo_licitatorio', '$empresa', '$data_assinatura_contrato', '$data_os', 
+            '$prazo_execucao_original', '$prazo_execucao_atual', 
+            $valor_inicial_obra, $valor_aditivo_obra, $valor_total_obra, 
+            $valor_inicial_contrato, $valor_aditivo, $valor_contrato, 
+            '$cod_subtracao', '$secretaria_demandante'
+        )";
         mysqli_query($conexao, $query_insert);
     }
-    
+
     header("Location: infocontratuais.php?id_iniciativa=$id_iniciativa");
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -200,7 +215,7 @@ if (isset($_POST['salvar'])) {
         <tr><td>Processo Licitatório</td><td><input type="text" name="processo_licitatorio" value="<?php echo $dados['processo_licitatorio'] ?? ''; ?>"></td></tr>
         <tr><td>Empresa</td><td><input type="text" name="empresa" value="<?php echo $dados['empresa'] ?? ''; ?>"></td></tr>
         <tr><td>Data Assinatura do Contrato</td><td><input type="date" name="data_assinatura_contrato" value="<?php echo $dados['data_assinatura_contrato'] ?? ''; ?>" required></td></tr>
-        <tr><td>Data da O.S.</td><td><input type="date"  name="data_os" value="<?php echo $dados['data_os'] ?? ''; ?>"required></td></tr>
+        <tr><td>Data da O.S.</td><td><input type="date"  name="data_os" value="<?php echo $dados['data_os'] ?? ''; ?>" required></td></tr>
         <tr><td>Prazo de Execução Original</td><td><input type="text" name="prazo_execucao_original" value="<?php echo $dados['prazo_execucao_original'] ?? ''; ?>"></td></tr>
         <tr><td>Prazo de Execução Atual</td><td><input type="text" name="prazo_execucao_atual" value="<?php echo $dados['prazo_execucao_atual'] ?? ''; ?>"></td></tr>
         
