@@ -262,12 +262,18 @@ document.querySelector('form').addEventListener('submit', function(event) {
   const linhas = table.rows;
   let temLinhaValida = false;
 
+  let tituloIndex = -1;
+  let datasInicio = [];
+  let datasTermino = [];
+
   for (let i = 0; i < linhas.length; i++) {
     const linha = linhas[i];
     const id = linha.getAttribute('data-id');
     const cells = linha.cells;
 
     const etapaField = cells[0].querySelector('textarea, input');
+    const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
+
     const campos = [
       etapaField?.value.trim() || '',
       cells[1].querySelector('input')?.value.trim() || '',
@@ -282,10 +288,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
     temLinhaValida = true;
 
-    // Para novas linhas, adiciona os inputs ocultos
     if (!id) {
-      const tipo = etapaField?.placeholder === 'Título' ? 'subtitulo' : 'linha';
-
       const inputTipo = document.createElement('input');
       inputTipo.type = 'hidden';
       inputTipo.name = 'tipo_etapa[]';
@@ -298,24 +301,46 @@ document.querySelector('form').addEventListener('submit', function(event) {
       inputId.value = '';
       form.appendChild(inputId);
     }
+
+    // Lógica de preenchimento automático para subtítulos
+    if (tipo === 'subtitulo') {
+      if (tituloIndex !== -1 && datasInicio.length > 0 && datasTermino.length > 0) {
+        preencherDatas(linhas[tituloIndex], datasInicio, datasTermino);
+      }
+      tituloIndex = i;
+      datasInicio = [];
+      datasTermino = [];
+    } else if (tipo === 'linha') {
+      const dtInicio = cells[1].querySelector('input')?.value;
+      const dtFim = cells[2].querySelector('input')?.value;
+      if (dtInicio) datasInicio.push(dtInicio);
+      if (dtFim) datasTermino.push(dtFim);
+    }
+  }
+
+  if (tituloIndex !== -1 && datasInicio.length > 0 && datasTermino.length > 0) {
+    preencherDatas(linhas[tituloIndex], datasInicio, datasTermino);
+  }
+
+  function preencherDatas(tituloRow, inicios, fins) {
+    const campoInicio = tituloRow.querySelector('input[name="inicio_previsto[]"]');
+    const campoFim = tituloRow.querySelector('input[name="termino_previsto[]"]');
+
+    const menorData = inicios.sort()[0];
+    const maiorData = fins.sort().reverse()[0];
+
+    if (campoInicio) campoInicio.value = menorData;
+    if (campoFim) campoFim.value = maiorData;
   }
 
   if (!temLinhaValida) {
     event.preventDefault();
     alert('Nenhuma medição válida para salvar!');
   } else {
-    // Mostra aviso visual (substitua por modal se quiser)
-    //setTimeout(() => {
-    //  alert('✅ Dados salvos com sucesso!');
-   // }, 300);
-
-    // Destaca as células alteradas (estilo "salvo")
     const inputs = form.querySelectorAll('textarea, input[type="text"], input[type="number"], input[type="date"]');
     inputs.forEach(input => {
-      input.style.backgroundColor = '#e0ffe0'; // verde claro
-      setTimeout(() => {
-        input.style.backgroundColor = ''; // limpa depois de 1s
-      }, 1000);
+      input.style.backgroundColor = '#e0ffe0';
+      setTimeout(() => input.style.backgroundColor = '', 1000);
     });
   }
 });
@@ -418,6 +443,7 @@ function addRow() {
 function deleteRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const lastRow = table.rows[table.rows.length - 1];
+
 
   if (!lastRow) return;
 
