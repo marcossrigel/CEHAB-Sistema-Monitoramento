@@ -15,6 +15,7 @@ if (isset($_POST['salvar'])) {
     $valor_bm = $_POST['valor_bm'] ?? [];
     $saldo_obra = $_POST['saldo_obra'] ?? [];
     $bm = $_POST['bm'] ?? [];
+    $numero_processo_sei = $_POST['numero_processo_sei'] ?? [];
     $data_inicio = $_POST['data_inicio'] ?? [];
     $data_fim = $_POST['data_fim'] ?? [];
     $ids = $_POST['ids'] ?? [];
@@ -31,14 +32,19 @@ if (isset($_POST['salvar'])) {
         $bm_valor = limparDinheiro($valor_bm[$i]);
         $saldo = limparDinheiro($saldo_obra[$i]);
         $bm_ind = intval(limparDinheiro($bm[$i]));
+        $sei = mysqli_real_escape_string($conexao, $numero_processo_sei[$i] ?? '');
         $inicio = $data_inicio[$i] ?? null;
         $fim = $data_fim[$i] ?? null;
         $registro = date('Y-m-d H:i:s');
 
         if ($id_existente > 0) {
-            $sql = "UPDATE medicoes SET valor_orcamento='$orc', valor_bm='$bm_valor', saldo_obra='$saldo', bm='$bm_ind', data_inicio='$inicio', data_fim='$fim' WHERE id=$id_existente AND id_usuario=$id_usuario";
+            $sql = "UPDATE medicoes 
+        SET valor_orcamento='$orc', valor_bm='$bm_valor', saldo_obra='$saldo', bm='$bm_ind', 
+            data_inicio='$inicio', data_fim='$fim', numero_processo_sei='$sei' 
+        WHERE id=$id_existente AND id_usuario=$id_usuario";
         } else {
-            $sql = "INSERT INTO medicoes (id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra, bm, data_inicio, data_fim, data_registro) VALUES ($id_usuario, $id_iniciativa, '$orc', '$bm_valor', '$saldo', '$bm_ind', '$inicio', '$fim', '$registro')";
+            $sql = "INSERT INTO medicoes (id_usuario, id_iniciativa, valor_orcamento, valor_bm, saldo_obra, bm, data_inicio, data_fim, data_registro, numero_processo_sei)
+        VALUES ($id_usuario, $id_iniciativa, '$orc', '$bm_valor', '$saldo', '$bm_ind', '$inicio', '$fim', '$registro', '$sei')";
         }
         mysqli_query($conexao, $sql);
     }
@@ -56,6 +62,9 @@ $dados = mysqli_query($conexao, "SELECT * FROM medicoes WHERE id_usuario = {$_SE
 function formatarParaBrasileiro($valor) {
     return 'R$ ' . number_format((float)$valor, 2, ',', '.');
 }
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -63,22 +72,65 @@ function formatarParaBrasileiro($valor) {
 <head>
     <meta charset="UTF-8">
     <title>Medições</title>
+    
     <style>
-        body { font-family: Arial; background: #f1f1f1; }
-        .container { max-width: 1000px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-        h2 { text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        input[type="text"], input[type="date"] { width: 100%; padding: 5px; box-sizing: border-box; }
-        .buttons { text-align: center; margin-top: 10px; }
-        .buttons button { padding: 10px 20px; margin: 5px; border: none; background: #3399ff; color: white; border-radius: 5px; cursor: pointer; }
-        .buttons button:hover { background: #237acc; }
-    </style>
+    body { font-family: Arial; background: #f1f1f1; }
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    h2 { text-align: center; }
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        min-width: 1000px; /* Garante espaço mínimo para não cortar colunas */
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    input[type="text"], input[type="date"] {
+        width: 100%;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+    input[name="numero_processo_sei[]"] {
+        min-width: 180px;
+    }
+    .buttons {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .buttons button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        background: #3399ff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .buttons button:hover {
+        background: #237acc;
+    }
+</style>
+
+
 </head>
 <body>
     <div class="container">
         <h2>Acompanhamento de Medidas</h2>
         <form method="post" action="medicoes.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
+            <div class="table-wrapper">
             <table id="medicoes">
                 <thead>
                     <tr>
@@ -86,6 +138,7 @@ function formatarParaBrasileiro($valor) {
                         <th>Valor BM</th>
                         <th>Saldo da Obra</th>
                         <th>BM</th>
+                        <th>Nº Processo SEI</th>
                         <th>Data Início</th>
                         <th>Data Fim</th>
                     </tr>
@@ -108,6 +161,7 @@ function formatarParaBrasileiro($valor) {
                     <td><input type="text" name="saldo_obra[]" value="<?php echo formatarParaBrasileiro($linha['saldo_obra']); ?>" /></td>
                     
                     <td><input type="text" name="bm[]" value="<?php echo intval($linha['bm']); ?>" /></td> 
+                    <td><input type="text" name="numero_processo_sei[]" value="<?php echo htmlspecialchars($linha['numero_processo_sei']); ?>" /></td>
                     <td><input type="date" name="data_inicio[]" value="<?php echo htmlspecialchars($linha['data_inicio']); ?>" /></td>
                     <td><input type="date" name="data_fim[]" value="<?php echo htmlspecialchars($linha['data_fim']); ?>" /></td>
                   </tr>
@@ -123,7 +177,7 @@ function formatarParaBrasileiro($valor) {
             </div>
         </form>
     </div>
-
+</div>
     <script>
 
     document.addEventListener('input', function(e) {
@@ -151,45 +205,35 @@ function formatarParaBrasileiro($valor) {
     });
 
     function adicionarLinha() {
-        const table = document.getElementById('medicoes').getElementsByTagName('tbody')[0];
-        const newRow = table.insertRow();
+    const table = document.getElementById('medicoes').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
 
-        const primeiraLinha = table.rows[0];
-        const valorOrcamentoOriginal = primeiraLinha?.cells[0]?.querySelector('input')?.value || '';
+    const primeiraLinha = table.rows[0];
+    const valorOrcamentoOriginal = primeiraLinha?.cells[0]?.querySelector('input')?.value || '';
 
-        for (let i = 0; i < 6; i++) {
-            const newCell = newRow.insertCell();
+    // Ordem correta dos campos
+    const campos = [
+        { name: 'valor_orcamento[]', type: 'text', required: true, value: valorOrcamentoOriginal },
+        { name: 'valor_bm[]', type: 'text', required: true },
+        { name: 'saldo_obra[]', type: 'text' },
+        { name: 'bm[]', type: 'number', step: '1' },
+        { name: 'numero_processo_sei[]', type: 'text' },
+        { name: 'data_inicio[]', type: 'date' },
+        { name: 'data_fim[]', type: 'date' }
+    ];
 
-            if (i === 0) {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = 'valor_orcamento[]';
-                input.value = valorOrcamentoOriginal;
-                input.required = true; // <-- Torna obrigatório
-                newCell.appendChild(input);
-            } else if (i >= 4) {
-                const input = document.createElement('input');
-                input.type = 'date';
-                input.name = ['data_inicio[]', 'data_fim[]'][i - 4];
-                input.placeholder = 'dd/mm/aaaa';
-                newCell.appendChild(input);
-            } else {
-                const input = document.createElement('input');
-                input.type = 'text';
+    campos.forEach(campo => {
+        const cell = newRow.insertCell();
+        const input = document.createElement('input');
+        input.type = campo.type;
+        input.name = campo.name;
+        if (campo.required) input.required = true;
+        if (campo.value !== undefined) input.value = campo.value;
+        if (campo.step) input.step = campo.step;
+        cell.appendChild(input);
+    });
+}
 
-                input.name = ['valor_bm[]', 'saldo_obra[]', 'bm[]'][i - 1];
-                if (['valor_bm[]', 'saldo_obra[]', 'bm[]'][i - 1] === 'bm[]') {
-                    input.type = 'number';
-                    input.step = '1';
-                }
-
-                if (i === 1) input.required = true; // <-- valor_bm[]
-                newCell.appendChild(input);
-
-            }
-
-        }
-    }
 
     function removerLinha() {
         const tabela = document.getElementById('medicoes').getElementsByTagName('tbody')[0];
