@@ -1,40 +1,32 @@
 <?php
 session_start();
+include_once('config.php');
 
-// Conexão com o banco de dados
-$conn = new mysqli("localhost", "root", "", "siscreche"); // Ajuste conforme seu banco
-
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
-}
-
-// Receber dados do formulário
-$nome = $_POST['nome'];
+$login = $_POST['nome'];
 $senha = $_POST['senha'];
 
-// Consulta ao banco
-$sql = "SELECT * FROM usuarios WHERE nome = ? AND senha = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $nome, $senha);
-$stmt->execute();
-$result = $stmt->get_result();
+// Usando prepared statement para evitar SQL injection
+$query = "SELECT * FROM usuarios WHERE nome = ? AND senha = ?";
+$stmt = mysqli_prepare($conexao, $query);
+mysqli_stmt_bind_param($stmt, "ss", $login, $senha);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-if ($result->num_rows === 1) {
-    $usuario = $result->fetch_assoc();
+if (mysqli_num_rows($result) == 1) {
+    $usuario = mysqli_fetch_assoc($result);
 
-    // Salvar dados na sessão
     $_SESSION['id_usuario'] = $usuario['id_usuario'];
     $_SESSION['nome'] = $usuario['nome'];
     $_SESSION['tipo'] = $usuario['tipo'];
 
-    // Redirecionamento com base no tipo
+    // Redirecionamento correto
     if ($usuario['tipo'] === 'admin') {
-        header("Location: diretorias.php");
+        header('Location: diretorias.php'); // Corrigido aqui
     } else {
-        header("Location: painel.php"); // Página comum para usuários normais
+        header('Location: home.php');
     }
     exit;
 } else {
-    echo "<script>alert('Login ou senha inválidos'); window.location.href = 'index.php';</script>";
+    echo "<script>alert('Erro: Usuário ou Senha inválidos'); window.location.href = 'login.php';</script>";
 }
 ?>
