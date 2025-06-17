@@ -99,6 +99,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin-top: 20px;
     }
 
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background-color: white;
+      appearance: none; /* remove estilo nativo no Chrome */
+    }
+
+
     .campo {
       flex: 1;
       min-width: 250px;
@@ -208,16 +220,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <h1>Editar Iniciativa</h1>
   <form method="post">
     <div class="linha">
-      <div class="campo">
-        <label>Iniciativa:</label>
-        <input type="text" name="iniciativa" value="<?php echo htmlspecialchars($row['iniciativa']); ?>" readonly>
-      </div>
+      
+    <div class="campo">
+      <label>Iniciativa:</label>
+      <input type="text" name="iniciativa" value="<?php echo htmlspecialchars($row['iniciativa']); ?>" readonly>
+    </div>
+      
       <div class="campo">
         <label>Status:</label>
-        <input type="text" name="ib_status" value="<?php echo htmlspecialchars($row['ib_status']); ?>">
+        <select name="ib_status" required>
+          <option value="Em Execução" <?php if ($row['ib_status'] == 'Em Execução') echo 'selected'; ?>>Em Execução</option>
+          <option value="Paralizado" <?php if ($row['ib_status'] == 'Paralizado') echo 'selected'; ?>>Paralizado</option>
+          <option value="Concluído" <?php if ($row['ib_status'] == 'Concluído') echo 'selected'; ?>>Concluído</option>
+        </select>
       </div>
+
       <div class="campo">
-        <label>Data da Vistoria:</label>
+        <label>Data da Atualização:</label>
         <input type="date" name="data_vistoria" value="<?php echo htmlspecialchars($row['data_vistoria']); ?>">
       </div>
     </div>

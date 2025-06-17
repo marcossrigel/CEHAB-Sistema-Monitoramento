@@ -230,7 +230,11 @@ h1 {
     </button>
     
     <div class="panel">
-      <p><strong>Status:</strong> <?php echo $row['ib_status']; ?> | <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?></p>
+      <p>
+        <strong>Status:</strong> <?php echo $row['ib_status']; ?> | 
+        <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?> | 
+        <strong>Nº do Contrato:</strong> <?php echo $row['numero_contrato']; ?>
+      </p>
       <p><strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> | <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?></p>
       <p><strong>Secretaria:</strong> <?php echo $row['ib_secretaria']; ?> | <strong>Órgão:</strong> <?php echo $row['ib_orgao']; ?> | <strong>Processo SEI:</strong> <?php echo $row['ib_numero_processo_sei']; ?></p>
       <p><strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?> | <strong>Fiscal Responsável:</strong> <?php echo $row['ib_fiscal']; ?></p>
@@ -243,6 +247,7 @@ h1 {
       </div>
 
       <div class="acoes">
+        <button onclick="window.location.href='acompanhamento.php?id_iniciativa=<?php echo $row['id']; ?>';">🛠 Acompanhar Pendências</button>
         <button onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';">📄 Informações Contratuais</button>
         <button onclick="window.location.href='medicoes.php?id_iniciativa=<?php echo $row['id']; ?>';">📊 Acompanhamento de Medições</button>
         <button onclick="window.location.href='infocontratuais.php?id_iniciativa=<?php echo $row['id']; ?>';">📋 projeto e licitação </button>

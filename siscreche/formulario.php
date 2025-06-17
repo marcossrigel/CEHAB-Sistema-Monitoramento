@@ -25,6 +25,8 @@
     }
     
     $data_vistoria = $_POST['data_vistoria'];
+    $numero_contrato = $_POST['numero_contrato'];
+
     $ib_status = $_POST['ib_status'];
     $ib_execucao = $_POST['ib_execucao'];
     $ib_previsto = $_POST['ib_previsto'];
@@ -42,9 +44,9 @@
     
     $id_usuario = $_SESSION['id_usuario'];
     
-    $result = mysqli_query($conexao, "INSERT INTO iniciativas(id_usuario,iniciativa,data_vistoria,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
+    $result = mysqli_query($conexao, "INSERT INTO iniciativas(id_usuario,iniciativa,data_vistoria,numero_contrato,ib_status,ib_execucao,ib_previsto,ib_variacao,ib_valor_medio,ib_secretaria,ib_orgao,ib_gestor_responsavel,ib_fiscal,ib_numero_processo_sei,objeto,informacoes_gerais,observacoes)
     
-    VALUES ('$id_usuario', '$iniciativa','$data_vistoria','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
+    VALUES ('$id_usuario', '$iniciativa','$data_vistoria','$numero_contrato','$ib_status','$ib_execucao','$ib_previsto','$ib_variacao','$ib_valor_medio','$ib_secretaria','$ib_orgao','$ib_gestor_responsavel','$ib_fiscal','$ib_numero_processo_sei','$objeto','$informacoes_gerais','$observacoes')");
     header("Location: formulario.php?sucesso=1&nome=" . urlencode($iniciativa));
     exit;
     
@@ -209,12 +211,14 @@ input[type="date"] {
   box-sizing: border-box;
 }
 
-select[type="text"] {
+input[list] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
+  font-size: 14px; 
+  appearance: none;
 }
 
 .modal {
@@ -303,78 +307,81 @@ select[type="text"] {
     <h1 class="main-title">Criar uma nova iniciativa</h1>
 
     <div class="linha">
+      
       <div class="campo-pequeno">
         <label class="label">Nome da Iniciativa</label>
         
-        <select type="text" name="iniciativa" class="campo" required>
-          <option value="">Selecione...</option>
-          <option value="Creche - Lote 01 (Cabrobó)">Creche - Lote 01 (Cabrobó)</option>
-          <option value="Creche - Lote 01 (Granito)">Creche - Lote 01 (Granito)</option>
-          <option value="Creche - Lote 01 (Lagoa Grande)">Creche - Lote 01 (Lagoa Grande)</option>
-          <option value="Creche - Lote 01 (Ouricuri)">Creche - Lote 01 (Ouricuri)</option>
-
-          <option value="Creche - Lote 02 (Mirandiba)">Creche - Lote 02 (Mirandiba)</option>
-          <option value="Creche - Lote 02 (Serra T 01)">Creche - Lote 02 (Serra T 01)</option>
-          <option value="Creche - Lote 02 (Serra T 02)">Creche - Lote 02 (Serra T 02)</option>
-          <option value="Creche - Lote 02 (Triunfo)">Creche - Lote 02 (Triunfo)</option>
-          <option value="Creche - Lote 02 (Tuparetama)">Creche - Lote 02 (Tuparetama)</option>
-
-          <option value="Creche - Lote 03 (Arcoverde)">Creche - Lote 03 (Arcoverde)</option>
-          <option value="Creche - Lote 03 (Custódia)">Creche - Lote 03 (Custódia)</option>
-          <option value="Creche - Lote 03 (Ibimirim)">Creche - Lote 03 (Ibimirim)</option>
-          <option value="Creche - Lote 03 (Itíba)">Creche - Lote 03 (Itíba)</option>
-          <option value="Creche - Lote 03 (Pedra)">Creche - Lote 03 (Pedra)</option>
-
-          <option value="Creche - Lote 04 (Garanhuns Terreno 01)">Creche - Lote 04 (Garanhuns Terreno 01)</option>
-          <option value="Creche - Lote 04 (Garanhuns Terreno 02)">Creche - Lote 04 (Garanhuns Terreno 02)</option>
-          <option value="Creche - Lote 04 (Paranatama)">Creche - Lote 04 (Paranatama)</option>
-          <option value="Creche - Lote 04 (São Bento do una)">Creche - Lote 04 (São Bento do una)</option>
-          
-          <option value="Creche - Lote 05 (Belo Jardim)">Creche - Lote 05 (Belo Jardim)</option>
-          <option value="Creche - Lote 05 (Brejo da Madre de Deus)">Creche - Lote 05 (Brejo da Madre de Deus)</option>
-          <option value="Creche - Lote 05 (Jataúba)">Creche - Lote 05 (Jataúba)</option>
-          <option value="Creche - Lote 05 (Taquaritinga do Norte)">Creche - Lote 05 (Taquaritinga do Norte)</option>
-          <option value="Creche - Lote 05 (São Bento do una)">Creche - Lote 05 (São Bento do una)</option>
-          <option value="Creche - Lote 05 (Vertentes)">Creche - Lote 05 (Vertentes)</option>
-
-          <option value="Creche - Lote 06 (Belém de Maria)">Creche - Lote 06 (Belém de Maria)</option>
-          <option value="Creche - Lote 06 (Bezerros)">Creche - Lote 06 (Bezerros)</option>
-          <option value="Creche - Lote 06 (Caruaru 06 - Salgado)">Creche - Lote 06 (Caruaru 06 - Salgado)</option>
-          <option value="Creche - Lote 06 (Caruaru 02 - Vila Cipó)">Creche - Lote 06 (Caruaru 02 - Vila Cipó)</option>
-          <option value="Creche - Lote 06 (Caruaru 03 - Rendeiras)">Creche - Lote 06 (Caruaru 03 - Rendeiras)</option>
-          <option value="Creche - Lote 06 (Caruaru 04 - Xique Xique)">Creche - Lote 06 (Caruaru 04 - Xique Xique)</option>
-          <option value="Creche - Lote 06 (Catende)">Creche - Lote 06 (Catende)</option>
-          <option value="Creche - Lote 06 (São Joaquim do Monte)">Creche - Lote 06 (São Joaquim do Monte)</option>
-
-          <option value="Creche - Lote 07 (Vicência)">Creche - Lote 07 (Vicência)</option>
-          <option value="Creche - Lote 07 (Timbaúba)">Creche - Lote 07 (Timbaúba)</option>
-          <option value="Creche - Lote 07 (Camutanga)">Creche - Lote 07 (Camutanga)</option>
-          <option value="Creche - Lote 07 (Bom Jardim)">Creche - Lote 07 (Bom Jardim)</option>
-          <option value="Creche - Lote 07 (Araçoiaba)">Creche - Lote 07 (Araçoiaba)</option>          
-
-          <option value="Creche - Lote 08 (São José da Coroa Grande)">Creche - Lote 08 (São José da Coroa Grande)</option>
-          <option value="Creche - Lote 08 (Jaboatão Terreno 04 Muribeca)">Creche - Lote 08 (Jaboatão Terreno 04 Muribeca)</option>
-          <option value="Creche - Lote 08 (Cabo de Santo Agostinho)">Creche - Lote 08 (Cabo de Santo Agostinho)</option>
-          <option value="Creche - Lote 08 (Jaboatão Terreno 01 Rio Dourado)">Creche - Lote 08 (Jaboatão Terreno 01 Rio Dourado)</option>
-          <option value="Creche - Lote 08 (Moreno)">Creche - Lote 08 (Moreno)</option>
-          <option value="Creche - Lote 08 (Jaboatão Terreno 02 Candeias)">Creche - Lote 08 (Jaboatão Terreno 02 Candeias)</option>
-          <option value="Creche - Lote 08 (Ipojuca)">Creche - Lote 08 (Ipojuca)</option>
-
-          <option value="Creche - Lote 09 (Areias)">Creche - Lote 09 (Areias)</option>
-          <option value="Creche - Lote 09 (Itamaraca)">Creche - Lote 09 (Itamaraca)</option>
-          <option value="Creche - Lote 09 (Camaragibe 01)">Creche - Lote 09 (Camaragibe 01)</option>
-          <option value="Creche - Lote 09 (Igarassu 01)">Creche - Lote 09 (Igarassu 01)</option>
-          <option value="Creche - Lote 09 (Camaragibe 02)">Creche - Lote 09 (Camaragibe 02)</option>
-          <option value="Creche - Lote 09 (Igarassu 02)">Creche - Lote 09 (Igarassu 02)</option>
-          <option value="Creche - Lote 09 (Olinda)">Creche - Lote 09 (Olinda)</option>
-          
-        </select>
-
+        <input list="lista-iniciativas" name="iniciativa" class="campo" required placeholder="Digite ou selecione">
+        <datalist id="lista-iniciativas">
+          <option value="Creche - Lote 01 (Cabrobó)">
+          <option value="Creche - Lote 01 (Granito)">
+          <option value="Creche - Lote 01 (Lagoa Grande)">
+          <option value="Creche - Lote 01 (Ouricuri)">
+          <option value="Creche - Lote 02 (Mirandiba)">
+          <option value="Creche - Lote 02 (Serra T 01)">
+          <option value="Creche - Lote 02 (Serra T 02)">
+          <option value="Creche - Lote 02 (Triunfo)">
+          <option value="Creche - Lote 02 (Tuparetama)">
+          <option value="Creche - Lote 03 (Arcoverde)">
+          <option value="Creche - Lote 03 (Custódia)">
+          <option value="Creche - Lote 03 (Ibimirim)">
+          <option value="Creche - Lote 03 (Itíba)">
+          <option value="Creche - Lote 03 (Pedra)">
+          <option value="Creche - Lote 04 (Garanhuns Terreno 01)">
+          <option value="Creche - Lote 04 (Garanhuns Terreno 02)">
+          <option value="Creche - Lote 04 (Paranatama)">
+          <option value="Creche - Lote 04 (São Bento do una)">
+          <option value="Creche - Lote 05 (Belo Jardim)">
+          <option value="Creche - Lote 05 (Brejo da Madre de Deus)">
+          <option value="Creche - Lote 05 (Jataúba)">
+          <option value="Creche - Lote 05 (Taquaritinga do Norte)">
+          <option value="Creche - Lote 05 (São Bento do una)">
+          <option value="Creche - Lote 05 (Vertentes)">
+          <option value="Creche - Lote 06 (Belém de Maria)">
+          <option value="Creche - Lote 06 (Bezerros)">
+          <option value="Creche - Lote 06 (Caruaru 06 - Salgado)">
+          <option value="Creche - Lote 06 (Caruaru 02 - Vila Cipó)">
+          <option value="Creche - Lote 06 (Caruaru 03 - Rendeiras)">
+          <option value="Creche - Lote 06 (Caruaru 04 - Xique Xique)">
+          <option value="Creche - Lote 06 (Catende)">
+          <option value="Creche - Lote 06 (São Joaquim do Monte)">
+          <option value="Creche - Lote 07 (Vicência)">
+          <option value="Creche - Lote 07 (Timbaúba)">
+          <option value="Creche - Lote 07 (Camutanga)">
+          <option value="Creche - Lote 07 (Bom Jardim)">
+          <option value="Creche - Lote 07 (Araçoiaba)">
+          <option value="Creche - Lote 08 (São José da Coroa Grande)">
+          <option value="Creche - Lote 08 (Jaboatão Terreno 04 Muribeca)">
+          <option value="Creche - Lote 08 (Cabo de Santo Agostinho)">
+          <option value="Creche - Lote 08 (Jaboatão Terreno 01 Rio Dourado)">
+          <option value="Creche - Lote 08 (Moreno)">
+          <option value="Creche - Lote 08 (Jaboatão Terreno 02 Candeias)">
+          <option value="Creche - Lote 08 (Ipojuca)">
+          <option value="Creche - Lote 09 (Areias)">
+          <option value="Creche - Lote 09 (Itamaraca)">
+          <option value="Creche - Lote 09 (Camaragibe 01)">
+          <option value="Creche - Lote 09 (Igarassu 01)">
+          <option value="Creche - Lote 09 (Camaragibe 02)">
+          <option value="Creche - Lote 09 (Igarassu 02)">
+          <option value="Creche - Lote 09 (Olinda)">
+        </datalist>
+      
       </div>
+
       <div class="campo-pequeno">
-        <label class="label">Data da Vistoria</label>
+        <label class="label">Data da Atualização</label>
         <input type="date" name="data_vistoria" class="campo" required>
       </div>
+
+      <div class="campo-pequeno">
+        <label class="label">Nº do contrato</label>
+        <div style="display: flex;">
+          <input type="text" name="numero_contrato_prefixo" id="numero_contrato_prefixo" maxlength="3" placeholder="000" pattern="\d{3}" required style="flex: 0 0 60px; text-align: center;">
+          <span style="align-self: center; padding: 0 5px;">/2025</span>
+        </div>
+        <input type="hidden" name="numero_contrato" id="numero_contrato">
+      </div>
+
     </div>
 
     <div class="linha">
@@ -493,6 +500,12 @@ select[type="text"] {
 </body>
 
 <script>
+
+  document.querySelector('form').addEventListener('submit', function(e) {
+  const prefixo = document.getElementById('numero_contrato_prefixo').value.padStart(3, '0');
+  document.getElementById('numero_contrato').value = `${prefixo}/2025`;
+  });
+
   const execucaoInput = document.querySelector('input[name="ib_execucao"]');
   const previstoInput = document.querySelector('input[name="ib_previsto"]');
   const variacaoInput = document.getElementById('ib_variacao');
