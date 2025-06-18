@@ -235,6 +235,7 @@ a.texto-login:hover {
 <div class="container">
   <div class="header">
     <div class="header-text">
+      <p>Olá, <?php echo $_SESSION['nome']; ?>!</p>
       <h1>Bem-vindo ao Sistema de Monitoramento</h1>
       <p>Organize e cadastre suas informações com eficiência e facilidade.</p>
     </div>
