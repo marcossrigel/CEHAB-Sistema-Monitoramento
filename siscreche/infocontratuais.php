@@ -92,6 +92,28 @@ if (isset($_POST['salvar'])) {
         mysqli_query($conexao, $query_insert);
     }
 
+    $valor_total_para_medicoes = $valor_inicial_obra;
+    $valor_bm_para_medicoes = $valor_aditivo;
+    
+    $query_verifica_medicao = "SELECT id FROM medicoes WHERE id_usuario = {$_SESSION['id_usuario']} AND id_iniciativa = $id_iniciativa LIMIT 1";
+    $result_medicao = mysqli_query($conexao, $query_verifica_medicao);
+
+    if (mysqli_num_rows($result_medicao) > 0) {
+        $linha = mysqli_fetch_assoc($result_medicao);
+        $id_medicao = $linha['id'];
+        $query_update_medicao = "UPDATE medicoes 
+                                SET valor_orcamento = $valor_total_para_medicoes, 
+                                    valor_bm = $valor_bm_para_medicoes 
+                                WHERE id = $id_medicao";
+        mysqli_query($conexao, $query_update_medicao);
+    } else {
+        $query_insert_medicao = "INSERT INTO medicoes 
+            (id_usuario, id_iniciativa, valor_orcamento, valor_bm, data_registro)
+            VALUES 
+            ({$_SESSION['id_usuario']}, $id_iniciativa, $valor_total_para_medicoes, $valor_bm_para_medicoes, NOW())";
+        mysqli_query($conexao, $query_insert_medicao);
+    }
+
     header("Location: infocontratuais.php?id_iniciativa=$id_iniciativa");
     exit;
 }

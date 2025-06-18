@@ -9,6 +9,11 @@ include_once('config.php');
 
 $id_iniciativa = isset($_GET['id_iniciativa']) ? intval($_GET['id_iniciativa']) : 0;
 
+$query_nome = "SELECT iniciativa FROM iniciativas WHERE id = $id_iniciativa";
+$result_nome = mysqli_query($conexao, $query_nome);
+$linha_nome = mysqli_fetch_assoc($result_nome);
+$nome_iniciativa = $linha_nome['iniciativa'] ?? 'Iniciativa Desconhecida';
+
 if (isset($_POST['salvar'])) {
     $id_usuario = $_SESSION['id_usuario'];
     $valor_orcamento = $_POST['valor_orcamento'] ?? [];
@@ -63,8 +68,6 @@ function formatarParaBrasileiro($valor) {
     return 'R$ ' . number_format((float)$valor, 2, ',', '.');
 }
 
-
-
 ?>
 
 <!DOCTYPE html>
@@ -73,62 +76,68 @@ function formatarParaBrasileiro($valor) {
     <meta charset="UTF-8">
     <title>Medições</title>
     
-    <style>
-    body { font-family: Arial; background: #f1f1f1; }
-    .container {
-        max-width: 1000px;
-        margin: auto;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px #ccc;
-    }
-    h2 { text-align: center; }
-    .table-wrapper {
-        overflow-x: auto;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-        min-width: 1000px; /* Garante espaço mínimo para não cortar colunas */
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
-    input[type="text"], input[type="date"] {
-        width: 100%;
-        padding: 5px;
-        box-sizing: border-box;
-    }
-    input[name="numero_processo_sei[]"] {
-        min-width: 180px;
-    }
-    .buttons {
-        text-align: center;
-        margin-top: 10px;
-    }
-    .buttons button {
-        padding: 10px 20px;
-        margin: 5px;
-        border: none;
-        background: #3399ff;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .buttons button:hover {
-        background: #237acc;
-    }
+<style>
+body { font-family: Arial; background: #f1f1f1; }
+.container {
+    max-width: 70%;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+}
+h2 { text-align: center; }
+.table-wrapper {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    min-width: unset;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+input[name="numero_processo_sei[]"] {
+    min-width: 180px;
+}
+input[name="valor_orcamento[]"],
+input[name="valor_bm[]"],
+input[name="saldo_obra[]"] {
+    min-width: 150px;
+}
+.buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+.buttons button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    background: #3399ff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.buttons button:hover {
+    background: #237acc;
+}
 </style>
-
 
 </head>
 <body>
     <div class="container">
-        <h2>Acompanhamento de Medidas</h2>
+        
+        <h2><?php echo htmlspecialchars($nome_iniciativa); ?> - Acompanhamento de Medidas</h2>
+
         <form method="post" action="medicoes.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
             <div class="table-wrapper">
             <table id="medicoes">
@@ -161,7 +170,8 @@ function formatarParaBrasileiro($valor) {
                     <td><input type="text" name="saldo_obra[]" value="<?php echo formatarParaBrasileiro($linha['saldo_obra']); ?>" /></td>
                     
                     <td><input type="text" name="bm[]" value="<?php echo intval($linha['bm']); ?>" /></td> 
-                    <td><input type="text" name="numero_processo_sei[]" value="<?php echo htmlspecialchars($linha['numero_processo_sei']); ?>" /></td>
+                    <td><input type="text" name="numero_processo_sei[]" value="<?php echo htmlspecialchars($linha['numero_processo_sei'] ?? ''); ?>" /></td>
+
                     <td><input type="date" name="data_inicio[]" value="<?php echo htmlspecialchars($linha['data_inicio']); ?>" /></td>
                     <td><input type="date" name="data_fim[]" value="<?php echo htmlspecialchars($linha['data_fim']); ?>" /></td>
                   </tr>
