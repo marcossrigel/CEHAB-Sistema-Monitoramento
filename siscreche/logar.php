@@ -5,7 +5,6 @@ include_once('config.php');
 $login = $_POST['nome'];
 $senha = $_POST['senha'];
 
-// Usando prepared statement para evitar SQL injection
 $query = "SELECT * FROM usuarios WHERE nome = ? AND senha = ?";
 $stmt = mysqli_prepare($conexao, $query);
 mysqli_stmt_bind_param($stmt, "ss", $login, $senha);
@@ -19,9 +18,8 @@ if (mysqli_num_rows($result) == 1) {
     $_SESSION['nome'] = $usuario['nome'];
     $_SESSION['tipo'] = $usuario['tipo'];
 
-    // Redirecionamento correto
     if ($usuario['tipo'] === 'admin') {
-        header('Location: diretorias.php'); // Corrigido aqui
+        header('Location: diretorias.php');
     } else {
         header('Location: home.php');
     }
