@@ -16,6 +16,8 @@ $id_iniciativa = (int) ($_GET['id_iniciativa'] ?? 0);
 $id_usuario = (int) ($_SESSION['id_usuario'] ?? 0);
 
 if (isset($_POST['etapa'])) {
+    $id_custom = $_POST['id_etapa_custom'] ?? [];
+
     $etapa = $_POST['etapa'] ?? [];
     $inicio_previsto = $_POST['inicio_previsto'] ?? [];
     $termino_previsto = $_POST['termino_previsto'] ?? [];
@@ -31,6 +33,7 @@ if (isset($_POST['etapa'])) {
     }
 
     for ($i = 0; $i < count($etapa); $i++) {
+        $idEtapaCustom = mysqli_real_escape_string($conexao, $id_custom[$i] ?? '');
         $id_existente = intval($ids[$i] ?? 0);
         $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
 
@@ -46,22 +49,25 @@ if (isset($_POST['etapa'])) {
 
         if ($id_existente > 0) {
             $query = "UPDATE marcos SET 
-                        tipo_etapa='$tipo',
-                        etapa='$etp',
-                        inicio_previsto=$ini_prev,
-                        termino_previsto=$ter_prev,
-                        inicio_real=$ini_real,
-                        termino_real=$ter_real,
-                        evolutivo=$evo
-                      WHERE id = $id_existente AND id_usuario = $id_usuario";
+              tipo_etapa='$tipo',
+              etapa='$etp',
+              inicio_previsto=$ini_prev,
+              termino_previsto=$ter_prev,
+              inicio_real=$ini_real,
+              termino_real=$ter_real,
+              evolutivo=$evo,
+              id_etapa_custom='$idEtapaCustom'
+            WHERE id = $id_existente AND id_usuario = $id_usuario";
         } else {
             $query = "INSERT INTO marcos (
-                        id_usuario, id_iniciativa, tipo_etapa, etapa,
-                        inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo
-                      ) VALUES (
-                        '$id_usuario', '$id_iniciativa', '$tipo', '$etp',
-                        $ini_prev, $ter_prev, $ini_real, $ter_real, $evo
-                      )";
+              id_usuario, id_iniciativa, tipo_etapa, etapa,
+              inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo,
+              id_etapa_custom
+            ) VALUES (
+              '$id_usuario', '$id_iniciativa', '$tipo', '$etp',
+              $ini_prev, $ter_prev, $ini_real, $ter_real, $evo,
+              '$idEtapaCustom'
+            )";
         }
 
         if (!mysqli_query($conexao, $query)) {
@@ -117,12 +123,12 @@ function formatarParaBrasileiro($valor) {
     table {
       width: 100%;
       border-collapse: separate;
-      border-spacing: 8px 15px;
+      border-spacing: 0px 15px;
       table-layout: fixed;          
     }
     th, td {
       text-align: left;
-      padding: 10px;
+      padding: 6px 8px;
     }
     td[contenteditable] {
       border: 1px solid #ccc;
@@ -204,11 +210,12 @@ function formatarParaBrasileiro($valor) {
 </head>
 <body>
 <div class="table-container">
-  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Cronograma de Marcos</div>
+  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Eventograma</div>
   <form method="post" action="cronogramamarcos.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
       <thead>
         <tr>
+          <th>ID Etapa</th>
           <th>Etapa</th>
           <th>Início Previsto</th>
           <th>Término Previsto</th>
@@ -220,9 +227,23 @@ function formatarParaBrasileiro($valor) {
       </thead>
 
       <tbody>
-        <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
-          <tr data-id="<?php echo $linha['id']; ?>">
-            <td>
+        <?php
+        $tituloIndex = 0;
+        $linhaIndex = 0;
+        while ($linha = mysqli_fetch_assoc($dados)) {
+          $tipo = $linha['tipo_etapa'];
+          if ($tipo === 'subtitulo') {
+            $tituloIndex++;
+            $linhaIndex = 0;
+            $idEtapa = "$tituloIndex";
+          } else {
+            $linhaIndex++;
+            $idEtapa = "$tituloIndex.$linhaIndex";
+          }
+        ?>
+        <tr data-id="<?php echo $linha['id']; ?>">
+          <td><?php echo $idEtapa; ?></td> <!-- Exibe o ID hierárquico -->
+          <td>
               <?php if ($linha['tipo_etapa'] === 'subtitulo') { ?>
                 <input type="text" name="etapa[]" value="<?php echo htmlspecialchars($linha['etapa']); ?>" 
                   style="width:100%; min-width:200px; font-family:'Poppins', sans-serif; font-size:13px; padding:4px 8px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
@@ -256,6 +277,10 @@ function formatarParaBrasileiro($valor) {
 </div>
 
 <script>
+  let tituloCount = 0;
+  let linhaCount = 0;
+  let currentTituloId = null;
+
 document.querySelector('form').addEventListener('submit', function(event) {
   const form = this;
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
@@ -347,57 +372,84 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
 function addTitleRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+
+  const existingTitles = Array.from(table.querySelectorAll('tr')).filter(row => {
+    const id = row.getAttribute('data-id');
+    return id && /^[0-9]+$/.test(id);
+  });
+
+  tituloCount = existingTitles.length + 1;
+  linhaCount = 0;
+  currentTituloId = tituloCount;
+
   const newRow = table.insertRow();
+  newRow.setAttribute('data-id', currentTituloId);
+
+  const idCell = newRow.insertCell();
+  idCell.textContent = currentTituloId;
 
   const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
-
   campos.forEach((campo, index) => {
     const cell = newRow.insertCell();
-
-
     if (index === 0) {
       const input = document.createElement('input');
       input.type = 'text';
       input.name = campo + '[]';
       input.placeholder = 'Título';
       input.style.width = '100%';
-      input.style.fontFamily = "'Poppins', sans-serif";
-      input.style.fontSize = '13px';
-      input.style.padding = '4px 8px';
-      input.style.border = '1px solid #ccc';
-      input.style.borderRadius = '6px';
-      input.style.boxSizing = 'border-box';
+      input.dataset.tipo = 'subtitulo';
       cell.appendChild(input);
-    }
-    else {
+
+      const hiddenId = document.createElement('input');
+      hiddenId.type = 'hidden';
+      hiddenId.name = 'ids[]';
+      hiddenId.value = currentTituloId;
+      cell.appendChild(hiddenId);
+
+      const hiddenTipo = document.createElement('input');
+      hiddenTipo.type = 'hidden';
+      hiddenTipo.name = 'tipo_etapa[]';
+      hiddenTipo.value = 'subtitulo';
+      cell.appendChild(hiddenTipo);
+
+      const hiddenCustomId = document.createElement('input');
+      hiddenCustomId.type = 'hidden';
+      hiddenCustomId.name = 'id_etapa_custom[]';
+      hiddenCustomId.value = currentTituloId;
+      cell.appendChild(hiddenCustomId);
+    } else {
       const input = document.createElement('input');
-      if (campo === 'evolutivo') {
-        input.type = 'number';
-        input.min = '0';
-        input.max = '100';
-        input.step = '0.1';
-        input.placeholder = '0 a 100%';
-      } else {
-        input.type = 'date';
-      }
+      input.type = campo === 'evolutivo' ? 'number' : 'date';
       input.name = campo + '[]';
+      input.placeholder = campo === 'evolutivo' ? '0 a 100%' : '';
       input.style.width = '100%';
-      input.style.opacity = '0.9';
-      input.style.border = 'none';
-      input.style.borderRadius = '6px';
-      input.style.height = '20px';
-      input.style.padding = '4px 8px';
-      input.style.boxSizing = 'border-box';
       cell.appendChild(input);
     }
   });
 }
 
 function addRow() {
-  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-  const newRow = table.insertRow();
-  const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+  if (!currentTituloId) {
+    alert("Adicione um título antes de adicionar linhas.");
+    return;
+  }
 
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const linhasExistentes = Array.from(table.querySelectorAll('tr')).filter(row => {
+    const id = row.getAttribute('data-id');
+    return id && id.startsWith(currentTituloId + '.');
+  });
+
+  linhaCount = linhasExistentes.length + 1;
+  const linhaId = `${currentTituloId}.${linhaCount}`;
+
+  const newRow = table.insertRow();
+  newRow.setAttribute('data-id', linhaId);
+
+  const idCell = newRow.insertCell();
+  idCell.textContent = linhaId;
+
+  const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
   campos.forEach((campo, index) => {
     const cell = newRow.insertCell();
 
@@ -405,36 +457,32 @@ function addRow() {
       const textarea = document.createElement('textarea');
       textarea.name = campo + '[]';
       textarea.rows = 2;
-      textarea.className = 'campo-etapa';
-      textarea.style.width = '100%';
-      textarea.style.fontFamily = "'Poppins', sans-serif";
-      textarea.style.fontSize = '13px';
-      textarea.style.padding = '4px 8px';
-      textarea.style.border = '1px solid #ccc';
-      textarea.style.borderRadius = '6px';
-      textarea.style.boxSizing = 'border-box';
-      textarea.style.resize = 'vertical';
+      textarea.placeholder = 'Etapa';
       cell.appendChild(textarea);
-    } 
-    else {
+
+      const hiddenId = document.createElement('input');
+      hiddenId.type = 'hidden';
+      hiddenId.name = 'ids[]';
+      hiddenId.value = linhaId;
+      cell.appendChild(hiddenId);
+
+      const hiddenTipo = document.createElement('input');
+      hiddenTipo.type = 'hidden';
+      hiddenTipo.name = 'tipo_etapa[]';
+      hiddenTipo.value = 'linha';
+      cell.appendChild(hiddenTipo);
+
+      const hiddenCustomId = document.createElement('input');
+      hiddenCustomId.type = 'hidden';
+      hiddenCustomId.name = 'id_etapa_custom[]';
+      hiddenCustomId.value = linhaId;
+      cell.appendChild(hiddenCustomId);
+
+    } else {
       const input = document.createElement('input');
-      if (campo === 'evolutivo') {
-        input.type = 'number';
-        input.min = '0';
-        input.max = '100';
-        input.step = '0.1';
-        input.placeholder = '0 a 100%';
-      } else {
-        input.type = 'date';
-      }
+      input.type = campo === 'evolutivo' ? 'number' : 'date';
       input.name = campo + '[]';
-      input.style.width = '100%';
-      input.style.font = 'inherit';
-      input.style.border = '1px solid #ccc';
-      input.style.borderRadius = '6px';
-      input.style.height = '20px';
-      input.style.padding = '4px 8px';
-      input.style.boxSizing = 'border-box';
+      input.placeholder = campo === 'evolutivo' ? '0 a 100%' : '';
       cell.appendChild(input);
     }
   });
@@ -443,7 +491,6 @@ function addRow() {
 function deleteRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const lastRow = table.rows[table.rows.length - 1];
-
 
   if (!lastRow) return;
 
@@ -458,14 +505,37 @@ function deleteRow() {
       .then(data => {
         console.log(data);
         table.deleteRow(-1);
+
+        const linhas = Array.from(table.querySelectorAll('tr'));
+        const ultimosTitulos = linhas
+          .map(row => row.getAttribute('data-id'))
+          .filter(id => id && /^[0-9]+$/.test(id))
+          .map(id => parseInt(id));
+
+        if (ultimosTitulos.length > 0) {
+          currentTituloId = Math.max(...ultimosTitulos);
+        } else {
+          currentTituloId = null;
+        }
       })
       .catch(error => {
         alert("Erro ao excluir no servidor.");
         console.error(error);
       });
-  } 
-  else {
+  } else {
     table.deleteRow(-1);
+    
+    const linhas = Array.from(table.querySelectorAll('tr'));
+    const ultimosTitulos = linhas
+      .map(row => row.getAttribute('data-id'))
+      .filter(id => id && /^[0-9]+$/.test(id))
+      .map(id => parseInt(id));
+
+    if (ultimosTitulos.length > 0) {
+      currentTituloId = Math.max(...ultimosTitulos);
+    } else {
+      currentTituloId = null;
+    }
   }
 }
 

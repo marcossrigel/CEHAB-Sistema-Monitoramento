@@ -27,7 +27,6 @@ if ($check->num_rows == 0) {
 
 // Exclui registros relacionados nas tabelas dependentes
 $queries = [
-    "DELETE FROM fotos WHERE id_iniciativa = $id",
     "DELETE FROM medicoes WHERE id_iniciativa = $id",
     "DELETE FROM pendencias WHERE id_iniciativa = $id",
     "DELETE FROM contratuais WHERE id_iniciativa = $id",
