@@ -32,7 +32,8 @@ if (isset($_POST['etapa'])) {
     }
 
     for ($i = 0; $i < count($etapa); $i++) {
-        $etapa_custom = intval($id_etapa_custom[$i] ?? 0);
+        $etapa_custom = "'" . mysqli_real_escape_string($conexao, trim($id_etapa_custom[$i] ?? '')) . "'";
+
         $id_existente = intval($ids[$i] ?? 0);
         $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
 
@@ -228,7 +229,7 @@ function formatarParaBrasileiro($valor) {
           
           <td style="max-width:50px;">
             
-          <input type="number" name="id_etapa_custom[]" value="<?php echo htmlspecialchars($linha['id_etapa_custom']); ?>" 
+          <input type="text" name="id_etapa_custom[]" value="<?php echo htmlspecialchars($linha['id_etapa_custom'] ?? ''); ?>"
             style="width: 60px; font-size: 13px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; text-align: center;">
           </td>
           
@@ -275,9 +276,6 @@ document.querySelector('form').addEventListener('submit', function(event) {
   let tituloIndex = -1;
   let datasInicio = [];
   let datasTermino = [];
-
-  let currentTitleIndex = 0;
-  let subIndex = 1;
 
   for (let i = 0; i < linhas.length; i++) {
     const linha = linhas[i];
@@ -358,68 +356,50 @@ document.querySelector('form').addEventListener('submit', function(event) {
   }
 });
 
-function addTitleRow() {
-  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-  const newRow = table.insertRow();
+document.addEventListener("DOMContentLoaded", () => {
+  const inputsIdCustom = document.querySelectorAll('input[name="id_etapa_custom[]"]');
+  let maiorTitulo = 0;
 
-  currentTitleIndex++; // Novo título
-  subIndex = 1; // Reinicia subtítulos
-
-  const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
-
-  const idCell = newRow.insertCell();
-  const idInput = document.createElement('input');
-  idInput.type = 'number';
-  idInput.name = 'id_etapa_custom[]';
-  idInput.readOnly = true;
-  idInput.value = currentTitleIndex;
-  idInput.style.width = '100%';
-  idInput.style.fontSize = '13px';
-  idInput.style.padding = '4px 8px';
-  idInput.style.border = '1px solid #ccc';
-  idInput.style.borderRadius = '6px';
-  idInput.style.boxSizing = 'border-box';
-  idCell.appendChild(idInput);
-
-  campos.forEach((campo, index) => {
-    const cell = newRow.insertCell();
-    if (index === 0) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.name = campo + '[]';
-      input.placeholder = 'Título';
-      input.style.width = '100%';
-      input.style.fontFamily = "'Poppins', sans-serif";
-      input.style.fontSize = '13px';
-      input.style.padding = '4px 8px';
-      input.style.border = '1px solid #ccc';
-      input.style.borderRadius = '6px';
-      input.style.boxSizing = 'border-box';
-      cell.appendChild(input);
-    } else {
-      const input = document.createElement('input');
-      input.name = campo + '[]';
-      input.type = campo === 'evolutivo' ? 'number' : 'date';
-      if (campo === 'evolutivo') {
-        input.min = 0;
-        input.max = 100;
-        input.step = 0.1;
-        input.placeholder = '0 a 100%';
+  inputsIdCustom.forEach(input => {
+    const valor = input.value.trim();
+    if (valor && !valor.includes('.')) {
+      const numero = parseInt(valor);
+      if (!isNaN(numero) && numero > maiorTitulo) {
+        maiorTitulo = numero;
       }
-      input.style.width = '100%';
-      input.style.border = 'none';
-      input.style.borderRadius = '6px';
-      input.style.height = '20px';
-      input.style.padding = '4px 8px';
-      input.style.boxSizing = 'border-box';
-      cell.appendChild(input);
     }
   });
-}
 
-function addRow() {
+  currentTitleIndex = maiorTitulo;
+  subIndex = 1;
+
+  // Atualizar subIndex para evitar repetição em subetapas
+  inputsIdCustom.forEach(input => {
+    const valor = input.value.trim();
+    if (valor.startsWith(maiorTitulo + ".")) {
+      const partes = valor.split(".");
+      const subNum = parseInt(partes[1]);
+      if (!isNaN(subNum) && subNum >= subIndex) {
+        subIndex = subNum + 1;
+      }
+    }
+  });
+});
+
+function addTitleRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-  const newRow = table.insertRow();
+  const newRow = table.insertRow(); // <-- CRIAR AQUI
+  const inputsIdCustom = table.querySelectorAll('input[name="id_etapa_custom[]"]');
+
+  let maiores = Array.from(inputsIdCustom)
+    .map(input => input.value.trim())
+    .filter(val => val && !val.includes('.'))
+    .map(val => parseInt(val))
+    .filter(val => !isNaN(val));
+
+  currentTitleIndex = maiores.length > 0 ? Math.max(...maiores) : 0;
+  currentTitleIndex++;
+  subIndex = 1;
 
   const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
 
@@ -428,7 +408,84 @@ function addRow() {
   idInput.type = 'text';
   idInput.name = 'id_etapa_custom[]';
   idInput.readOnly = true;
-  idInput.value = `${currentTitleIndex}.${subIndex++}`;
+  idInput.value = currentTitleIndex;
+  idInput.style = 'width: 100%; font-size: 13px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;';
+  idCell.appendChild(idInput);
+
+  campos.forEach((campo, index) => {
+    const cell = newRow.insertCell();
+    const input = document.createElement('input');
+    input.name = campo + '[]';
+    input.type = campo === 'evolutivo' ? 'number' : 'date';
+    if (campo === 'etapa') {
+      input.type = 'text';
+      input.placeholder = 'Título';
+    }
+    if (campo === 'evolutivo') {
+      input.min = 0;
+      input.max = 100;
+      input.step = 0.1;
+      input.placeholder = '0 a 100%';
+    }
+    input.style = 'width: 100%; font-size: 13px; padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;';
+    cell.appendChild(input);
+  });
+
+  // Tipo oculto
+  const tipoCell = newRow.insertCell();
+  tipoCell.style.display = 'none';
+  const tipoInput = document.createElement('input');
+  tipoInput.type = 'hidden';
+  tipoInput.name = 'tipo_etapa[]';
+  tipoInput.value = 'subtitulo';
+  tipoCell.appendChild(tipoInput);
+}
+
+function addRow() {
+  const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
+  const inputsIdCustom = table.querySelectorAll('input[name="id_etapa_custom[]"]');
+
+  // Encontrar o último título (inteiro) adicionado
+  let ultTitulo = null;
+  for (let i = inputsIdCustom.length - 1; i >= 0; i--) {
+    const val = inputsIdCustom[i].value.trim();
+    if (val && !val.includes('.')) {
+      ultTitulo = val;
+      break;
+    }
+  }
+
+  if (!ultTitulo) {
+    alert("Adicione uma Etapa antes de adicionar Sub-Etapas.");
+    return;
+  }
+
+  // Verificar quantas subetapas já existem para esse título
+  let maiorSub = 0;
+  inputsIdCustom.forEach(input => {
+    const val = input.value.trim();
+    if (val.startsWith(ultTitulo + ".")) {
+      const partes = val.split(".");
+      const sub = parseInt(partes[1]);
+      if (!isNaN(sub) && sub > maiorSub) {
+        maiorSub = sub;
+      }
+    }
+  });
+
+  const newSubId = `${ultTitulo}.${maiorSub + 1}`;
+
+  // Inserir nova linha
+  const newRow = table.insertRow();
+  const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+
+  // Coluna ID
+  const idCell = newRow.insertCell();
+  const idInput = document.createElement('input');
+  idInput.type = 'text';
+  idInput.name = 'id_etapa_custom[]';
+  idInput.readOnly = true;
+  idInput.value = newSubId;
   idInput.style.width = '100%';
   idInput.style.fontSize = '13px';
   idInput.style.padding = '4px 8px';
@@ -437,6 +494,7 @@ function addRow() {
   idInput.style.boxSizing = 'border-box';
   idCell.appendChild(idInput);
 
+  // Campos principais
   campos.forEach((campo, index) => {
     const cell = newRow.insertCell();
     if (index === 0) {
@@ -472,7 +530,19 @@ function addRow() {
       cell.appendChild(input);
     }
   });
+
+  // Campo oculto tipo_etapa
+  const tipoCell = newRow.insertCell();
+  tipoCell.style.display = "none";
+  const tipoInput = document.createElement('input');
+  tipoInput.type = 'hidden';
+  tipoInput.name = 'tipo_etapa[]';
+  tipoInput.value = 'linha';
+  tipoCell.appendChild(tipoInput);
 }
+
+
+
 
 function deleteRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
