@@ -16,8 +16,7 @@ $id_iniciativa = (int) ($_GET['id_iniciativa'] ?? 0);
 $id_usuario = (int) ($_SESSION['id_usuario'] ?? 0);
 
 if (isset($_POST['etapa'])) {
-    $id_custom = $_POST['id_etapa_custom'] ?? [];
-
+    $id_etapa_custom = $_POST['id_etapa_custom'] ?? [];
     $etapa = $_POST['etapa'] ?? [];
     $inicio_previsto = $_POST['inicio_previsto'] ?? [];
     $termino_previsto = $_POST['termino_previsto'] ?? [];
@@ -33,7 +32,7 @@ if (isset($_POST['etapa'])) {
     }
 
     for ($i = 0; $i < count($etapa); $i++) {
-        $idEtapaCustom = mysqli_real_escape_string($conexao, $id_custom[$i] ?? '');
+        $etapa_custom = intval($id_etapa_custom[$i] ?? 0);
         $id_existente = intval($ids[$i] ?? 0);
         $etp = mysqli_real_escape_string($conexao, $etapa[$i]);
 
@@ -51,22 +50,20 @@ if (isset($_POST['etapa'])) {
             $query = "UPDATE marcos SET 
               tipo_etapa='$tipo',
               etapa='$etp',
+              id_etapa_custom=$etapa_custom,
               inicio_previsto=$ini_prev,
               termino_previsto=$ter_prev,
               inicio_real=$ini_real,
               termino_real=$ter_real,
-              evolutivo=$evo,
-              id_etapa_custom='$idEtapaCustom'
+              evolutivo=$evo
             WHERE id = $id_existente AND id_usuario = $id_usuario";
         } else {
-            $query = "INSERT INTO marcos (
-              id_usuario, id_iniciativa, tipo_etapa, etapa,
-              inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo,
-              id_etapa_custom
+           $query = "INSERT INTO marcos (
+              id_usuario, id_iniciativa, id_etapa_custom, tipo_etapa, etapa,
+              inicio_previsto, termino_previsto, inicio_real, termino_real, evolutivo
             ) VALUES (
-              '$id_usuario', '$id_iniciativa', '$tipo', '$etp',
-              $ini_prev, $ter_prev, $ini_real, $ter_real, $evo,
-              '$idEtapaCustom'
+              '$id_usuario', '$id_iniciativa', $etapa_custom, '$tipo', '$etp',
+              $ini_prev, $ter_prev, $ini_real, $ter_real, $evo
             )";
         }
 
@@ -123,12 +120,12 @@ function formatarParaBrasileiro($valor) {
     table {
       width: 100%;
       border-collapse: separate;
-      border-spacing: 0px 15px;
+      border-spacing: 8px 15px;
       table-layout: fixed;          
     }
     th, td {
       text-align: left;
-      padding: 6px 8px;
+      padding: 10px;
     }
     td[contenteditable] {
       border: 1px solid #ccc;
@@ -210,39 +207,31 @@ function formatarParaBrasileiro($valor) {
 </head>
 <body>
 <div class="table-container">
-  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Eventograma</div>
+  <div class="main-title"><?php echo htmlspecialchars($nome_iniciativa); ?> - Cronograma de Marcos</div>
   <form method="post" action="cronogramamarcos.php?id_iniciativa=<?php echo $id_iniciativa; ?>">
     <table id="spreadsheet">
       <thead>
         <tr>
-          <th>ID Etapa</th>
+          <th style="width: 65px;">ID</th>
           <th>Etapa</th>
           <th>Início Previsto</th>
           <th>Término Previsto</th>
           <th>Início Real</th>
           <th>Término Real</th>
           <th>% Evolutivo</th>
-
         </tr>
       </thead>
 
       <tbody>
-        <?php
-        $tituloIndex = 0;
-        $linhaIndex = 0;
-        while ($linha = mysqli_fetch_assoc($dados)) {
-          $tipo = $linha['tipo_etapa'];
-          if ($tipo === 'subtitulo') {
-            $tituloIndex++;
-            $linhaIndex = 0;
-            $idEtapa = "$tituloIndex";
-          } else {
-            $linhaIndex++;
-            $idEtapa = "$tituloIndex.$linhaIndex";
-          }
-        ?>
-        <tr data-id="<?php echo $linha['id']; ?>">
-          <td><?php echo $idEtapa; ?></td> <!-- Exibe o ID hierárquico -->
+        <?php while ($linha = mysqli_fetch_assoc($dados)) { ?>
+          <tr data-id="<?php echo $linha['id']; ?>">
+          
+          <td style="max-width:50px;">
+            
+          <input type="number" name="id_etapa_custom[]" value="<?php echo htmlspecialchars($linha['id_etapa_custom']); ?>" 
+            style="width: 60px; font-size: 13px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; text-align: center;">
+          </td>
+          
           <td>
               <?php if ($linha['tipo_etapa'] === 'subtitulo') { ?>
                 <input type="text" name="etapa[]" value="<?php echo htmlspecialchars($linha['etapa']); ?>" 
@@ -266,8 +255,8 @@ function formatarParaBrasileiro($valor) {
 
     </table>
     <div class="button-group">
-      <button type="button" onclick="addTitleRow()">Adicionar Título</button>
-      <button type="button" onclick="addRow()">Adicionar Linha</button>
+      <button type="button" onclick="addTitleRow()">Adicionar Etapa</button>
+      <button type="button" onclick="addRow()">Adicionar Sub-Etapa</button>
       <button type="button" onclick="deleteRow()">Excluir Linha</button>
       <button type="submit" name="salvar" id="submit" style="background-color:rgb(42, 179, 0);">Salvar</button>
       <button type="button" onclick="window.location.href='visualizar.php';">&lt; Voltar</button>
@@ -277,10 +266,6 @@ function formatarParaBrasileiro($valor) {
 </div>
 
 <script>
-  let tituloCount = 0;
-  let linhaCount = 0;
-  let currentTituloId = null;
-
 document.querySelector('form').addEventListener('submit', function(event) {
   const form = this;
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
@@ -290,6 +275,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
   let tituloIndex = -1;
   let datasInicio = [];
   let datasTermino = [];
+
+  let currentTitleIndex = 0;
+  let subIndex = 1;
 
   for (let i = 0; i < linhas.length; i++) {
     const linha = linhas[i];
@@ -372,23 +360,27 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
 function addTitleRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-
-  const existingTitles = Array.from(table.querySelectorAll('tr')).filter(row => {
-    const id = row.getAttribute('data-id');
-    return id && /^[0-9]+$/.test(id);
-  });
-
-  tituloCount = existingTitles.length + 1;
-  linhaCount = 0;
-  currentTituloId = tituloCount;
-
   const newRow = table.insertRow();
-  newRow.setAttribute('data-id', currentTituloId);
 
-  const idCell = newRow.insertCell();
-  idCell.textContent = currentTituloId;
+  currentTitleIndex++; // Novo título
+  subIndex = 1; // Reinicia subtítulos
 
   const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+
+  const idCell = newRow.insertCell();
+  const idInput = document.createElement('input');
+  idInput.type = 'number';
+  idInput.name = 'id_etapa_custom[]';
+  idInput.readOnly = true;
+  idInput.value = currentTitleIndex;
+  idInput.style.width = '100%';
+  idInput.style.fontSize = '13px';
+  idInput.style.padding = '4px 8px';
+  idInput.style.border = '1px solid #ccc';
+  idInput.style.borderRadius = '6px';
+  idInput.style.boxSizing = 'border-box';
+  idCell.appendChild(idInput);
+
   campos.forEach((campo, index) => {
     const cell = newRow.insertCell();
     if (index === 0) {
@@ -397,92 +389,86 @@ function addTitleRow() {
       input.name = campo + '[]';
       input.placeholder = 'Título';
       input.style.width = '100%';
-      input.dataset.tipo = 'subtitulo';
+      input.style.fontFamily = "'Poppins', sans-serif";
+      input.style.fontSize = '13px';
+      input.style.padding = '4px 8px';
+      input.style.border = '1px solid #ccc';
+      input.style.borderRadius = '6px';
+      input.style.boxSizing = 'border-box';
       cell.appendChild(input);
-
-      const hiddenId = document.createElement('input');
-      hiddenId.type = 'hidden';
-      hiddenId.name = 'ids[]';
-      hiddenId.value = currentTituloId;
-      cell.appendChild(hiddenId);
-
-      const hiddenTipo = document.createElement('input');
-      hiddenTipo.type = 'hidden';
-      hiddenTipo.name = 'tipo_etapa[]';
-      hiddenTipo.value = 'subtitulo';
-      cell.appendChild(hiddenTipo);
-
-      const hiddenCustomId = document.createElement('input');
-      hiddenCustomId.type = 'hidden';
-      hiddenCustomId.name = 'id_etapa_custom[]';
-      hiddenCustomId.value = currentTituloId;
-      cell.appendChild(hiddenCustomId);
     } else {
       const input = document.createElement('input');
-      input.type = campo === 'evolutivo' ? 'number' : 'date';
       input.name = campo + '[]';
-      input.placeholder = campo === 'evolutivo' ? '0 a 100%' : '';
+      input.type = campo === 'evolutivo' ? 'number' : 'date';
+      if (campo === 'evolutivo') {
+        input.min = 0;
+        input.max = 100;
+        input.step = 0.1;
+        input.placeholder = '0 a 100%';
+      }
       input.style.width = '100%';
+      input.style.border = 'none';
+      input.style.borderRadius = '6px';
+      input.style.height = '20px';
+      input.style.padding = '4px 8px';
+      input.style.boxSizing = 'border-box';
       cell.appendChild(input);
     }
   });
 }
 
 function addRow() {
-  if (!currentTituloId) {
-    alert("Adicione um título antes de adicionar linhas.");
-    return;
-  }
-
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
-  const linhasExistentes = Array.from(table.querySelectorAll('tr')).filter(row => {
-    const id = row.getAttribute('data-id');
-    return id && id.startsWith(currentTituloId + '.');
-  });
-
-  linhaCount = linhasExistentes.length + 1;
-  const linhaId = `${currentTituloId}.${linhaCount}`;
-
   const newRow = table.insertRow();
-  newRow.setAttribute('data-id', linhaId);
-
-  const idCell = newRow.insertCell();
-  idCell.textContent = linhaId;
 
   const campos = ['etapa', 'inicio_previsto', 'termino_previsto', 'inicio_real', 'termino_real', 'evolutivo'];
+
+  const idCell = newRow.insertCell();
+  const idInput = document.createElement('input');
+  idInput.type = 'text';
+  idInput.name = 'id_etapa_custom[]';
+  idInput.readOnly = true;
+  idInput.value = `${currentTitleIndex}.${subIndex++}`;
+  idInput.style.width = '100%';
+  idInput.style.fontSize = '13px';
+  idInput.style.padding = '4px 8px';
+  idInput.style.border = '1px solid #ccc';
+  idInput.style.borderRadius = '6px';
+  idInput.style.boxSizing = 'border-box';
+  idCell.appendChild(idInput);
+
   campos.forEach((campo, index) => {
     const cell = newRow.insertCell();
-
     if (index === 0) {
       const textarea = document.createElement('textarea');
       textarea.name = campo + '[]';
       textarea.rows = 2;
-      textarea.placeholder = 'Etapa';
+      textarea.className = 'campo-etapa';
+      textarea.style.width = '100%';
+      textarea.style.fontFamily = "'Poppins', sans-serif";
+      textarea.style.fontSize = '13px';
+      textarea.style.padding = '4px 8px';
+      textarea.style.border = '1px solid #ccc';
+      textarea.style.borderRadius = '6px';
+      textarea.style.boxSizing = 'border-box';
+      textarea.style.resize = 'vertical';
       cell.appendChild(textarea);
-
-      const hiddenId = document.createElement('input');
-      hiddenId.type = 'hidden';
-      hiddenId.name = 'ids[]';
-      hiddenId.value = linhaId;
-      cell.appendChild(hiddenId);
-
-      const hiddenTipo = document.createElement('input');
-      hiddenTipo.type = 'hidden';
-      hiddenTipo.name = 'tipo_etapa[]';
-      hiddenTipo.value = 'linha';
-      cell.appendChild(hiddenTipo);
-
-      const hiddenCustomId = document.createElement('input');
-      hiddenCustomId.type = 'hidden';
-      hiddenCustomId.name = 'id_etapa_custom[]';
-      hiddenCustomId.value = linhaId;
-      cell.appendChild(hiddenCustomId);
-
     } else {
       const input = document.createElement('input');
-      input.type = campo === 'evolutivo' ? 'number' : 'date';
       input.name = campo + '[]';
-      input.placeholder = campo === 'evolutivo' ? '0 a 100%' : '';
+      input.type = campo === 'evolutivo' ? 'number' : 'date';
+      if (campo === 'evolutivo') {
+        input.min = 0;
+        input.max = 100;
+        input.step = 0.1;
+        input.placeholder = '0 a 100%';
+      }
+      input.style.width = '100%';
+      input.style.border = '1px solid #ccc';
+      input.style.borderRadius = '6px';
+      input.style.height = '20px';
+      input.style.padding = '4px 8px';
+      input.style.boxSizing = 'border-box';
       cell.appendChild(input);
     }
   });
@@ -491,6 +477,7 @@ function addRow() {
 function deleteRow() {
   const table = document.getElementById('spreadsheet').getElementsByTagName('tbody')[0];
   const lastRow = table.rows[table.rows.length - 1];
+
 
   if (!lastRow) return;
 
@@ -505,37 +492,14 @@ function deleteRow() {
       .then(data => {
         console.log(data);
         table.deleteRow(-1);
-
-        const linhas = Array.from(table.querySelectorAll('tr'));
-        const ultimosTitulos = linhas
-          .map(row => row.getAttribute('data-id'))
-          .filter(id => id && /^[0-9]+$/.test(id))
-          .map(id => parseInt(id));
-
-        if (ultimosTitulos.length > 0) {
-          currentTituloId = Math.max(...ultimosTitulos);
-        } else {
-          currentTituloId = null;
-        }
       })
       .catch(error => {
         alert("Erro ao excluir no servidor.");
         console.error(error);
       });
-  } else {
+  } 
+  else {
     table.deleteRow(-1);
-    
-    const linhas = Array.from(table.querySelectorAll('tr'));
-    const ultimosTitulos = linhas
-      .map(row => row.getAttribute('data-id'))
-      .filter(id => id && /^[0-9]+$/.test(id))
-      .map(id => parseInt(id));
-
-    if (ultimosTitulos.length > 0) {
-      currentTituloId = Math.max(...ultimosTitulos);
-    } else {
-      currentTituloId = null;
-    }
   }
 }
 

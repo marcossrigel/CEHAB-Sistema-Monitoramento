@@ -8,7 +8,18 @@ if (!isset($_SESSION['id_usuario'])) {
 include("config.php");
 
 $id_usuario = $_SESSION['id_usuario'];
-$sql = "SELECT * FROM iniciativas WHERE id_usuario = $id_usuario";
+$tipo_usuario = $_SESSION['tipo_usuario']; // Você precisa garantir que isso esteja na sessão
+
+if ($tipo_usuario === 'admin' && isset($_GET['diretoria'])) {
+    $diretoria = $conexao->real_escape_string($_GET['diretoria']);
+    $sql = "SELECT * FROM iniciativas 
+            WHERE id_usuario IN (
+              SELECT id_usuario FROM usuarios WHERE diretoria = '$diretoria'
+            )";
+} else {
+    $sql = "SELECT * FROM iniciativas WHERE id_usuario = $id_usuario";
+}
+
 $resultado = $conexao->query($sql);
 ?>
 
@@ -220,7 +231,17 @@ h1 {
   <div class="topo-linha">
   <div class="voltar-box">
   </div>
-  <h1>Iniciativas Cadastradas</h1>
+  
+  <h1>
+  <?php 
+    if ($tipo_usuario === 'admin' && isset($_GET['diretoria'])) {
+      echo "Iniciativas da Diretoria: " . htmlspecialchars($_GET['diretoria']);
+    } else {
+      echo "Iniciativas Cadastradas";
+    }
+  ?>
+  </h1>
+
 </div>
 
   <?php while ($row = $resultado->fetch_assoc()): ?>
@@ -235,7 +256,7 @@ h1 {
         <strong>Data da Vistoria:</strong> <?php echo $row['data_vistoria']; ?> | 
         <strong>Nº do Contrato:</strong> <?php echo $row['numero_contrato']; ?>
       </p>
-      <p><strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> | <strong>Valor Médio:</strong> R$ <?php echo $row['ib_valor_medio']; ?></p>
+      <p><strong>Execução:</strong> <?php echo $row['ib_execucao']; ?> | <strong>Previsto:</strong> <?php echo $row['ib_previsto']; ?> | <strong>Variação:</strong> <?php echo $row['ib_variacao']; ?> | <strong>Valor Medido Acumulado: </strong><?php echo $row['ib_valor_medio']; ?></p>
       <p><strong>Secretaria:</strong> <?php echo $row['ib_secretaria']; ?> | <strong>Órgão:</strong> <?php echo $row['ib_orgao']; ?> | <strong>Processo SEI:</strong> <?php echo $row['ib_numero_processo_sei']; ?></p>
       <p><strong>Gestor Responsável:</strong> <?php echo $row['ib_gestor_responsavel']; ?> | <strong>Fiscal Responsável:</strong> <?php echo $row['ib_fiscal']; ?></p>
       <p><strong>Objeto:</strong> <?php echo $row['objeto']; ?></p>
@@ -256,10 +277,12 @@ h1 {
     </div>
   <?php endwhile; ?>
   
-
   <div class="botao-voltar">
-    <button onclick="window.location.href='home.php';">&lt; Voltar</button>
+    <button onclick="window.location.href='<?php echo $tipo_usuario === "admin" ? "diretorias.php" : "home.php"; ?>';">
+      &lt; Voltar
+    </button>
   </div>
+
 </div>
 
 <script>

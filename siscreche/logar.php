@@ -16,7 +16,7 @@ if (mysqli_num_rows($result) == 1) {
 
     $_SESSION['id_usuario'] = $usuario['id_usuario'];
     $_SESSION['nome'] = $usuario['nome'];
-    $_SESSION['tipo'] = $usuario['tipo'];
+    $_SESSION['tipo_usuario'] = $usuario['tipo']; // ✅ nome agora compatível
 
     if ($usuario['tipo'] === 'admin') {
         header('Location: diretorias.php');

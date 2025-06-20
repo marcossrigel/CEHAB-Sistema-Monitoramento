@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['id_usuario']) || $_SESSION['tipo_usuario'] !== 'admin') {
+    header("Location: login.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,22 +22,26 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background-color: #e9eef1;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
     }
 
     .cards-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: nowrap;
-        max-width: 1200px;
-        overflow-x: auto;
-        padding: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .card-link {
+      text-decoration: none;
     }
 
     .card-titulo {
@@ -57,46 +69,82 @@
       cursor: pointer;
     }
 
-    .poppins {
-        font-family: 'Poppins', sans-serif;
-    }
-
     .card-conteudo:hover {
       transform: scale(1.02);
     }
 
+    .botao-sair {
+      text-align: center;
+    }
+
+    .botao-sair a {
+      background-color: #ff4d4d;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .botao-sair a:hover {
+      background-color: #e60000;
+    }
+
     @media (max-width: 600px) {
       .card-conteudo {
-        width: 100%;
-        height: 150px;
+        width: 160px;
+        height: 160px;
+        font-size: 18px;
       }
     }
   </style>
 </head>
+
 <body>
 
 <div class="cards-container">
-  <div class="card-conteudo poppins">Educação</div>
-  <div class="card-conteudo poppins">Saúde</div>
 
-  <div class="card-conteudo poppins">
-    <div class="card-titulo">
-      <div>Infra</div>
-      <div>Estratégicas</div>
+  <a href="visualizar.php?diretoria=Educacao" class="card-link">
+    <div class="card-conteudo">Educação</div>
+  </a>
+
+  <a href="visualizar.php?diretoria=Saude" class="card-link">
+    <div class="card-conteudo">Saúde</div>
+  </a>
+
+  <a href="visualizar.php?diretoria=Infra Estratégicas" class="card-link">
+    <div class="card-conteudo">
+      <div class="card-titulo">
+        <div>Infra</div>
+        <div>Estratégicas</div>
+      </div>
     </div>
-  </div>
+  </a>
 
-  <div class="card-conteudo poppins">
-    <div class="card-titulo">
-      <div>Infra</div>
-      <div>Grandes Obras</div>
+  <a href="visualizar.php?diretoria=Infra Grandes Obras" class="card-link">
+    <div class="card-conteudo">
+      <div class="card-titulo">
+        <div>Infra</div>
+        <div>Grandes Obras</div>
+      </div>
     </div>
-  </div>
+  </a>
 
-  <div class="card-conteudo poppins">Segurança</div>
-  <div class="card-conteudo poppins">Social</div>
+  <a href="visualizar.php?diretoria=Seguranca" class="card-link">
+    <div class="card-conteudo">Segurança</div>
+  </a>
+
+  <a href="visualizar.php?diretoria=Social" class="card-link">
+    <div class="card-conteudo">Social</div>
+  </a>
+
 </div>
 
+<div class="botao-sair">
+  <a href="login.php">Sair</a>
+</div>
 
 </body>
 </html>

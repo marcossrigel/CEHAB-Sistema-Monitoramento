@@ -196,30 +196,16 @@ a.texto-login:hover {
   text-decoration: none;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="date"],
+input[list],
+select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
-}
-
-input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-input[list] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-  font-size: 14px; 
-  appearance: none;
+  font-size: 14px;
 }
 
 .modal {
@@ -378,7 +364,8 @@ input[list] {
         <label class="label">Nº do contrato</label>
         <div style="display: flex;">
           <input type="text" name="numero_contrato_prefixo" id="numero_contrato_prefixo" maxlength="3" placeholder="000" pattern="\d{3}" required style="flex: 0 0 60px; text-align: center;">
-          <span style="align-self: center; padding: 0 5px;">/2025</span>
+          <span style="align-self: center; padding: 0 5px;">/</span>
+          <input type="text" name="numero_contrato_ano" id="numero_contrato_ano" maxlength="4" placeholder="2025" pattern="\d{4}" required style="flex: 0 0 70px; text-align: center;">
         </div>
         <input type="hidden" name="numero_contrato" id="numero_contrato">
       </div>
@@ -503,8 +490,9 @@ input[list] {
 <script>
 
   document.querySelector('form').addEventListener('submit', function(e) {
-  const prefixo = document.getElementById('numero_contrato_prefixo').value.padStart(3, '0');
-  document.getElementById('numero_contrato').value = `${prefixo}/2025`;
+    const prefixo = document.getElementById('numero_contrato_prefixo').value.padStart(3, '0');
+    const ano = document.getElementById('numero_contrato_ano').value;
+    document.getElementById('numero_contrato').value = `${prefixo}/${ano}`;
   });
 
   const execucaoInput = document.querySelector('input[name="ib_execucao"]');

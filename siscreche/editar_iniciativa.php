@@ -26,6 +26,7 @@ $row = $resultado->fetch_assoc();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ib_status = $_POST['ib_status'];
     $data_vistoria = $_POST['data_vistoria'];
+    $numero_contrato = $_POST['numero_contrato'];
     $ib_execucao = $_POST['ib_execucao'];
     $ib_previsto = $_POST['ib_previsto'];
     $ib_variacao = $_POST['ib_variacao'];
@@ -35,16 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $observacoes = $_POST['observacoes'];
 
     $update = "UPDATE iniciativas SET 
-        ib_status = '$ib_status',
-        data_vistoria = '$data_vistoria',
-        ib_execucao = '$ib_execucao',
-        ib_previsto = '$ib_previsto',
-        ib_variacao = '$ib_variacao',
-        ib_valor_medio = '$ib_valor_medio',
-        objeto = '$objeto',
-        informacoes_gerais = '$informacoes_gerais',
-        observacoes = '$observacoes'
-        WHERE id = $id";
+      numero_contrato = '$numero_contrato',
+      ib_status = '$ib_status',
+      data_vistoria = '$data_vistoria',
+      ib_execucao = '$ib_execucao',
+      ib_previsto = '$ib_previsto',
+      ib_variacao = '$ib_variacao',
+      ib_valor_medio = '$ib_valor_medio',
+      objeto = '$objeto',
+      informacoes_gerais = '$informacoes_gerais',
+      observacoes = '$observacoes'
+    WHERE id = $id";
 
     if ($conexao->query($update)) {
         header("Location: visualizar.php");
@@ -234,6 +236,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <option value="Concluído" <?php if ($row['ib_status'] == 'Concluído') echo 'selected'; ?>>Concluído</option>
         </select>
       </div>
+
+      <div class="campo">
+        <label>Nº do Contrato:</label>
+        <input type="text" name="numero_contrato" value="<?php echo htmlspecialchars($row['numero_contrato']); ?>">
+      </div>
+
 
       <div class="campo">
         <label>Data da Atualização:</label>
