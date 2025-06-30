@@ -36,7 +36,7 @@ if (isset($_POST['salvar'])) {
         $orc = limparDinheiro($valor_orcamento[$i]);
         $bm_valor = limparDinheiro($valor_bm[$i]);
         $saldo = limparDinheiro($saldo_obra[$i]);
-        $bm_ind = intval(limparDinheiro($bm[$i]));
+        $bm_ind = mysqli_real_escape_string($conexao, $bm[$i] ?? '');
         $sei = mysqli_real_escape_string($conexao, $numero_processo_sei[$i] ?? '');
         $inicio = $data_inicio[$i] ?? null;
         $fim = $data_fim[$i] ?? null;
@@ -226,7 +226,7 @@ input[name="saldo_obra[]"] {
         { name: 'valor_orcamento[]', type: 'text', required: true, value: valorOrcamentoOriginal },
         { name: 'valor_bm[]', type: 'text', required: true },
         { name: 'saldo_obra[]', type: 'text' },
-        { name: 'bm[]', type: 'number', step: '1' },
+        { name: 'bm[]', type: 'text' },
         { name: 'numero_processo_sei[]', type: 'text' },
         { name: 'data_inicio[]', type: 'date' },
         { name: 'data_fim[]', type: 'date' }
